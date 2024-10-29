@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.domain.employee.DriverDomain;
+import br.com.api_str_innovation.entities.employee.DriverDomain;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

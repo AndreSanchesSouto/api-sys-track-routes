@@ -1,6 +1,5 @@
-package br.com.api_str_innovation.domain.client;
+package br.com.api_str_innovation.entities.client;
 
-import br.com.api_str_innovation.domain.enums.ContactType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,9 +21,8 @@ public class ClientDomain {
     @Column(nullable = false)
     private String address;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ContactType contactType;
+    private String contactType;
 
     @Column(nullable = false)
     private String contact;

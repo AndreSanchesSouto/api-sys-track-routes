@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.domain.vehicle;
+package br.com.api_str_innovation.entities.vehicle;
 
 import jakarta.persistence.*;
 import lombok.Getter;

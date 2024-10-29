@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.domain.checklist;
+package br.com.api_str_innovation.entities.checklist;
 
 import jakarta.persistence.*;
 import lombok.Getter;
