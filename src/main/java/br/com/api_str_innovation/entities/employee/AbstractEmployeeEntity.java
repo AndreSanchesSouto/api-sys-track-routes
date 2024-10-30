@@ -51,6 +51,4 @@ public abstract class AbstractEmployeeEntity {
         this.password = data.password();
     }
 
-
-
 }
