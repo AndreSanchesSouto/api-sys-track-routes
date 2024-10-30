@@ -13,7 +13,7 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @NoArgsConstructor
-public abstract class AbstractEmployeeDomain {
+public abstract class AbstractEmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -44,7 +44,7 @@ public abstract class AbstractEmployeeDomain {
     @Temporal(TemporalType.TIMESTAMP)
     private Date inactivationDt;
 
-    public AbstractEmployeeDomain(DriverRequestDTO data) {
+    public AbstractEmployeeEntity(DriverRequestDTO data) {
         this.name = data.name();
         this.email = data.email();
         this.login = data.login();

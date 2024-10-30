@@ -2,7 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
-import br.com.api_str_innovation.entities.vehicle.VehicleDomain;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +41,8 @@ public class VehicleService {
         return vehicle;
     }
 
-    public VehicleDomain getById(UUID id) {
-        VehicleDomain vehicle = repository
+    public VehicleEntity getById(UUID id) {
+        VehicleEntity vehicle = repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehicle not found"));
         return vehicle;
@@ -50,13 +50,12 @@ public class VehicleService {
 
     public void post(@Valid VehicleRequestDTO data) {
         System.out.println(data);
-        VehicleDomain vehicleData = new VehicleDomain(data);
+        VehicleEntity vehicleData = new VehicleEntity(data);
         repository.save(vehicleData);
     }
 
-    // Exist an error when don`t fill in all fields, it catches null. Front-end resolve that?
     public VehicleResponseDTO put(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
-        VehicleDomain vehicle = this.getById(id);
+        VehicleEntity vehicle = this.getById(id);
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());
         vehicle.setModel(data.model());
@@ -67,7 +66,7 @@ public class VehicleService {
     }
 
     public void inactivate(UUID id) {
-        VehicleDomain vehicle = getById(id);
+        VehicleEntity vehicle = getById(id);
         vehicle.setStatus("INACTIVE");
         repository.save(vehicle);
     }

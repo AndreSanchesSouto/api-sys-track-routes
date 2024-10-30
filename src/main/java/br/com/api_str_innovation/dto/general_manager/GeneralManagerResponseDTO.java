@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.dto.general_manager;
 
-import br.com.api_str_innovation.entities.employee.GeneralManagerDomain;
+import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 
 import java.util.Date;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public record GeneralManagerResponseDTO(UUID id,
                                         Date creationDt,
                                         Date inactivationDt) {
 
-    public GeneralManagerResponseDTO(GeneralManagerDomain data) {
+    public GeneralManagerResponseDTO(GeneralManagerEntity data) {
         this(data.getId(),
                 data.getName(),
                 data.getEmail(),

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
-public class VehicleDomain {
+public class VehicleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -36,7 +36,7 @@ public class VehicleDomain {
     @Setter
     private String status;
 
-    public VehicleDomain(VehicleRequestDTO data) {
+    public VehicleEntity(VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();
         this.sideNumber = data.sideNumber();
         this.model = data.model();

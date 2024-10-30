@@ -3,7 +3,7 @@ package br.com.api_str_innovation.controller;
 import br.com.api_str_innovation.dto.ResponseDTO;
 import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
 import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
-import br.com.api_str_innovation.entities.employee.GeneralManagerDomain;
+import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.service.GeneralManagerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class GeneralManagerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GeneralManagerDomain> getById(@PathVariable UUID id) {
+    public ResponseEntity<GeneralManagerEntity> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 

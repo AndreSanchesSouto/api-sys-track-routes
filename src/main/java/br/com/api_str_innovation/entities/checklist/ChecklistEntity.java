@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class ChecklistDomain {
+public class ChecklistEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

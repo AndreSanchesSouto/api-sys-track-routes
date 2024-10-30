@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.dto.driver;
 
-import br.com.api_str_innovation.entities.employee.DriverDomain;
+import br.com.api_str_innovation.entities.employee.DriverEntity;
 
 import java.util.Date;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public record DriverResponseDTO(UUID id,
                                 Date creationDt,
                                 Date inactivationDt) {
 
-    public DriverResponseDTO(DriverDomain driver) {
+    public DriverResponseDTO(DriverEntity driver) {
         this(driver.getId(),
                 driver.getName(),
                 driver.getLogin(),

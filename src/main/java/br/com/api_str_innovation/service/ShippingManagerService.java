@@ -2,7 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
-import br.com.api_str_innovation.entities.employee.ShippingManagerDomain;
+import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.repository.ShippingManagerRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
@@ -39,8 +38,8 @@ public class ShippingManagerService {
         return shippingManagers;
     }
 
-    public ShippingManagerDomain getById(UUID id) {
-        ShippingManagerDomain shippingManager = repository
+    public ShippingManagerEntity getById(UUID id) {
+        ShippingManagerEntity shippingManager = repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Shipping Manager not found"));
         return shippingManager;
@@ -48,12 +47,12 @@ public class ShippingManagerService {
 
     public void post(@Valid ShippingManagerRequestDTO data) {
         System.out.println(data);
-        ShippingManagerDomain shippingManagerData = new ShippingManagerDomain(data);
+        ShippingManagerEntity shippingManagerData = new ShippingManagerEntity(data);
         repository.save(shippingManagerData);
     }
 
     public ShippingManagerResponseDTO put(UUID id, ShippingManagerRequestDTO data) {
-        ShippingManagerDomain shippingManager = this.getById(id);
+        ShippingManagerEntity shippingManager = this.getById(id);
         shippingManager.setName(data.name());
         shippingManager.setEmail(data.email());
         shippingManager.setLogin(data.login());
@@ -63,7 +62,7 @@ public class ShippingManagerService {
     }
 
     public void inactivate(UUID id) {
-        ShippingManagerDomain shippingManager = getById(id);
+        ShippingManagerEntity shippingManager = getById(id);
         shippingManager.setInactivationDt(new Date());
         repository.save(shippingManager);
     }

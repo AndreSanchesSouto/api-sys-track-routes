@@ -3,7 +3,7 @@ package br.com.api_str_innovation.controller;
 import br.com.api_str_innovation.dto.ResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
-import br.com.api_str_innovation.entities.vehicle.VehicleDomain;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehicleDomain> getById(@PathVariable UUID id) {
+    public ResponseEntity<VehicleEntity> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 

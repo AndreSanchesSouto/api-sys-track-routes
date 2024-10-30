@@ -3,7 +3,7 @@ package br.com.api_str_innovation.controller;
 import br.com.api_str_innovation.dto.ResponseDTO;
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
-import br.com.api_str_innovation.entities.employee.ShippingManagerDomain;
+import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.service.ShippingManagerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class ShippingManagerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShippingManagerDomain> getById(@PathVariable UUID id){
+    public ResponseEntity<ShippingManagerEntity> getById(@PathVariable UUID id){
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 

@@ -2,7 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
 import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
-import br.com.api_str_innovation.entities.employee.DriverDomain;
+import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,8 @@ public class DriverService {
         return drivers;
     }
 
-    public DriverDomain getById(UUID id) {
-        DriverDomain driver = repository
+    public DriverEntity getById(UUID id) {
+        DriverEntity driver = repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Driver not found"));
         return driver;
@@ -52,13 +52,12 @@ public class DriverService {
 
     public void post(@Valid DriverRequestDTO data) {
         System.out.println(data);
-        DriverDomain driverData = new DriverDomain(data);
+        DriverEntity driverData = new DriverEntity(data);
         repository.save(driverData);
     }
 
-    // Exist an error when don`t fill in all fields, it catches null. Front-end resolve that?
     public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
-        DriverDomain driver = this.getById(id);
+        DriverEntity driver = this.getById(id);
         driver.setName(data.name());
         driver.setLogin(data.login());
         driver.setEmail(data.email());
@@ -69,7 +68,7 @@ public class DriverService {
     }
 
     public void inactivate(UUID id) {
-        DriverDomain driverData = getById(id);
+        DriverEntity driverData = getById(id);
         driverData.setInactivationDt(new Date());
         repository.save(driverData);
     }

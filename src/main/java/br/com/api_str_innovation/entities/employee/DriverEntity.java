@@ -9,11 +9,11 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DriverDomain extends AbstractEmployeeDomain {
+public class DriverEntity extends AbstractEmployeeEntity {
     @Column(nullable = false)
     private String status;
 
-    public DriverDomain(DriverRequestDTO data) {
+    public DriverEntity(DriverRequestDTO data) {
         super(data);
         this.status = data.status();
     }
