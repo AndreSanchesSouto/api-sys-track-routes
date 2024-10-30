@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.dtos;
+package br.com.api_str_innovation.dto;
 
 public class ResponseDTO {
 

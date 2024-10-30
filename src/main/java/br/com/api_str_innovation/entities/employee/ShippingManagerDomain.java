@@ -1,6 +1,8 @@
 package br.com.api_str_innovation.entities.employee;
 
-import br.com.api_str_innovation.dtos.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
+import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class ShippingManagerDomain extends AbstractEmployeeDomain {
-    public ShippingManagerDomain(DriverRequestDTO data) {
-        super(data);
+
+    public ShippingManagerDomain(ShippingManagerRequestDTO data) {
     }
 }

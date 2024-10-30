@@ -1,8 +1,8 @@
-package br.com.api_str_innovation.controllers;
+package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dtos.ResponseDTO;
-import br.com.api_str_innovation.dtos.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dtos.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.ResponseDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverDomain;
 import br.com.api_str_innovation.service.DriverService;
 import jakarta.validation.Valid;
@@ -28,23 +28,29 @@ public class DriverController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DriverDomain> getById(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
-    }
-
     @GetMapping(value = "/page")
     public ResponseEntity<Page<DriverResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DriverDomain> getById(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
+    }
+
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@Valid @RequestBody DriverRequestDTO data) {
         this.service.post(data);
+        // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
-     // inactivate driver
+
     @PutMapping("/{id}")
+    public ResponseEntity<DriverResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
+    }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);
         // There is an error when the message show "Inativado com sucesso", but the driver wasn`t inactivated.

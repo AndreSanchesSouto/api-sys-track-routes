@@ -1,16 +1,17 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dtos.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dtos.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverDomain;
 import br.com.api_str_innovation.repository.DriverRepository;
-import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,13 +35,6 @@ public class DriverService {
         return drivers;
     }
 
-    public DriverDomain getById(UUID id) {
-        DriverDomain driver = repository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Driver not found"));
-        return driver;
-    }
-
     @GetMapping(value = "/page")
     public Page<DriverResponseDTO> getPaged(Pageable pageable) {
         Page<DriverResponseDTO> drivers = repository
@@ -49,16 +43,35 @@ public class DriverService {
         return drivers;
     }
 
-    public void post(@RequestBody DriverRequestDTO data) {
+    public DriverDomain getById(UUID id) {
+        DriverDomain driver = repository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Driver not found"));
+        return driver;
+    }
+
+    public void post(@Valid DriverRequestDTO data) {
         System.out.println(data);
         DriverDomain driverData = new DriverDomain(data);
         repository.save(driverData);
     }
 
-    // Inactivate method
+    // Exist an error when don`t fill in all fields, it catches null. Front-end resolve that?
+    public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+        DriverDomain driver = this.getById(id);
+        driver.setName(data.name());
+        driver.setLogin(data.login());
+        driver.setEmail(data.email());
+        driver.setPassword(data.password()); // To adopt method to forget my password by email
+        driver.setStatus(data.status());
+        repository.save(driver);
+        return new DriverResponseDTO(driver);
+    }
+
     public void inactivate(UUID id) {
         DriverDomain driverData = getById(id);
         driverData.setInactivationDt(new Date());
         repository.save(driverData);
     }
+
 }

@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.entities.employee;
 
-import br.com.api_str_innovation.dtos.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
@@ -18,16 +18,20 @@ public abstract class AbstractEmployeeDomain {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Setter
     @Column(nullable = false)
     private String name;
 
+    @Setter
     @Email
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Setter
     @Column(nullable = false, unique = true)
     private String login;
 
+    @Setter
     @Column(nullable = false)
     // Implementar criptografia de senha e passar como hash
     private String password;
@@ -40,11 +44,13 @@ public abstract class AbstractEmployeeDomain {
     @Temporal(TemporalType.TIMESTAMP)
     private Date inactivationDt;
 
-    protected AbstractEmployeeDomain(DriverRequestDTO data) {
+    public AbstractEmployeeDomain(DriverRequestDTO data) {
         this.name = data.name();
         this.email = data.email();
         this.login = data.login();
         this.password = data.password();
     }
+
+
 
 }
