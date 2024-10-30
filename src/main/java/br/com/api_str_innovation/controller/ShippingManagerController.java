@@ -40,6 +40,7 @@ public class ShippingManagerController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@Valid @RequestBody ShippingManagerRequestDTO data) {
+        this.service.post(data);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
