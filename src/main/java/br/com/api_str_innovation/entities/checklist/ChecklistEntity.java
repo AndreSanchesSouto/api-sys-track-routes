@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ChecklistEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -60,6 +61,6 @@ public class ChecklistEntity {
     @Column(nullable = false)
     private String documentation;
 
-    @Column(nullable = false)
     private String observationNotes;
+
 }

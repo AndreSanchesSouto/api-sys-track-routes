@@ -13,6 +13,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 public class VehicleEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -43,4 +44,5 @@ public class VehicleEntity {
         this.brand = data.brand();
         this.status = data.status();
     }
+
 }

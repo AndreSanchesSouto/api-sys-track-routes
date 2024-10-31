@@ -7,5 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DriverRequest extends EmployeeRequest {
+
     private String status;
 }

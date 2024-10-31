@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ShippingManagerEntity extends AbstractEmployeeEntity {
+
     public ShippingManagerEntity(EmployeeRequest data) {
         super(data);
     }
+
 }

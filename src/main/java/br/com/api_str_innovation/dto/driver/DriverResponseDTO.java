@@ -5,15 +5,15 @@ import br.com.api_str_innovation.entities.employee.DriverEntity;
 import java.util.Date;
 import java.util.UUID;
 
-public record EmployeeResponseDTO(UUID id,
-                                  String name,
-                                  String email,
-                                  String login,
-                                  String status,
-                                  Date creationDt,
-                                  Date inactivationDt) {
+public record DriverResponseDTO(UUID id,
+                                String name,
+                                String email,
+                                String login,
+                                String status,
+                                Date creationDt,
+                                Date inactivationDt) {
 
-    public EmployeeResponseDTO(DriverEntity driver) {
+    public DriverResponseDTO(DriverEntity driver) {
         this(driver.getId(),
                 driver.getName(),
                 driver.getLogin(),

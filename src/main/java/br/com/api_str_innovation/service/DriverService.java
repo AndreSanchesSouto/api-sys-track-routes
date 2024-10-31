@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.driver.DriverRequest;
-import br.com.api_str_innovation.dto.driver.EmployeeResponseDTO;
+import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
 import jakarta.validation.Valid;
@@ -26,20 +26,20 @@ public class DriverService {
     @Autowired
     private DriverRepository repository;
 
-    public List<EmployeeResponseDTO> getAll() {
-        List<EmployeeResponseDTO> drivers = repository
+    public List<DriverResponseDTO> getAll() {
+        List<DriverResponseDTO> drivers = repository
                 .findAll()
                 .stream()
-                .map(EmployeeResponseDTO::new)
+                .map(DriverResponseDTO::new)
                 .toList();
         return drivers;
     }
 
     @GetMapping(value = "/page")
-    public Page<EmployeeResponseDTO> getPaged(Pageable pageable) {
-        Page<EmployeeResponseDTO> drivers = repository
+    public Page<DriverResponseDTO> getPaged(Pageable pageable) {
+        Page<DriverResponseDTO> drivers = repository
                 .findAll(pageable)
-                .map(EmployeeResponseDTO::new);
+                .map(DriverResponseDTO::new);
         return drivers;
     }
 
@@ -56,7 +56,7 @@ public class DriverService {
         repository.save(driverData);
     }
 
-    public EmployeeResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequest data) {
+    public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequest data) {
         DriverEntity driver = this.getById(id);
         driver.setName(data.getName());
         driver.setLogin(data.getLogin());
@@ -64,7 +64,7 @@ public class DriverService {
         driver.setPassword(data.getPassword()); // To adopt method to forget my password by email
         driver.setStatus(data.getStatus());
         repository.save(driver);
-        return new EmployeeResponseDTO(driver);
+        return new DriverResponseDTO(driver);
     }
 
     public void inactivate(UUID id) {

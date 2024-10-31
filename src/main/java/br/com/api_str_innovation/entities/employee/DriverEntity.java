@@ -10,8 +10,9 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class DriverEntity extends AbstractEmployeeEntity {
-    @Setter
+
     private String status;
+
     public DriverEntity(DriverRequest data) {
         super(data);
         this.status = data.getStatus();

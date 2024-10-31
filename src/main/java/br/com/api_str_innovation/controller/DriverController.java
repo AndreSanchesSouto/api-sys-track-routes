@@ -2,7 +2,7 @@ package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.ResponseDTO;
 import br.com.api_str_innovation.dto.driver.DriverRequest;
-import br.com.api_str_innovation.dto.driver.EmployeeResponseDTO;
+import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.service.DriverService;
 import jakarta.validation.Valid;
@@ -24,12 +24,12 @@ public class DriverController {
     private DriverService service;
 
     @GetMapping
-    public ResponseEntity<List<EmployeeResponseDTO>> getAll() {
+    public ResponseEntity<List<DriverResponseDTO>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<EmployeeResponseDTO>> getPaged(Pageable pageable) {
+    public ResponseEntity<Page<DriverResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
@@ -46,7 +46,7 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequest data) {
+    public ResponseEntity<DriverResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequest data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 

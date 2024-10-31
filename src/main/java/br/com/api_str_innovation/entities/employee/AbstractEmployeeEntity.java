@@ -14,6 +14,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 public abstract class AbstractEmployeeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)

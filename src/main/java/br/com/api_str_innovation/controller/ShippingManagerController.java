@@ -1,8 +1,8 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.EmployeeRequest;
 import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.shipping_manager.EmployeeResponseDTO;
+import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequest;
+import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.service.ShippingManagerService;
 import jakarta.validation.Valid;
@@ -24,12 +24,12 @@ public class ShippingManagerController {
     private ShippingManagerService service;
 
     @GetMapping
-    public ResponseEntity<List<EmployeeResponseDTO>> getAll() {
+    public ResponseEntity<List<ShippingManagerResponseDTO>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<EmployeeResponseDTO>> getPaged(Pageable pageable) {
+    public ResponseEntity<Page<ShippingManagerResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
@@ -39,13 +39,13 @@ public class ShippingManagerController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody EmployeeRequest data) {
+    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody ShippingManagerRequest data) {
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeResponseDTO> put(@PathVariable UUID id, @RequestBody EmployeeRequest data) {
+    public ResponseEntity<ShippingManagerResponseDTO> put(@PathVariable UUID id, @RequestBody ShippingManagerRequest data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
