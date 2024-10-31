@@ -48,7 +48,7 @@ public class ClientControlller {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Deletado com sucesso"));

@@ -5,7 +5,6 @@ import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
 import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.service.DriverService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

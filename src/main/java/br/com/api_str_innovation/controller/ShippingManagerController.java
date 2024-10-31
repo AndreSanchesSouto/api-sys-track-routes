@@ -5,7 +5,6 @@ import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.service.ShippingManagerService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;

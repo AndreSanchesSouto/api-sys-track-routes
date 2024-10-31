@@ -5,7 +5,6 @@ import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
 import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.service.GeneralManagerService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
