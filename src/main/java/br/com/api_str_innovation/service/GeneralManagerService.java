@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
+import br.com.api_str_innovation.dto.EmployeeRequest;
+import br.com.api_str_innovation.dto.general_manager.EmployeeResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.repository.GeneralManagerRepository;
 import jakarta.validation.Valid;
@@ -23,20 +23,20 @@ public class GeneralManagerService {
     @Autowired
     private GeneralManagerRepository repository;
 
-    public List<GeneralManagerResponseDTO> getAll() {
-        List<GeneralManagerResponseDTO> generalManagers = repository
+    public List<EmployeeResponseDTO> getAll() {
+        List<EmployeeResponseDTO> generalManagers = repository
                 .findAll()
                 .stream()
-                .map(GeneralManagerResponseDTO::new)
+                .map(EmployeeResponseDTO::new)
                 .toList();
         return generalManagers;
     }
 
     @GetMapping(value = "/page")
-    public Page<GeneralManagerResponseDTO> getPaged(Pageable pageable) {
-        Page<GeneralManagerResponseDTO> generalManagers = repository
+    public Page<EmployeeResponseDTO> getPaged(Pageable pageable) {
+        Page<EmployeeResponseDTO> generalManagers = repository
                 .findAll(pageable)
-                .map(GeneralManagerResponseDTO::new);
+                .map(EmployeeResponseDTO::new);
         return generalManagers;
     }
 
@@ -47,20 +47,20 @@ public class GeneralManagerService {
         return generalManager;
     }
 
-    public void post(@Valid GeneralManagerRequestDTO data) {
+    public void post(@Valid EmployeeRequest data) {
         System.out.println(data);
         GeneralManagerEntity generalManagerData = new GeneralManagerEntity(data);
         repository.save(generalManagerData);
     }
 
-    public GeneralManagerResponseDTO put(UUID id, GeneralManagerRequestDTO data) {
+    public EmployeeResponseDTO put(UUID id, EmployeeRequest data) {
         GeneralManagerEntity generalManager = this.getById(id);
-        generalManager.setName(data.name());
-        generalManager.setEmail(data.email());
-        generalManager.setLogin(data.login());
-        generalManager.setPassword(data.password());
+        generalManager.setName(data.getName());
+        generalManager.setEmail(data.getEmail());
+        generalManager.setLogin(data.getLogin());
+        generalManager.setPassword(data.getPassword());
         repository.save(generalManager);
-        return new GeneralManagerResponseDTO(generalManager);
+        return new EmployeeResponseDTO(generalManager);
 
     }
 

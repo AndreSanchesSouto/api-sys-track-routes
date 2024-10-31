@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.entities.employee;
 
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.EmployeeRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
@@ -16,6 +16,7 @@ import java.util.UUID;
 public abstract class AbstractEmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false, updatable = false)
     private UUID id;
 
     @Setter
@@ -44,11 +45,11 @@ public abstract class AbstractEmployeeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date inactivationDt;
 
-    public AbstractEmployeeEntity(DriverRequestDTO data) {
-        this.name = data.name();
-        this.email = data.email();
-        this.login = data.login();
-        this.password = data.password();
+    public AbstractEmployeeEntity(EmployeeRequest data) {
+        this.name = data.getName();
+        this.email = data.getEmail();
+        this.login = data.getLogin();
+        this.password = data.getPassword();
     }
 
 }

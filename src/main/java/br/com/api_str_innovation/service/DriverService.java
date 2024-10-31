@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequest;
+import br.com.api_str_innovation.dto.driver.EmployeeResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
 import jakarta.validation.Valid;
@@ -26,20 +26,20 @@ public class DriverService {
     @Autowired
     private DriverRepository repository;
 
-    public List<DriverResponseDTO> getAll() {
-        List<DriverResponseDTO> drivers = repository
+    public List<EmployeeResponseDTO> getAll() {
+        List<EmployeeResponseDTO> drivers = repository
                 .findAll()
                 .stream()
-                .map(DriverResponseDTO::new)
+                .map(EmployeeResponseDTO::new)
                 .toList();
         return drivers;
     }
 
     @GetMapping(value = "/page")
-    public Page<DriverResponseDTO> getPaged(Pageable pageable) {
-        Page<DriverResponseDTO> drivers = repository
+    public Page<EmployeeResponseDTO> getPaged(Pageable pageable) {
+        Page<EmployeeResponseDTO> drivers = repository
                 .findAll(pageable)
-                .map(DriverResponseDTO::new);
+                .map(EmployeeResponseDTO::new);
         return drivers;
     }
 
@@ -50,21 +50,21 @@ public class DriverService {
         return driver;
     }
 
-    public void post(@Valid DriverRequestDTO data) {
+    public void post(@Valid DriverRequest data) {
         System.out.println(data);
         DriverEntity driverData = new DriverEntity(data);
         repository.save(driverData);
     }
 
-    public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+    public EmployeeResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequest data) {
         DriverEntity driver = this.getById(id);
-        driver.setName(data.name());
-        driver.setLogin(data.login());
-        driver.setEmail(data.email());
-        driver.setPassword(data.password()); // To adopt method to forget my password by email
-        driver.setStatus(data.status());
+        driver.setName(data.getName());
+        driver.setLogin(data.getLogin());
+        driver.setEmail(data.getEmail());
+        driver.setPassword(data.getPassword()); // To adopt method to forget my password by email
+        driver.setStatus(data.getStatus());
         repository.save(driver);
-        return new DriverResponseDTO(driver);
+        return new EmployeeResponseDTO(driver);
     }
 
     public void inactivate(UUID id) {

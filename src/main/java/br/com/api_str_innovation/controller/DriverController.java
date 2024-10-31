@@ -1,8 +1,8 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequest;
+import br.com.api_str_innovation.dto.driver.EmployeeResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.service.DriverService;
 import jakarta.validation.Valid;
@@ -24,12 +24,12 @@ public class DriverController {
     private DriverService service;
 
     @GetMapping
-    public ResponseEntity<List<DriverResponseDTO>> getAll() {
+    public ResponseEntity<List<EmployeeResponseDTO>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<DriverResponseDTO>> getPaged(Pageable pageable) {
+    public ResponseEntity<Page<EmployeeResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
@@ -39,14 +39,14 @@ public class DriverController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody DriverRequestDTO data) {
+    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody DriverRequest data) {
         this.service.post(data);
         // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DriverResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+    public ResponseEntity<EmployeeResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequest data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 

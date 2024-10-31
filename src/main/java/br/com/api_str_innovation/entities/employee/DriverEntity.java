@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.entities.employee;
 
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.driver.DriverRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,11 +10,10 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 public class DriverEntity extends AbstractEmployeeEntity {
-    @Column(nullable = false)
+    @Setter
     private String status;
-
-    public DriverEntity(DriverRequestDTO data) {
+    public DriverEntity(DriverRequest data) {
         super(data);
-        this.status = data.status();
+        this.status = data.getStatus();
     }
 }

@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
-import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
+import br.com.api_str_innovation.dto.EmployeeRequest;
+import br.com.api_str_innovation.dto.shipping_manager.EmployeeResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.repository.ShippingManagerRepository;
 import jakarta.validation.Valid;
@@ -22,19 +22,19 @@ public class ShippingManagerService {
     @Autowired
     private ShippingManagerRepository repository;
 
-    public List<ShippingManagerResponseDTO> getAll() {
-        List<ShippingManagerResponseDTO> shippingManagers = repository
+    public List<EmployeeResponseDTO> getAll() {
+        List<EmployeeResponseDTO> shippingManagers = repository
                 .findAll()
                 .stream()
-                .map(ShippingManagerResponseDTO::new)
+                .map(EmployeeResponseDTO::new)
                 .toList();
         return shippingManagers;
     }
 
-    public Page<ShippingManagerResponseDTO> getPaged(Pageable pageable) {
-        Page<ShippingManagerResponseDTO> shippingManagers = repository
+    public Page<EmployeeResponseDTO> getPaged(Pageable pageable) {
+        Page<EmployeeResponseDTO> shippingManagers = repository
                 .findAll(pageable)
-                .map(ShippingManagerResponseDTO::new);
+                .map(EmployeeResponseDTO::new);
         return shippingManagers;
     }
 
@@ -45,20 +45,20 @@ public class ShippingManagerService {
         return shippingManager;
     }
 
-    public void post(@Valid ShippingManagerRequestDTO data) {
+    public void post(@Valid EmployeeRequest data) {
         System.out.println(data);
         ShippingManagerEntity shippingManagerData = new ShippingManagerEntity(data);
         repository.save(shippingManagerData);
     }
 
-    public ShippingManagerResponseDTO put(UUID id, ShippingManagerRequestDTO data) {
+    public EmployeeResponseDTO put(UUID id, EmployeeRequest data) {
         ShippingManagerEntity shippingManager = this.getById(id);
-        shippingManager.setName(data.name());
-        shippingManager.setEmail(data.email());
-        shippingManager.setLogin(data.login());
-        shippingManager.setPassword(data.password());
+        shippingManager.setName(data.getName());
+        shippingManager.setEmail(data.getEmail());
+        shippingManager.setLogin(data.getLogin());
+        shippingManager.setPassword(data.getPassword());
         repository.save(shippingManager);
-        return new ShippingManagerResponseDTO(shippingManager);
+        return new EmployeeResponseDTO(shippingManager);
     }
 
     public void inactivate(UUID id) {

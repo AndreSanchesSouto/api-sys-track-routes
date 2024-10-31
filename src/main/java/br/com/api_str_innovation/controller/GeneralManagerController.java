@@ -1,8 +1,8 @@
 package br.com.api_str_innovation.controller;
 
+import br.com.api_str_innovation.dto.EmployeeRequest;
 import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
+import br.com.api_str_innovation.dto.general_manager.EmployeeResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.service.GeneralManagerService;
 import jakarta.validation.Valid;
@@ -24,12 +24,12 @@ public class GeneralManagerController {
     private GeneralManagerService service;
 
     @GetMapping
-    public ResponseEntity<List<GeneralManagerResponseDTO>> getAll() {
+    public ResponseEntity<List<EmployeeResponseDTO>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<GeneralManagerResponseDTO>> getPaged(Pageable pageable) {
+    public ResponseEntity<Page<EmployeeResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
@@ -39,13 +39,13 @@ public class GeneralManagerController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody GeneralManagerRequestDTO data) {
+    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody EmployeeRequest data) {
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GeneralManagerResponseDTO> put(@PathVariable UUID id, @RequestBody GeneralManagerRequestDTO data) {
+    public ResponseEntity<EmployeeResponseDTO> put(@PathVariable UUID id, @RequestBody EmployeeRequest data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
