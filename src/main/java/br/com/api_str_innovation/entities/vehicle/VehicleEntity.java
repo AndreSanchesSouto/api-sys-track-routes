@@ -35,6 +35,7 @@ public class VehicleEntity {
     private String brand;
 
     @Setter
+    @Column(nullable = false)
     private String status;
 
     public VehicleEntity(VehicleRequestDTO data) {

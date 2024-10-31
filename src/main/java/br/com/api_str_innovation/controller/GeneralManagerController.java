@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequest;
+import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
 import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.service.GeneralManagerService;
@@ -39,13 +39,13 @@ public class GeneralManagerController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody GeneralManagerRequest data) {
+    public ResponseEntity<ResponseDTO> post(@RequestBody GeneralManagerRequestDTO data) {
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GeneralManagerResponseDTO> put(@PathVariable UUID id, @RequestBody GeneralManagerRequest data) {
+    public ResponseEntity<GeneralManagerResponseDTO> put(@PathVariable UUID id, @RequestBody GeneralManagerRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 

@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.driver.DriverRequest;
+import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
 import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
@@ -50,13 +50,13 @@ public class DriverService {
         return driver;
     }
 
-    public void post(@Valid DriverRequest data) {
+    public void post(@Valid DriverRequestDTO data) {
         System.out.println(data);
         DriverEntity driverData = new DriverEntity(data);
         repository.save(driverData);
     }
 
-    public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequest data) {
+    public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
         DriverEntity driver = this.getById(id);
         driver.setName(data.getName());
         driver.setLogin(data.getLogin());

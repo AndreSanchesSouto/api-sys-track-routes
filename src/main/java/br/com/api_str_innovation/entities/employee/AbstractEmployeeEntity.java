@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.entities.employee;
 
-import br.com.api_str_innovation.dto.EmployeeRequest;
+import br.com.api_str_innovation.dto.EmployeeRequestDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
@@ -46,7 +46,7 @@ public abstract class AbstractEmployeeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date inactivationDt;
 
-    public AbstractEmployeeEntity(EmployeeRequest data) {
+    public AbstractEmployeeEntity(EmployeeRequestDTO data) {
         this.name = data.getName();
         this.email = data.getEmail();
         this.login = data.getLogin();

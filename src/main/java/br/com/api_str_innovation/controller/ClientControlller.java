@@ -1,11 +1,10 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
-import br.com.api_str_innovation.entities.employee.DriverEntity;
-import br.com.api_str_innovation.service.DriverService;
-import jakarta.validation.Valid;
+import br.com.api_str_innovation.dto.client.ClientRequestDTO;
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.entities.client.ClientEntity;
+import br.com.api_str_innovation.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,44 +16,42 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/driver")
-public class DriverController {
+@RequestMapping("/client")
+public class ClientControlller {
 
     @Autowired
-    private DriverService service;
+    private ClientService service;
 
     @GetMapping
-    public ResponseEntity<List<DriverResponseDTO>> getAll() {
+    public ResponseEntity<List<ClientResponseDTO>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<DriverResponseDTO>> getPaged(Pageable pageable) {
+    public ResponseEntity<Page<ClientResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DriverEntity> getById(@PathVariable UUID id) {
+    public ResponseEntity<ClientEntity> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@RequestBody DriverRequestDTO data) {
+    public ResponseEntity<ResponseDTO> post(@PathVariable ClientRequestDTO data) {
         this.service.post(data);
-        // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DriverResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+    public ResponseEntity<ClientResponseDTO> put(@PathVariable UUID id, @RequestBody ClientRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{/id}")
     public ResponseEntity<ResponseDTO> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);
-        // There is an error when the message show "Inativado com sucesso", but the driver wasn`t inactivated.
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Inativado com sucesso"));
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Deletado com sucesso"));
     }
 
 }

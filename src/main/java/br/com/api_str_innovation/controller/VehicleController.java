@@ -39,7 +39,7 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody VehicleRequestDTO data) {
+    public ResponseEntity<ResponseDTO> post(@RequestBody VehicleRequestDTO data) {
         this.service.post(data);
         // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));

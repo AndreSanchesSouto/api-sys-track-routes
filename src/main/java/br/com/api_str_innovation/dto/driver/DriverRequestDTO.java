@@ -1,12 +1,13 @@
 package br.com.api_str_innovation.dto.driver;
 
-import br.com.api_str_innovation.dto.EmployeeRequest;
+import br.com.api_str_innovation.dto.EmployeeRequestDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class DriverRequest extends EmployeeRequest {
+public class DriverRequestDTO extends EmployeeRequestDTO {
 
     private String status;
+
 }

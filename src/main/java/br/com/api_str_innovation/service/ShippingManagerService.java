@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequest;
+import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.repository.ShippingManagerRepository;
@@ -45,13 +45,13 @@ public class ShippingManagerService {
         return shippingManager;
     }
 
-    public void post(@Valid ShippingManagerRequest data) {
+    public void post(@Valid ShippingManagerRequestDTO data) {
         System.out.println(data);
         ShippingManagerEntity shippingManagerData = new ShippingManagerEntity(data);
         repository.save(shippingManagerData);
     }
 
-    public ShippingManagerResponseDTO put(UUID id, ShippingManagerRequest data) {
+    public ShippingManagerResponseDTO put(UUID id, ShippingManagerRequestDTO data) {
         ShippingManagerEntity shippingManager = this.getById(id);
         shippingManager.setName(data.getName());
         shippingManager.setEmail(data.getEmail());

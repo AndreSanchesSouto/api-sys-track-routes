@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequest;
+import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
 import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.repository.GeneralManagerRepository;
@@ -47,13 +47,13 @@ public class GeneralManagerService {
         return generalManager;
     }
 
-    public void post(@Valid GeneralManagerRequest data) {
+    public void post(@Valid GeneralManagerRequestDTO data) {
         System.out.println(data);
         GeneralManagerEntity generalManagerData = new GeneralManagerEntity(data);
         repository.save(generalManagerData);
     }
 
-    public GeneralManagerResponseDTO put(UUID id, GeneralManagerRequest data) {
+    public GeneralManagerResponseDTO put(UUID id, GeneralManagerRequestDTO data) {
         GeneralManagerEntity generalManager = this.getById(id);
         generalManager.setName(data.getName());
         generalManager.setEmail(data.getEmail());

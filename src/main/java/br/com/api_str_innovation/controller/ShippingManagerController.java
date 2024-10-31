@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequest;
+import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
 import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.service.ShippingManagerService;
@@ -39,13 +39,13 @@ public class ShippingManagerController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@Valid @RequestBody ShippingManagerRequest data) {
+    public ResponseEntity<ResponseDTO> post(@RequestBody ShippingManagerRequestDTO data) {
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ShippingManagerResponseDTO> put(@PathVariable UUID id, @RequestBody ShippingManagerRequest data) {
+    public ResponseEntity<ShippingManagerResponseDTO> put(@PathVariable UUID id, @RequestBody ShippingManagerRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
