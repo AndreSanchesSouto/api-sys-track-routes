@@ -3,6 +3,7 @@ package br.com.api_str_innovation.entities.employee;
 import br.com.api_str_innovation.dto.EmployeeRequestDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,19 +22,23 @@ public abstract class AbstractEmployeeEntity {
     private UUID id;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
     @Setter
     @Email
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 
     @Setter
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String login;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     // Implementar criptografia de senha e passar como hash
     private String password;

@@ -38,4 +38,5 @@ public class ClientEntity {
         this.contact = data.contact();
         this.status = data.status();
     }
+
 }
