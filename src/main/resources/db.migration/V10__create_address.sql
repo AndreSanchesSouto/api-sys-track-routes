@@ -6,7 +6,7 @@ CREATE TABLE address (
     zip_code CHAR(8) NULL,
     reference VARCHAR(100) NULL,
     client_fk UUID,
-    state_fk UUID,
+    city_fk UUID,
     FOREIGN KEY (client_fk) REFERENCES client(id),
-    FOREIGN KEY (state_fk) REFERENCES state(id)
+    FOREIGN KEY (city_fk) REFERENCES city(id)
 );
