@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,12 +41,11 @@ public class ShippingManagerService {
     public ShippingManagerEntity getById(UUID id) {
         ShippingManagerEntity shippingManager = repository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Shipping Manager not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shipping Manager not found"));
         return shippingManager;
     }
 
     public void post(@Valid ShippingManagerRequestDTO data) {
-        System.out.println(data);
         ShippingManagerEntity shippingManagerData = new ShippingManagerEntity(data);
         repository.save(shippingManagerData);
     }
@@ -63,7 +62,7 @@ public class ShippingManagerService {
 
     public void inactivate(UUID id) {
         ShippingManagerEntity shippingManager = getById(id);
-        shippingManager.setInactivationDt(new Date());
+        shippingManager.setInactivatedDt(LocalDateTime.now());
         repository.save(shippingManager);
     }
 

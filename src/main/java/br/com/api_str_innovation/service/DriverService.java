@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,12 +46,11 @@ public class DriverService {
     public DriverEntity getById(UUID id) {
         DriverEntity driver = repository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Driver not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver not found"));
         return driver;
     }
 
     public void post(@Valid DriverRequestDTO data) {
-        System.out.println(data);
         DriverEntity driverData = new DriverEntity(data);
         repository.save(driverData);
     }
@@ -69,7 +68,7 @@ public class DriverService {
 
     public void inactivate(UUID id) {
         DriverEntity driverData = getById(id);
-        driverData.setInactivationDt(new Date());
+        driverData.setInactivatedDt(LocalDateTime.now());
         repository.save(driverData);
     }
 

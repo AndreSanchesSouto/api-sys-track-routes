@@ -1,11 +1,12 @@
 package br.com.api_str_innovation.dto.checklist;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 
 public record ChecklistRequestDTO(@NotBlank String tire,
-                                  @NotBlank String licensePlate,
+                                  @NotBlank String licensePlateNumber,
                                   @NotBlank String spareTire,
-                                  @NotBlank String kilometersNumber,
+                                  @NotBlank @Getter String kilometersNumber,
                                   @NotBlank String fuelLevel,
                                   @NotBlank String oilLevel,
                                   @NotBlank String waterLevel,

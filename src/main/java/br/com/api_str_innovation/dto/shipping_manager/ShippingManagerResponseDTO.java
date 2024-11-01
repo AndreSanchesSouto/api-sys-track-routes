@@ -2,7 +2,7 @@ package br.com.api_str_innovation.dto.shipping_manager;
 
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ShippingManagerResponseDTO(UUID id,
@@ -10,8 +10,8 @@ public record ShippingManagerResponseDTO(UUID id,
                                          String email,
                                          String login,
                                          String password,
-                                         Date creationDt,
-                                         Date inactivationDt) {
+                                         LocalDateTime createdDt,
+                                         LocalDateTime inactivatedDt) {
 
     public ShippingManagerResponseDTO(ShippingManagerEntity shippingManager) {
         this(shippingManager.getId(),
@@ -19,7 +19,7 @@ public record ShippingManagerResponseDTO(UUID id,
                 shippingManager.getEmail(),
                 shippingManager.getLogin(),
                 shippingManager.getPassword(),
-                shippingManager.getCreationDt(),
-                shippingManager.getInactivationDt());
+                shippingManager.getCreatedDt(),
+                shippingManager.getInactivatedDt());
     }
 }

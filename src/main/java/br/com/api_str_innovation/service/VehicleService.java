@@ -44,12 +44,11 @@ public class VehicleService {
     public VehicleEntity getById(UUID id) {
         VehicleEntity vehicle = repository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehicle not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
         return vehicle;
     }
 
     public void post(@Valid VehicleRequestDTO data) {
-        System.out.println(data);
         VehicleEntity vehicleData = new VehicleEntity(data);
         repository.save(vehicleData);
     }

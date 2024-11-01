@@ -1,7 +1,7 @@
 CREATE TABLE checklist (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     tire VARCHAR(100) NOT NULL,
-    license_plate VARCHAR(100) NOT NULL,
+    license_plate_number VARCHAR(100) NOT NULL,
     spare_tire VARCHAR(100) NOT NULL,
     kilometers_number VARCHAR(100) NOT NULL,
     fuel_level VARCHAR(100) NOT NULL,
@@ -13,9 +13,11 @@ CREATE TABLE checklist (
     glasses VARCHAR(100) NOT NULL,
     windshield_wipers VARCHAR(100) NOT NULL,
     jack VARCHAR(100) NOT NULL,
-    tollBox VARCHAR(100) NOT NULL,
+    toolbox VARCHAR(100) NOT NULL,
     documentation VARCHAR(100) NOT NULL,
     observation_notes VARCHAR(255) NULL,
+    created_dt DATE NOT NULL,
+    edited_dt DATE NOT NULL,
     vehicle_fk UUID,
     FOREIGN KEY (vehicle_fk) REFERENCES vehicle(id)
 );

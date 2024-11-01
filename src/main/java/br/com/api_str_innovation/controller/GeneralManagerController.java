@@ -40,7 +40,7 @@ public class GeneralManagerController {
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@RequestBody GeneralManagerRequestDTO data) {
         this.service.post(data);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")

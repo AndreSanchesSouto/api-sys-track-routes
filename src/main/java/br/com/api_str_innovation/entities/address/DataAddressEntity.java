@@ -2,6 +2,7 @@ package br.com.api_str_innovation.entities.address;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Table(name = "address")
 @Entity
 @Getter
+@NoArgsConstructor
 public class DataAddressEntity {
 
     @Id

@@ -2,7 +2,7 @@ package br.com.api_str_innovation.dto.general_manager;
 
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record GeneralManagerResponseDTO(UUID id,
@@ -10,8 +10,8 @@ public record GeneralManagerResponseDTO(UUID id,
                                         String email,
                                         String login,
                                         String password,
-                                        Date creationDt,
-                                        Date inactivationDt) {
+                                        LocalDateTime createdDt,
+                                        LocalDateTime inactivatedDt) {
 
     public GeneralManagerResponseDTO(GeneralManagerEntity data) {
         this(data.getId(),
@@ -19,7 +19,7 @@ public record GeneralManagerResponseDTO(UUID id,
                 data.getEmail(),
                 data.getLogin(),
                 data.getPassword(),
-                data.getCreationDt(),
-                data.getInactivationDt());
+                data.getCreatedDt(),
+                data.getInactivatedDt());
     }
 }

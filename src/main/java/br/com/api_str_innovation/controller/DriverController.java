@@ -41,7 +41,7 @@ public class DriverController {
     public ResponseEntity<ResponseDTO> post(@RequestBody DriverRequestDTO data) {
         this.service.post(data);
         // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Criado com sucesso"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }
 
     @PutMapping("/{id}")

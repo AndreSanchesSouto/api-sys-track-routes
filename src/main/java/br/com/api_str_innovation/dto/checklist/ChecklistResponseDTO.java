@@ -2,11 +2,12 @@ package br.com.api_str_innovation.dto.checklist;
 
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ChecklistResponseDTO(UUID id,
                                    String tire,
-                                   String licensePlate,
+                                   String licensePlateNumber,
                                    String spareTire,
                                    String kilometersNumber,
                                    String fuelLevel,
@@ -20,12 +21,14 @@ public record ChecklistResponseDTO(UUID id,
                                    String jack,
                                    String toolbox,
                                    String documentation,
-                                   String observationNotes) {
+                                   String observationNotes,
+                                   LocalDateTime creationDt,
+                                   LocalDateTime editedDt) {
 
     public ChecklistResponseDTO(ChecklistEntity data){
         this(data.getId(),
                 data.getTire(),
-                data.getLicensePlate(),
+                data.getLicensePlateNumber(),
                 data.getSpareTire(),
                 data.getKilometersNumber(),
                 data.getFuelLevel(),
@@ -37,8 +40,10 @@ public record ChecklistResponseDTO(UUID id,
                 data.getGlasses(),
                 data.getWindshieldWipers(),
                 data.getJack(),
-                data.getTollBox(),
+                data.getToolbox(),
                 data.getDocumentation(),
-                data.getObservationNotes());
+                data.getObservationNotes(),
+                data.getCreationDt(),
+                data.getEditedDt());
     }
 }

@@ -2,7 +2,7 @@ package br.com.api_str_innovation.dto.driver;
 
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record DriverResponseDTO(UUID id,
@@ -10,8 +10,8 @@ public record DriverResponseDTO(UUID id,
                                 String email,
                                 String login,
                                 String status,
-                                Date creationDt,
-                                Date inactivationDt) {
+                                LocalDateTime createdDt,
+                                LocalDateTime inactivatedDt) {
 
     public DriverResponseDTO(DriverEntity driver) {
         this(driver.getId(),
@@ -19,8 +19,8 @@ public record DriverResponseDTO(UUID id,
                 driver.getLogin(),
                 driver.getEmail(),
                 driver.getStatus(),
-                driver.getCreationDt(),
-                driver.getInactivationDt());
+                driver.getCreatedDt(),
+                driver.getInactivatedDt());
     }
 
 }

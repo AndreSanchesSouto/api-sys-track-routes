@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,12 +43,11 @@ public class GeneralManagerService {
     public GeneralManagerEntity getById(UUID id) {
         GeneralManagerEntity generalManager = repository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "General Manager not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "General Manager not found"));
         return generalManager;
     }
 
     public void post(@Valid GeneralManagerRequestDTO data) {
-        System.out.println(data);
         GeneralManagerEntity generalManagerData = new GeneralManagerEntity(data);
         repository.save(generalManagerData);
     }
@@ -66,7 +65,7 @@ public class GeneralManagerService {
 
     public void inactivate(UUID id) {
         GeneralManagerEntity generalManager = getById(id);
-        generalManager.setInactivationDt(new Date());
+        generalManager.setInactivatedDt(LocalDateTime.now());
         repository.save(generalManager);
     }
 

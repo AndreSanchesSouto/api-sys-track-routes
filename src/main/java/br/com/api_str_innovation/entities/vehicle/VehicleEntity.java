@@ -2,6 +2,7 @@ package br.com.api_str_innovation.entities.vehicle;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,7 +39,7 @@ public class VehicleEntity {
     @Column(nullable = false)
     private String status;
 
-    public VehicleEntity(VehicleRequestDTO data) {
+    public VehicleEntity(@Valid VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();
         this.sideNumber = data.sideNumber();
         this.model = data.model();

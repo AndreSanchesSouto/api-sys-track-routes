@@ -42,12 +42,11 @@ public class ClientService {
     public ClientEntity getById(UUID id) {
         ClientEntity client = repository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Client not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
         return client;
     }
 
     public void post(@Valid ClientRequestDTO data) {
-        System.out.println(data);
         ClientEntity clientData = new ClientEntity(data);
         repository.save(clientData);
     }
