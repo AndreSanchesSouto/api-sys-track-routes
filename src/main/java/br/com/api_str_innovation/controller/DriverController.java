@@ -27,6 +27,11 @@ public class DriverController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> count() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    }
+
     @GetMapping(value = "/page")
     public ResponseEntity<Page<DriverResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));

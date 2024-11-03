@@ -35,10 +35,18 @@ public class DriverService {
         return drivers;
     }
 
+    public Integer count() {
+        Integer count = repository
+                .findActiveDrivers()
+                .toArray()
+                .length;
+        return count;
+    }
+
     @GetMapping(value = "/page")
     public Page<DriverResponseDTO> getPaged(Pageable pageable) {
         Page<DriverResponseDTO> drivers = repository
-                .findAll(pageable)
+                .findActiveDrivers(pageable)
                 .map(DriverResponseDTO::new);
         return drivers;
     }
