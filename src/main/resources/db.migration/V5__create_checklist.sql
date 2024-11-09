@@ -16,8 +16,8 @@ CREATE TABLE checklist (
     toolbox VARCHAR(100) NOT NULL,
     documentation VARCHAR(100) NOT NULL,
     observation_notes VARCHAR(255) NULL,
-    created_dt DATE NOT NULL,
-    edited_dt DATE NOT NULL,
+    created_dt TIMESTAMP NOT NULL,
+    edited_dt TIMESTAMP NULL,
     vehicle_fk UUID,
     FOREIGN KEY (vehicle_fk) REFERENCES vehicle(id)
 );

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,10 +32,18 @@ public class ClientService {
         return client;
     }
 
+    public Integer count() {
+        Integer count = repository
+                .findActiveClients()
+                .toArray()
+                .length;
+        return count;
+    }
+
     @GetMapping(value = "/page")
     public Page<ClientResponseDTO> getPaged(Pageable pageable) {
         Page<ClientResponseDTO> client = repository
-                .findAll(pageable)
+                .findActiveClients(pageable)
                 .map(ClientResponseDTO::new);
         return client;
     }
@@ -62,7 +71,8 @@ public class ClientService {
 
     public void inactivate(UUID id) {
         ClientEntity client = getById(id);
-        client.setStatus("INACTIVE");
+        client.setInactivatedDt(LocalDateTime.now());
         repository.save(client);
     }
+
 }
