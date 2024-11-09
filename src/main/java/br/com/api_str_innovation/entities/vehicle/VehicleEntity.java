@@ -38,6 +38,10 @@ public class VehicleEntity {
 
     @Setter
     @Column(nullable = false)
+    private String yearDt;
+
+    @Setter
+    @Column(nullable = false)
     private String status;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -4,6 +4,7 @@ CREATE TABLE vehicle (
     side_number VARCHAR(100) NOT NULL,
     model VARCHAR(100) NOT NULL,
     brand VARCHAR(100) NOT NULL,
+    year_dt VARCHAR(100) NOT NULL,
     status VARCHAR(100) NOT NULL,
     created_dt TIMESTAMP NOT NULL,
     inactivated_dt TIMESTAMP NULL,

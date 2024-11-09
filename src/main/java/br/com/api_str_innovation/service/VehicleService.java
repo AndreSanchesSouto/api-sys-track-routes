@@ -69,6 +69,7 @@ public class VehicleService {
         vehicle.setSideNumber(data.sideNumber());
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
+        vehicle.setYearDt(data.yearDt());
         vehicle.setStatus(data.status());
         repository.save(vehicle);
         return new VehicleResponseDTO(vehicle);
