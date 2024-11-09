@@ -27,6 +27,11 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> count() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    }
+
     @GetMapping(value = "/page")
     public ResponseEntity<Page<VehicleResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));

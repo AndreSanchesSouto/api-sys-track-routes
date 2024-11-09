@@ -2,6 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
+import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.validation.Valid;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,10 +35,18 @@ public class VehicleService {
         return vehicle;
     }
 
+    public Integer count() {
+        Integer count = repository
+                .findActiveVehicles()
+                .toArray()
+                .length;
+        return count;
+    }
+
     @GetMapping(value = "/page")
     public Page<VehicleResponseDTO> getPaged(Pageable pageable) {
         Page<VehicleResponseDTO> vehicle = repository
-                .findAll(pageable)
+                .findActiveVehicles(pageable)
                 .map(VehicleResponseDTO::new);
         return vehicle;
     }
@@ -66,7 +76,7 @@ public class VehicleService {
 
     public void inactivate(UUID id) {
         VehicleEntity vehicle = getById(id);
-        vehicle.setStatus("INACTIVE");
+        vehicle.setInactivatedDt(LocalDateTime.now());
         repository.save(vehicle);
     }
 
