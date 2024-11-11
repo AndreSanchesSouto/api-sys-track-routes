@@ -57,6 +57,7 @@ public class VehicleEntity {
         this.sideNumber = data.sideNumber();
         this.model = data.model();
         this.brand = data.brand();
+        this.yearDt = data.yearDt();
         this.status = getStatus() == null ? "ACTIVE" : getStatus();
     }
 
