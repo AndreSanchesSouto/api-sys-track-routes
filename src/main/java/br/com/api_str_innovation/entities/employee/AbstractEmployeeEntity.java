@@ -1,10 +1,12 @@
 package br.com.api_str_innovation.entities.employee;
 
 import br.com.api_str_innovation.dto.EmployeeRequestDTO;
+import br.com.api_str_innovation.security.Encrypter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -51,4 +53,12 @@ public abstract class AbstractEmployeeEntity {
         this.password = data.getPassword();
     }
 
+    @PrePersist
+    @PreUpdate
+    private void encryptPassword() {
+        Encrypter encrypter = new Encrypter();
+        if (this.password != null) {
+            this.password = encrypter.encrypt(this.password);
+        }
+    }
 }
