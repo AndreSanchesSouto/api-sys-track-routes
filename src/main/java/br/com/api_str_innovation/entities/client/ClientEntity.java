@@ -2,7 +2,7 @@ package br.com.api_str_innovation.entities.client;
 
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,14 +21,17 @@ public class ClientEntity {
     private UUID id;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String contactType;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String contact;
 
@@ -40,7 +43,8 @@ public class ClientEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime inactivatedDt;
 
-    public ClientEntity(@Valid ClientRequestDTO data) {
+
+    public ClientEntity(ClientRequestDTO data) {
         this.name = data.name();
         this.contactType = data.contactType();
         this.contact = data.contact();

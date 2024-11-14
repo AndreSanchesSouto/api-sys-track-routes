@@ -2,7 +2,7 @@ package br.com.api_str_innovation.entities.vehicle;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,26 +21,32 @@ public class VehicleEntity {
     private UUID id;
 
     @Setter
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String licensePlateNumber;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String sideNumber;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String model;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String brand;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String yearDt;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String status;
 
@@ -52,7 +58,7 @@ public class VehicleEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime inactivatedDt;
 
-    public VehicleEntity(@Valid VehicleRequestDTO data) {
+    public VehicleEntity(VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();
         this.sideNumber = data.sideNumber();
         this.model = data.model();

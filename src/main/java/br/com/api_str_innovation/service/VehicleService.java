@@ -2,7 +2,6 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
-import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.validation.Valid;

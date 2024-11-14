@@ -1,11 +1,9 @@
 package br.com.api_str_innovation.dto.vehicle;
 
-import jakarta.validation.constraints.NotBlank;
-
-public record VehicleRequestDTO(@NotBlank String licensePlateNumber,
-                                @NotBlank String sideNumber,
-                                @NotBlank String model,
-                                @NotBlank String brand,
-                                @NotBlank String yearDt,
+public record VehicleRequestDTO(String licensePlateNumber,
+                                String sideNumber,
+                                String model,
+                                String brand,
+                                String yearDt,
                                 String status) {
 }
