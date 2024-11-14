@@ -16,8 +16,8 @@ public record DriverResponseDTO(UUID id,
         this(
             driver.getId(),
             driver.getName(),
-            driver.getLogin(),
             driver.getEmail(),
+            driver.getLogin(),
             driver.getStatus(),
             driver.getCreatedDt(),
             driver.getInactivatedDt());

@@ -3,6 +3,7 @@ package br.com.api_str_innovation.entities.employee;
 import br.com.api_str_innovation.dto.EmployeeRequestDTO;
 import br.com.api_str_innovation.security.Encrypter;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public abstract class AbstractEmployeeEntity {
     private String name;
 
     @Setter
+    @Email
     @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
@@ -60,7 +62,7 @@ public abstract class AbstractEmployeeEntity {
     @PreUpdate
     private void encryptPassword() {
         if (this.password != null) {
-            this.password = Encrypter.encrypt(this.password);
+            this.password = Encrypter.encrypt(this.password) ;
         }
     }
 }
