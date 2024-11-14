@@ -1,7 +1,6 @@
 package br.com.api_str_innovation.dto.driver;
 
 import br.com.api_str_innovation.entities.employee.DriverEntity;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

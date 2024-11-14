@@ -1,6 +1,5 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,16 +1,14 @@
 package br.com.api_str_innovation.security;
 
-import lombok.Setter;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Encrypter {
 
-    private MessageDigest messageDigest;
+    private static MessageDigest messageDigest;
     private static int BITMASK = 0xff;
 
-    public String encrypt(String textPlain) {
+    public static String encrypt(String textPlain) {
         try {
             if (messageDigest == null) {
                 messageDigest = MessageDigest.getInstance("sha-512");
@@ -22,7 +20,7 @@ public class Encrypter {
         }
     }
 
-    private String toHexadecimal(byte[] hash) {
+    private static String toHexadecimal(byte[] hash) {
         var hexString = new StringBuilder();
         for (byte bit : hash) {
             var hex = Integer.toHexString(BITMASK & bit);

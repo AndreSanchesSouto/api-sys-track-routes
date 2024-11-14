@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.entities.address;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,14 +19,17 @@ public class DataCityEntity {
     private UUID id;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String city;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String state;
 
     @Setter
+    @NotBlank
     @Column(nullable = false)
     private String district;
 
