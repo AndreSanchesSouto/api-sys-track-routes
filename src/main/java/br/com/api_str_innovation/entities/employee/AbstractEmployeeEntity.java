@@ -58,11 +58,5 @@ public abstract class AbstractEmployeeEntity {
         this.password = data.getPassword();
     }
 
-    @PrePersist
-    @PreUpdate
-    private void encryptPassword() {
-        if (this.password != null) {
-            this.password = Encrypter.encrypt(this.password) ;
-        }
     }
 }
