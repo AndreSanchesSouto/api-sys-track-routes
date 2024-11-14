@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table(name = "client")
@@ -31,15 +32,18 @@ public class ClientEntity {
     @Column(nullable = false)
     private String contact;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private final LocalDateTime createdDt = LocalDateTime.now();
+
     @Setter
-    @Column(nullable = false)
-    private String status;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime inactivatedDt;
 
     public ClientEntity(@Valid ClientRequestDTO data) {
         this.name = data.name();
         this.contactType = data.contactType();
         this.contact = data.contact();
-        this.status = data.status();
     }
 
 }

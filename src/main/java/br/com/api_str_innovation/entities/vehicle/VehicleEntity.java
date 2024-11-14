@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table(name = "vehicle")
@@ -37,14 +38,27 @@ public class VehicleEntity {
 
     @Setter
     @Column(nullable = false)
+    private String yearDt;
+
+    @Setter
+    @Column(nullable = false)
     private String status;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private final LocalDateTime createdDt = LocalDateTime.now();
+
+    @Setter
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime inactivatedDt;
 
     public VehicleEntity(@Valid VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();
         this.sideNumber = data.sideNumber();
         this.model = data.model();
         this.brand = data.brand();
-        this.status = data.status();
+        this.yearDt = data.yearDt();
+        this.status = getStatus() == null ? "ACTIVE" : getStatus();
     }
 
 }

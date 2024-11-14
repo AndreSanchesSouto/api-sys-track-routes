@@ -6,5 +6,6 @@ public record VehicleRequestDTO(@NotBlank String licensePlateNumber,
                                 @NotBlank String sideNumber,
                                 @NotBlank String model,
                                 @NotBlank String brand,
+                                @NotBlank String yearDt,
                                 String status) {
 }
