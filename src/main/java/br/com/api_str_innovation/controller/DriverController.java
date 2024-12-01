@@ -1,8 +1,8 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.employee.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,6 @@ public class DriverController {
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@RequestBody DriverRequestDTO data) {
         this.service.post(data);
-        // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }
 

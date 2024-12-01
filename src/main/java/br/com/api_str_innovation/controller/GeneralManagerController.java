@@ -1,8 +1,8 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
+import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerRequestDTO;
+import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.service.GeneralManagerService;
 import org.springframework.data.domain.Page;
