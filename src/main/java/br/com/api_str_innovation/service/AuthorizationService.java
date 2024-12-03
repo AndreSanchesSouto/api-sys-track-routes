@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
+import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
 import br.com.api_str_innovation.dto.employee.ResponseDTO;
 import br.com.api_str_innovation.entities.employee.AbstractEmployeeEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
@@ -33,18 +34,18 @@ public class AuthorizationService implements UserDetailsService {
                 generalManagerRepository.findByLogin(username);
     }
 
-    public ResponseEntity<ResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
+    public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
         String hashPassword = Encrypter.encrypt(credentials.password());
         AbstractEmployeeEntity employee = generalManagerRepository.authIdentity(credentials.login(), hashPassword) == null ?
                 driverRepository.authIdentity(credentials.login(), hashPassword) :
                 generalManagerRepository.authIdentity(credentials.login(), hashPassword);
 
         if(employee == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("Não identificado"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthenticationResponseDTO("Não encontado",null));
         }
 
         String token = tokenService.generateToken(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(token));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthenticationResponseDTO(token, employee));
 
     }
 }

@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
+import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
 import br.com.api_str_innovation.dto.employee.ResponseDTO;
 import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerRequestDTO;
 import br.com.api_str_innovation.service.AuthorizationService;
@@ -22,7 +23,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> login(@RequestBody @Valid AuthenticationRequestDTO data) {
+    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody @Valid AuthenticationRequestDTO data) {
         return this.authorizationService.authEmployee(data);
     }
 
