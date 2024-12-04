@@ -1,5 +1,6 @@
-package br.com.api_str_innovation.dto;
+package br.com.api_str_innovation.dto.employee;
 
+import br.com.api_str_innovation.entities.employee.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +15,6 @@ public class EmployeeRequestDTO {
     private String login;
 
     private String password;
+
+    private Role role;
 }

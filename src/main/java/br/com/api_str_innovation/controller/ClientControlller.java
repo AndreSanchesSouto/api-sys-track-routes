@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.ResponseDTO;
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;

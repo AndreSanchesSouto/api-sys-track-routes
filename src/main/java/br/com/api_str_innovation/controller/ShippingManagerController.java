@@ -1,8 +1,8 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.ResponseDTO;
-import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerRequestDTO;
-import br.com.api_str_innovation.dto.shipping_manager.ShippingManagerResponseDTO;
+import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.shipping_manager.ShippingManagerRequestDTO;
+import br.com.api_str_innovation.dto.employee.shipping_manager.ShippingManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import br.com.api_str_innovation.service.ShippingManagerService;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,8 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerRequestDTO;
-import br.com.api_str_innovation.dto.general_manager.GeneralManagerResponseDTO;
+import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerRequestDTO;
+import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.repository.GeneralManagerRepository;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,9 +49,14 @@ public class GeneralManagerService {
         return generalManager;
     }
 
-    public void post(@Valid GeneralManagerRequestDTO data) {
-        GeneralManagerEntity generalManagerData = new GeneralManagerEntity(data);
-        repository.save(generalManagerData);
+    public ResponseEntity<ResponseDTO> post(@Valid GeneralManagerRequestDTO data) {
+        if (repository.findByLogin(data.getLogin()) != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO("Usuário já cadastrado"));
+        }
+        GeneralManagerEntity generalManager = new GeneralManagerEntity(data.getName(), data.getEmail(), data.getLogin(), data.getPassword(), data.getRole());
+        repository.save(generalManager);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
+
     }
 
     public GeneralManagerResponseDTO put(UUID id, GeneralManagerRequestDTO data) {

@@ -1,0 +1,51 @@
+package br.com.api_str_innovation.service;
+
+import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
+import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
+import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.entities.employee.AbstractEmployeeEntity;
+import br.com.api_str_innovation.repository.DriverRepository;
+import br.com.api_str_innovation.repository.GeneralManagerRepository;
+import br.com.api_str_innovation.security.Encrypter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthorizationService implements UserDetailsService {
+
+    @Autowired
+    GeneralManagerRepository generalManagerRepository;
+
+    @Autowired
+    DriverRepository driverRepository;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return generalManagerRepository.findByLogin(username) == null ?
+                driverRepository.findByLogin(username) :
+                generalManagerRepository.findByLogin(username);
+    }
+
+    public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
+        String hashPassword = Encrypter.encrypt(credentials.password());
+        AbstractEmployeeEntity employee = generalManagerRepository.authIdentity(credentials.login(), hashPassword) == null ?
+                driverRepository.authIdentity(credentials.login(), hashPassword) :
+                generalManagerRepository.authIdentity(credentials.login(), hashPassword);
+
+        if(employee == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthenticationResponseDTO("Não encontado",null));
+        }
+
+        String token = tokenService.generateToken(employee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthenticationResponseDTO(token, employee));
+
+    }
+}

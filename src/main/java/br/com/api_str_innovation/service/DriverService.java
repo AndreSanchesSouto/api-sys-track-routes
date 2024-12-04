@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.driver.DriverRequestDTO;
-import br.com.api_str_innovation.dto.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.employee.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.employee.driver.DriverResponseDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
 import jakarta.validation.Valid;

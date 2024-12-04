@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.dto;
+package br.com.api_str_innovation.dto.employee;
 
 import lombok.Getter;
 import lombok.Setter;

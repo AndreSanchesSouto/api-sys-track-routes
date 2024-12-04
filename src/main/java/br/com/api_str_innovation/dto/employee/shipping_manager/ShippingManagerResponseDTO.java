@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.dto.shipping_manager;
+package br.com.api_str_innovation.dto.employee.shipping_manager;
 
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 
