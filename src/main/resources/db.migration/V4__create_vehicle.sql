@@ -9,5 +9,9 @@ CREATE TABLE vehicle (
     created_dt TIMESTAMP NOT NULL,
     inactivated_dt TIMESTAMP NULL,
     driver_fk UUID,
-    FOREIGN KEY (driver_fk) REFERENCES driver(id)
+    shipping_manager_fk UUID,
+    general_manager_fk UUID,
+    FOREIGN KEY (driver_fk) REFERENCES driver(id),
+    FOREIGN KEY (shipping_manager_fk) REFERENCES shipping_manager(id),
+    FOREIGN KEY (general_manager_fk) REFERENCES general_manager(id)
 );

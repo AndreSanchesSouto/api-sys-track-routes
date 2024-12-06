@@ -1,6 +1,10 @@
 package br.com.api_str_innovation.entities.vehicle;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
+import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
+import br.com.api_str_innovation.entities.employee.DriverEntity;
+import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
+import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -8,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "vehicle")
@@ -58,6 +63,29 @@ public class VehicleEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime inactivatedDt;
 
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "driver_id")
+    private DriverEntity driver;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "general_manager_id")
+    private GeneralManagerEntity generalManager;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "shipping_manager_id")
+    private ShippingManagerEntity shippingManager;
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "vehicle")
+    private List<ChecklistEntity> checklists;
+
     public VehicleEntity(VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();
         this.sideNumber = data.sideNumber();
@@ -65,6 +93,9 @@ public class VehicleEntity {
         this.brand = data.brand();
         this.yearDt = data.yearDt();
         this.status = getStatus() == null ? "ACTIVE" : getStatus();
+        this.driver = getDriver();
+        this.shippingManager = getShippingManager();
+        this.generalManager = getGeneralManager();
     }
 
 }

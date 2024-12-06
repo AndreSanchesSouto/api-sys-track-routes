@@ -14,7 +14,10 @@ public record VehicleResponseDTO(UUID id,
                                  String yearDt,
                                  String status,
                                  LocalDateTime createdDt,
-                                 LocalDateTime inactivatedDt) {
+                                 LocalDateTime inactivatedDt,
+                                 UUID driverId,
+                                 UUID shippingManagerId,
+                                 UUID generalManagerId) {
 
     public VehicleResponseDTO(VehicleEntity vehicle) {
         this (vehicle.getId(),
@@ -25,6 +28,10 @@ public record VehicleResponseDTO(UUID id,
                 vehicle.getYearDt(),
                 vehicle.getStatus(),
                 vehicle.getCreatedDt(),
-                vehicle.getInactivatedDt());
+                vehicle.getInactivatedDt(),
+                vehicle.getDriver() != null ? vehicle.getDriver().getId() : null,
+                vehicle.getShippingManager() != null ? vehicle.getShippingManager().getId() : null,
+                vehicle.getGeneralManager() != null ? vehicle.getGeneralManager().getId() : null
+                );
     }
 }

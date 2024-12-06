@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.entities.checklist;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -107,6 +108,12 @@ public class ChecklistEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime editedDt;
 
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id")
+    private VehicleEntity vehicle;
+
     public ChecklistEntity(ChecklistRequestDTO data) {
         this.tire = data.tire();
         this.licensePlateNumber = data.licensePlateNumber();
@@ -124,6 +131,7 @@ public class ChecklistEntity {
         this.toolbox = data.toolbox();
         this.documentation = data.documentation();
         this.observationNotes = data.observationNotes();
+        this.vehicle = data.vehicle();
     }
 
 }

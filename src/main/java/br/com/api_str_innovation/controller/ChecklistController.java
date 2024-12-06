@@ -27,9 +27,10 @@ public class ChecklistController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
-    @GetMapping(value = "/page")
-    public ResponseEntity<Page<ChecklistResponseDTO>> getPaged(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    @GetMapping(value = "/{id}/page")
+    public ResponseEntity<Page<ChecklistResponseDTO>> getPaged(Pageable pageable,
+                                                               @PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, id));
     }
 
     @GetMapping("/{id}")
@@ -37,9 +38,10 @@ public class ChecklistController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO> post(@RequestBody ChecklistRequestDTO data) {
-        this.service.post(data);
+    @PostMapping("/{id}")
+    public ResponseEntity<ResponseDTO> post(@PathVariable UUID vehicleId,
+                                                       @RequestBody ChecklistRequestDTO data) {
+        this.service.post(vehicleId, data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }
 

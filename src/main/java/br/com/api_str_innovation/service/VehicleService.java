@@ -3,6 +3,9 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.repository.DriverRepository;
+import br.com.api_str_innovation.repository.GeneralManagerRepository;
+import br.com.api_str_innovation.repository.ShippingManagerRepository;
 import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +26,19 @@ import java.util.UUID;
 public class VehicleService {
 
     @Autowired
-    private VehicleRepository repository;
+    private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private DriverRepository driverRepository;
+
+    @Autowired
+    ShippingManagerRepository shippingManagerRepository;
+
+    @Autowired
+    GeneralManagerRepository generalManagerRepository;
 
     public List<VehicleResponseDTO> getAll() {
-        List<VehicleResponseDTO> vehicle = repository
+        List<VehicleResponseDTO> vehicle = vehicleRepository
                 .findAll()
                 .stream()
                 .map(VehicleResponseDTO::new)
@@ -35,7 +47,7 @@ public class VehicleService {
     }
 
     public Integer count() {
-        Integer count = repository
+        Integer count = vehicleRepository
                 .findActiveVehicles()
                 .toArray()
                 .length;
@@ -44,14 +56,14 @@ public class VehicleService {
 
     @GetMapping(value = "/page")
     public Page<VehicleResponseDTO> getPaged(Pageable pageable) {
-        Page<VehicleResponseDTO> vehicle = repository
+        Page<VehicleResponseDTO> vehicle = vehicleRepository
                 .findActiveVehicles(pageable)
                 .map(VehicleResponseDTO::new);
         return vehicle;
     }
 
     public VehicleEntity getById(UUID id) {
-        VehicleEntity vehicle = repository
+        VehicleEntity vehicle = vehicleRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
         return vehicle;
@@ -59,7 +71,7 @@ public class VehicleService {
 
     public void post(@Valid VehicleRequestDTO data) {
         VehicleEntity vehicleData = new VehicleEntity(data);
-        repository.save(vehicleData);
+        vehicleRepository.save(vehicleData);
     }
 
     public VehicleResponseDTO put(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
@@ -70,14 +82,14 @@ public class VehicleService {
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
         vehicle.setStatus(data.status());
-        repository.save(vehicle);
+        vehicleRepository.save(vehicle);
         return new VehicleResponseDTO(vehicle);
     }
 
     public void inactivate(UUID id) {
         VehicleEntity vehicle = getById(id);
         vehicle.setInactivatedDt(LocalDateTime.now());
-        repository.save(vehicle);
+        vehicleRepository.save(vehicle);
     }
 
 }

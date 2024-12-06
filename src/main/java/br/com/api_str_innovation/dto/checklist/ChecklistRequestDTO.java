@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.dto.checklist;
 
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import lombok.Getter;
 
 public record ChecklistRequestDTO(String tire,
@@ -17,5 +18,6 @@ public record ChecklistRequestDTO(String tire,
                                   String jack,
                                   String toolbox,
                                   String documentation,
-                                  String observationNotes) {
+                                  String observationNotes,
+                                  VehicleEntity vehicle) {
 }

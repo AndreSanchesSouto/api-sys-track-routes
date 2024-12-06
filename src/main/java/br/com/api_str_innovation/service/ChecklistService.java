@@ -4,13 +4,14 @@ import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.repository.ChecklistRepository;
+import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -21,10 +22,13 @@ import java.util.UUID;
 public class ChecklistService {
 
     @Autowired
-    private ChecklistRepository repository;
+    private ChecklistRepository checklistRepository;
+
+    @Autowired
+    VehicleRepository vehicleRepository;
 
     public List<ChecklistResponseDTO> getAll() {
-        List<ChecklistResponseDTO> checklist = repository
+        List<ChecklistResponseDTO> checklist = checklistRepository
                 .findAll()
                 .stream()
                 .map(ChecklistResponseDTO::new)
@@ -32,28 +36,31 @@ public class ChecklistService {
         return checklist;
     }
 
-    @GetMapping(value = "/page")
-    public Page<ChecklistResponseDTO> getPaged(Pageable pageable) {
-        Page<ChecklistResponseDTO> client = repository
-                .findAll(pageable)
-                .map(ChecklistResponseDTO::new);
-        return client;
+    public Page<ChecklistResponseDTO> getPaged(Pageable pageable, @PathVariable UUID id) {
+        vehicleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+
+        Page<ChecklistEntity> checklist = checklistRepository.findChecklistsByVehicleId(id, pageable);
+
+        return checklist.map(ChecklistResponseDTO::new);
     }
 
-    public ChecklistEntity getById(UUID id) {
-        ChecklistEntity client = repository
+    public ChecklistEntity getById(@PathVariable UUID id) {
+        ChecklistEntity checklist = checklistRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Checklist not found"));
-        return client;
+        return checklist;
     }
 
-    public void post(@Valid ChecklistRequestDTO data) {
+    public void post(@PathVariable UUID id, @Valid ChecklistRequestDTO data) {
+        vehicleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
         validateChecklistData(data);
-        ChecklistEntity clientData = new ChecklistEntity(data);
-        repository.save(clientData);
+        ChecklistEntity checklist = new ChecklistEntity(data);
+        checklistRepository.save(checklist);
     }
 
-    public ChecklistResponseDTO put(UUID id, ChecklistRequestDTO data) {
+    public ChecklistResponseDTO put(@PathVariable UUID id, ChecklistRequestDTO data) {
         ChecklistEntity checklist = this.getById(id);
         checklist.setTire(data.tire());
         checklist.setLicensePlateNumber(data.licensePlateNumber());
@@ -71,7 +78,7 @@ public class ChecklistService {
         checklist.setDocumentation(data.documentation());
         checklist.setDocumentation(data.documentation());
         checklist.setEditedDt(LocalDateTime.now());
-        repository.save(checklist);
+        checklistRepository.save(checklist);
         return new ChecklistResponseDTO(checklist);
     }
 
