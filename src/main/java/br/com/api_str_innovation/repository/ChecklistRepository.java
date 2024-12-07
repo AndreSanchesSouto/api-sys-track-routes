@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface ChecklistRepository extends JpaRepository<ChecklistEntity, UUID> {
-    @Query("SELECT c FROM ChecklistEntity c WHERE c.vehicle.id = :vehicleId")
+    @Query("SELECT c FROM ChecklistEntity c JOIN c.vehicle v WHERE v.id = :vehicleId")
     Page<ChecklistEntity> findChecklistsByVehicleId(@Param("vehicleId") UUID vehicleId, Pageable pageable);
 }

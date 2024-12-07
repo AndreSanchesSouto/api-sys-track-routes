@@ -83,7 +83,7 @@ public class VehicleEntity {
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "vehicle")
+    @ManyToMany(mappedBy = "vehicle")
     private List<ChecklistEntity> checklists;
 
     public VehicleEntity(VehicleRequestDTO data) {

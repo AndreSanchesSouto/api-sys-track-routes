@@ -39,9 +39,9 @@ public class ChecklistController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseDTO> post(@PathVariable UUID vehicleId,
+    public ResponseEntity<ResponseDTO> post(@PathVariable UUID id,
                                                        @RequestBody ChecklistRequestDTO data) {
-        this.service.post(vehicleId, data);
+        this.service.post(id, data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }
 

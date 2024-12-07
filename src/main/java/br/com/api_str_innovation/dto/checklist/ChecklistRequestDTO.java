@@ -3,6 +3,8 @@ package br.com.api_str_innovation.dto.checklist;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import lombok.Getter;
 
+import java.util.UUID;
+
 public record ChecklistRequestDTO(String tire,
                                   String licensePlateNumber,
                                   String spareTire,
@@ -19,5 +21,8 @@ public record ChecklistRequestDTO(String tire,
                                   String toolbox,
                                   String documentation,
                                   String observationNotes,
-                                  VehicleEntity vehicle) {
+                                  UUID vehicleId,
+                                  UUID driverId,
+                                  UUID shippingManagerId,
+                                  UUID generalManagerId) {
 }

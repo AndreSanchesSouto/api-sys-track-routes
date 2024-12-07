@@ -23,11 +23,7 @@ public record ChecklistResponseDTO(UUID id,
                                    String documentation,
                                    String observationNotes,
                                    LocalDateTime creationDt,
-                                   LocalDateTime editedDt,
-                                   UUID vehicleId,
-                                   UUID driverId,
-                                   UUID shippingManagerId,
-                                   UUID generalManagerId) {
+                                   LocalDateTime editedDt) {
 
     public ChecklistResponseDTO(ChecklistEntity data) {
         this(
@@ -49,11 +45,7 @@ public record ChecklistResponseDTO(UUID id,
             data.getDocumentation(),
             data.getObservationNotes(),
             data.getCreationDt(),
-            data.getEditedDt(),
-            data.getVehicle().getId(),
-            data.getVehicle().getDriver() != null ? data.getVehicle().getDriver().getId() : null,
-            data.getVehicle().getShippingManager() != null ? data.getVehicle().getShippingManager().getId() : null,
-            data.getVehicle().getGeneralManager() != null ? data.getVehicle().getGeneralManager().getId() : null
+            data.getEditedDt()
         );
     }
 
