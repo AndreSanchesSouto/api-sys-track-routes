@@ -53,17 +53,6 @@ public class ChecklistService {
         return checklist;
     }
 
-    public void post(@PathVariable UUID id, @Valid ChecklistRequestDTO data) {
-        ChecklistEntity checklist = new ChecklistEntity(data);
-
-        VehicleEntity vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
-
-        checklist.setVehicle(List.of(vehicle));
-        validateChecklistData(data);
-        checklistRepository.save(checklist);
-    }
-
     public ChecklistResponseDTO put(@PathVariable UUID id, ChecklistRequestDTO data) {
         ChecklistEntity checklist = this.getById(id);
         checklist.setTire(data.tire());

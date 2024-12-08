@@ -38,13 +38,6 @@ public class ChecklistController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<ResponseDTO> post(@PathVariable UUID id,
-                                                       @RequestBody ChecklistRequestDTO data) {
-        this.service.post(id, data);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<ChecklistResponseDTO> put(@PathVariable UUID id, @RequestBody ChecklistRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));

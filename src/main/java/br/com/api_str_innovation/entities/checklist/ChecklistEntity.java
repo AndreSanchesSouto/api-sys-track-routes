@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Table(name = "checklist")
@@ -111,13 +110,8 @@ public class ChecklistEntity {
 
     @Getter
     @Setter
-    @ManyToMany
-    @JoinTable(
-            name = "vehicle_checklist",
-            joinColumns = @JoinColumn(name = "checklist_id"),
-            inverseJoinColumns = @JoinColumn(name = "vehicle_id")
-    )
-    private List<VehicleEntity> vehicle;
+    @ManyToOne
+    private VehicleEntity vehicle;
 
     public ChecklistEntity(ChecklistRequestDTO data) {
         this.tire = data.tire();
@@ -136,6 +130,7 @@ public class ChecklistEntity {
         this.toolbox = data.toolbox();
         this.documentation = data.documentation();
         this.observationNotes = data.observationNotes();
+        this.vehicle = data.vehicle();
     }
 
 }

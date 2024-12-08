@@ -1,12 +1,11 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
+import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
-import br.com.api_str_innovation.repository.DriverRepository;
-import br.com.api_str_innovation.repository.GeneralManagerRepository;
-import br.com.api_str_innovation.repository.ShippingManagerRepository;
-import br.com.api_str_innovation.repository.VehicleRepository;
+import br.com.api_str_innovation.repository.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +35,9 @@ public class VehicleService {
 
     @Autowired
     GeneralManagerRepository generalManagerRepository;
+
+    @Autowired
+    private ChecklistRepository checklistRepository;
 
     public List<VehicleResponseDTO> getAll() {
         List<VehicleResponseDTO> vehicle = vehicleRepository
@@ -72,6 +74,12 @@ public class VehicleService {
     public void post(@Valid VehicleRequestDTO data) {
         VehicleEntity vehicleData = new VehicleEntity(data);
         vehicleRepository.save(vehicleData);
+    }
+
+    public void createChecklist(@PathVariable UUID vehicleId, @Valid ChecklistRequestDTO data) {
+        ChecklistEntity checklist = new ChecklistEntity(data);
+        getById(vehicleId);
+        checklistRepository.save(checklist);
     }
 
     public VehicleResponseDTO put(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {

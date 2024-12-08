@@ -83,8 +83,9 @@ public class VehicleEntity {
 
     @Getter
     @Setter
-    @ManyToMany(mappedBy = "vehicle")
-    private List<ChecklistEntity> checklists;
+    @OneToMany
+    @JoinColumn(name = "checklist_id")
+    private List<ChecklistEntity> checklist;
 
     public VehicleEntity(VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();
