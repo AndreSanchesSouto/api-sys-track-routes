@@ -33,9 +33,6 @@ public class DriverEntity extends AbstractEmployeeEntity {
         return null;
     }
 
-    @OneToMany(mappedBy = "driver")
-    private List<VehicleEntity> vehicles;
-
     @Override
     public String getUsername() {
         return this.getLogin();

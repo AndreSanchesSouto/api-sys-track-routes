@@ -42,10 +42,6 @@ public class GeneralManagerEntity extends AbstractEmployeeEntity {
         return null;
     }
 
-    @Setter
-    @OneToMany(mappedBy = "generalManager")
-    private List<VehicleEntity> vehicles;
-
     @Override
     public String getUsername() {
         return super.getLogin();

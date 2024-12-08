@@ -9,8 +9,5 @@ public record VehicleRequestDTO(String licensePlateNumber,
                                 String model,
                                 String brand,
                                 String yearDt,
-                                String status,
-                                DriverEntity driver,
-                                ShippingManagerEntity shippingManager,
-                                GeneralManagerEntity generalManager) {
+                                String status) {
 }

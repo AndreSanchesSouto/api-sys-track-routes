@@ -23,10 +23,6 @@ public class ShippingManagerEntity extends AbstractEmployeeEntity {
         super(data);
     }
 
-    @Setter
-    @OneToMany(mappedBy = "shippingManager")
-    private List<VehicleEntity> vehicles;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

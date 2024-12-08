@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
+import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.*;
 import jakarta.validation.Valid;
@@ -28,16 +29,10 @@ public class VehicleService {
     private VehicleRepository vehicleRepository;
 
     @Autowired
-    private DriverRepository driverRepository;
-
-    @Autowired
-    ShippingManagerRepository shippingManagerRepository;
-
-    @Autowired
-    GeneralManagerRepository generalManagerRepository;
-
-    @Autowired
     private ChecklistRepository checklistRepository;
+
+    @Autowired
+    private ChecklistLogRepository checklistLogRepository;
 
     public List<VehicleResponseDTO> getAll() {
         List<VehicleResponseDTO> vehicle = vehicleRepository
@@ -76,11 +71,17 @@ public class VehicleService {
         vehicleRepository.save(vehicleData);
     }
 
-    public void createChecklist(@PathVariable UUID vehicleId, @Valid ChecklistRequestDTO data) {
+    public void createChecklist(UUID vehicleId, @Valid ChecklistRequestDTO data) {
+        VehicleEntity vehicle = getById(vehicleId);
         ChecklistEntity checklist = new ChecklistEntity(data);
-        getById(vehicleId);
+        checklist.setVehicle(vehicle);
         checklistRepository.save(checklist);
+
+        ChecklistLogEntity checklistLog = new ChecklistLogEntity(data);
+        checklistLog.setVehicleId(vehicleId);
+        checklistLogRepository.save(checklistLog);
     }
+
 
     public VehicleResponseDTO put(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
         VehicleEntity vehicle = this.getById(id);
