@@ -33,9 +33,7 @@ public class AuthorizationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return generalManagerRepository.findByLogin(username) == null ?
-                driverRepository.findByLogin(username) :
-                generalManagerRepository.findByLogin(username);
+        return findByLogin(username);
     }
 
     public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
@@ -60,6 +58,20 @@ public class AuthorizationService implements UserDetailsService {
 
         if(employee == null) {
             employee = shippingManagerRepository.authIdentity(login, hashPassword);
+        }
+
+        return employee;
+    }
+
+    private UserDetails findByLogin(String username) {
+        UserDetails employee =  generalManagerRepository.findByLogin(username);
+
+        if(employee == null) {
+            employee = driverRepository.findByLogin(username);
+        }
+
+        if(employee == null) {
+            employee = shippingManagerRepository.findByLogin(username);
         }
 
         return employee;
