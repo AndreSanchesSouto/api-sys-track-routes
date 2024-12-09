@@ -44,6 +44,7 @@ public class DriverController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@RequestBody DriverRequestDTO data) {
+        System.out.print(data.toString());
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }

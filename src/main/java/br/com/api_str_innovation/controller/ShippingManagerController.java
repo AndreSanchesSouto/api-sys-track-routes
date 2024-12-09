@@ -27,6 +27,12 @@ public class ShippingManagerController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> count() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    }
+
+
     @GetMapping(value = "/page")
     public ResponseEntity<Page<ShippingManagerResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
@@ -39,6 +45,7 @@ public class ShippingManagerController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@RequestBody ShippingManagerRequestDTO data) {
+        System.out.println(data);
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }

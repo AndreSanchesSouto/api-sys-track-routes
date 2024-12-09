@@ -36,6 +36,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/driver").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/shipping-manager").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/vehicle").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

@@ -32,6 +32,14 @@ public class ShippingManagerService {
         return shippingManagers;
     }
 
+    public Integer count() {
+        Integer count = repository
+                .findActiveShippingManager()
+                .toArray()
+                .length;
+        return count;
+    }
+
     public Page<ShippingManagerResponseDTO> getPaged(Pageable pageable) {
         Page<ShippingManagerResponseDTO> shippingManagers = repository
                 .findAll(pageable)

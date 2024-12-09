@@ -21,7 +21,7 @@ public class DriverEntity extends AbstractEmployeeEntity {
 
     public DriverEntity(DriverRequestDTO data) {
         super(data);
-        this.status = data.getStatus() == null ? "WAITING" : data.getStatus();
+        this.status = data.getStatus() == null ? "WAITING" : data.getStatus().toUpperCase();
     }
 
     @Override

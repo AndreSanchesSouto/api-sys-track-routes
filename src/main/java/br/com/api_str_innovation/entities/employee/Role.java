@@ -2,6 +2,7 @@ package br.com.api_str_innovation.entities.employee;
 
 public enum Role {
     GENERAL_MANAGER("general_manager"),
+    SHIPPING_MANAGER("shipping_manager"),
     DRIVER("driver");
 
     private String role;
