@@ -45,7 +45,6 @@ public class ShippingManagerController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> post(@RequestBody ShippingManagerRequestDTO data) {
-        System.out.println("datadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadata");
         System.out.println(data);
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
