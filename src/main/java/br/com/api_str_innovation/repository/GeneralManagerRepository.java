@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface GeneralManagerRepository extends JpaRepository<GeneralManagerEntity, UUID> {
 
     @Query("SELECT g FROM GeneralManagerEntity g WHERE g.login = :login")
-    UserDetails findByLogin(@Param("login") String login);
+    GeneralManagerEntity findByLogin(@Param("login") String login);
 
     @Query("SELECT g FROM GeneralManagerEntity g WHERE g.login = :login AND g.password = :password")
     GeneralManagerEntity authIdentity(@Param("login") String login, @Param("password") String password);

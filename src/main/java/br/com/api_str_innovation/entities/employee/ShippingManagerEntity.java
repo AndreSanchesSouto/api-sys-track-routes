@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,8 +30,13 @@ public class ShippingManagerEntity extends AbstractEmployeeEntity {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        if(this.getRole() == Role.SHIPPING_MANAGER)
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+        return null;
     }
+
 
     @Override
     public String getUsername() {
