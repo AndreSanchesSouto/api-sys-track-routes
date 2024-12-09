@@ -3,6 +3,7 @@ package br.com.api_str_innovation.dto.employee.driver;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.entities.employee.Role;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 public record DriverResponseDTO(UUID id,
@@ -11,8 +12,8 @@ public record DriverResponseDTO(UUID id,
                                 String login,
                                 String status,
                                 Role role,
-                                LocalDateTime createdDt,
-                                LocalDateTime inactivatedDt) {
+                                LocalDate createdDt,
+                                LocalDate inactivatedDt) {
 
     public DriverResponseDTO(DriverEntity driver) {
         this(

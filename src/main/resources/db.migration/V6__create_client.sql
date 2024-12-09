@@ -3,6 +3,6 @@ CREATE TABLE client (
     name VARCHAR(100) NOT NULL,
     contact_type VARCHAR(100) NOT NULL,
     contact VARCHAR(100) NOT NULL,
-    created_dt TIMESTAMP NOT NULL,
-    inactivated_dt TIMESTAMP NULL
+    created_dt DATE NOT NULL,
+    inactivated_dt DATE NULL
 );

@@ -1,4 +1,4 @@
-CREATE TABLE checklist (
+CREATE TABLE checklist_log (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     tire VARCHAR(100) NOT NULL,
     license_plate_number VARCHAR(100) NOT NULL,
@@ -18,6 +18,7 @@ CREATE TABLE checklist (
     observation_notes VARCHAR(255) NULL,
     created_dt DATE NOT NULL,
     edited_dt DATE NULL,
-    vehicle_fk UUID,
-    FOREIGN KEY (vehicle_fk) REFERENCES vehicle(id)
+    vehicle_id UUID NOT NULL,
+    employee_id UUID NOT NULL,
+    employee_role VARCHAR(100) NOT NULL
 );

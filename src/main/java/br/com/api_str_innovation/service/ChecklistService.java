@@ -2,11 +2,11 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
+import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequestDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
-import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.repository.ChecklistLogRepository;
 import br.com.api_str_innovation.repository.ChecklistRepository;
 import br.com.api_str_innovation.repository.VehicleRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +27,8 @@ public class ChecklistService {
 
     @Autowired
     VehicleRepository vehicleRepository;
+
+    @Autowired ChecklistLogRepository checklistLogRepository;
 
     public List<ChecklistResponseDTO> getAll() {
         List<ChecklistResponseDTO> checklist = checklistRepository
@@ -70,20 +72,27 @@ public class ChecklistService {
         checklist.setToolbox(data.toolbox());
         checklist.setDocumentation(data.documentation());
         checklist.setDocumentation(data.documentation());
-        checklist.setEditedDt(LocalDateTime.now());
+        checklist.setEditedDt(LocalDate.now());
         checklistRepository.save(checklist);
         return new ChecklistResponseDTO(checklist);
     }
 
-    private void validateChecklistData(ChecklistRequestDTO data) {
-        try {
-            long kilometers = Long.parseLong(data.getKilometersNumber());
-            if (!(kilometers >= 0)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometers number reported is negative");
-            }
-        } catch (NumberFormatException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometers number must be a number", ex);
-        }
+//    private void validateChecklistData(ChecklistRequestDTO data) {
+//        try {
+//            long kilometers = Long.parseLong(data.getKilometersNumber());
+//            if (!(kilometers >= 0)) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometers number reported is negative");
+//            }
+//        } catch (NumberFormatException ex) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Kilometers number must be a number", ex);
+//        }
+//    }
+
+    public void deleteById(UUID id) {
+        checklistRepository.deleteById(id);
     }
 
+    public Double countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {
+        return checklistLogRepository.countKmDriven(vehicleId, data.startDate(), data.endDate());
+    }
 }

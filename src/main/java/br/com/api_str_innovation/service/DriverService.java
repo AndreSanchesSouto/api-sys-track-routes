@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -76,7 +77,7 @@ public class DriverService {
 
     public void inactivate(UUID id) {
         DriverEntity driverData = getById(id);
-        driverData.setInactivatedDt(LocalDateTime.now());
+        driverData.setInactivatedDt(LocalDate.now());
         repository.save(driverData);
     }
 

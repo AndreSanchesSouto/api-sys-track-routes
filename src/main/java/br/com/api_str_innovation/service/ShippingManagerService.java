@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public class ShippingManagerService {
 
     public void inactivate(UUID id) {
         ShippingManagerEntity shippingManager = getById(id);
-        shippingManager.setInactivatedDt(LocalDateTime.now());
+        shippingManager.setInactivatedDt(LocalDate.now());
         repository.save(shippingManager);
     }
 

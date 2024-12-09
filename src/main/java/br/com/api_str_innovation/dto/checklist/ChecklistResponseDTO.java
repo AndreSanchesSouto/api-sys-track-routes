@@ -2,17 +2,17 @@ package br.com.api_str_innovation.dto.checklist;
 
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record ChecklistResponseDTO(UUID id,
                                    String tire,
                                    String licensePlateNumber,
                                    String spareTire,
-                                   String kilometersNumber,
-                                   String fuelLevel,
-                                   String oilLevel,
-                                   String waterLevel,
+                                   Double kilometersNumber,
+                                   Double fuelLevel,
+                                   Double oilLevel,
+                                   Double waterLevel,
                                    String suspension,
                                    String brakes,
                                    String lights,
@@ -22,8 +22,8 @@ public record ChecklistResponseDTO(UUID id,
                                    String toolbox,
                                    String documentation,
                                    String observationNotes,
-                                   LocalDateTime creationDt,
-                                   LocalDateTime editedDt) {
+                                   LocalDate creationDt,
+                                   LocalDate editedDt) {
 
     public ChecklistResponseDTO(ChecklistEntity data) {
         this(
