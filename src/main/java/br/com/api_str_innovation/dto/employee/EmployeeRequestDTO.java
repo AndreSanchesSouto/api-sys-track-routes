@@ -17,4 +17,15 @@ public class EmployeeRequestDTO {
     private String password;
 
     private Role role;
+
+    @Override
+    public String toString() {
+        return "EmployeeRequestDTO{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

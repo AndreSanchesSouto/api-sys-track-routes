@@ -2,7 +2,6 @@ package br.com.api_str_innovation.security;
 
 import br.com.api_str_innovation.repository.DriverRepository;
 import br.com.api_str_innovation.repository.GeneralManagerRepository;
-import br.com.api_str_innovation.repository.ShippingManagerRepository;
 import br.com.api_str_innovation.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,15 +29,13 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     DriverRepository driverRepository;
 
-    @Autowired
-    ShippingManagerRepository shippingManagerRepository;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, NullPointerException {
         var token = this.recoverToken(request);
         if(token != null) {
             var login = tokenService.validateToken(token);
-            UserDetails user = findLogin(login);
+            UserDetails user = generalManagerRepository.findByLogin(login) == null ? driverRepository.findByLogin(login) : generalManagerRepository.findByLogin(login);
+
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -50,23 +47,4 @@ public class SecurityFilter extends OncePerRequestFilter {
         if(authHeader == null) return null;
         return authHeader.replace("Bearer ", "");
     }
-
-    private UserDetails findLogin(String username) {
-        UserDetails employee = generalManagerRepository.findByLogin(username);
-
-        if (employee == null) {
-            employee =  driverRepository.findByLogin(username);
-        }
-
-        if (employee == null) {
-            employee = shippingManagerRepository.findByLogin(username);
-        }
-
-        System.out.println(employee);
-        System.out.println("employeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployeeemployee");
-
-        return employee;
-    }
-
-
 }

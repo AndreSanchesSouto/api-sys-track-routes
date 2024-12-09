@@ -33,12 +33,14 @@ public class AuthorizationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findLogin(username);
+        return generalManagerRepository.findByLogin(username) == null ?
+                driverRepository.findByLogin(username) :
+                generalManagerRepository.findByLogin(username);
     }
 
     public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
         String hashPassword = Encrypter.encrypt(credentials.password());
-        AbstractEmployeeEntity employee = findEmployee(credentials.login(), hashPassword);
+        AbstractEmployeeEntity employee = uthIdentity(credentials.login(), hashPassword);
 
         if(employee == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthenticationResponseDTO("Não encontado",null));
@@ -49,7 +51,7 @@ public class AuthorizationService implements UserDetailsService {
 
     }
 
-    private AbstractEmployeeEntity findEmployee(String login, String hashPassword) {
+    private AbstractEmployeeEntity uthIdentity(String login, String hashPassword) {
         AbstractEmployeeEntity employee = generalManagerRepository.authIdentity(login, hashPassword);
 
         if(employee == null) {
@@ -61,23 +63,6 @@ public class AuthorizationService implements UserDetailsService {
         }
 
         return employee;
-
-    }
-
-
-    private AbstractEmployeeEntity findLogin(String login) {
-        AbstractEmployeeEntity employee = generalManagerRepository.findByLogin(login);
-
-        if(employee == null) {
-            employee = driverRepository.findByLogin(login);
-        }
-
-        if(employee == null) {
-            employee = shippingManagerRepository.findByLogin(login);
-        }
-
-        return employee;
-
     }
 
 }
