@@ -6,6 +6,6 @@ CREATE TABLE driver (
     password TEXT NOT NULL,
     status VARCHAR(100) NOT NULL,
     role VARCHAR(100) NOT NULL,
-    created_dt TIMESTAMP NOT NULL,
-    inactivated_dt TIMESTAMP NULL
+    created_dt DATE NOT NULL,
+    inactivated_dt DATE NULL
 );

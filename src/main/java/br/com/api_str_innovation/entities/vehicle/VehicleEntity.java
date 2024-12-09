@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.entities.vehicle;
 
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
+import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -57,6 +58,11 @@ public class VehicleEntity {
     @Setter
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime inactivatedDt;
+
+    @Getter
+    @Setter
+    @OneToOne(mappedBy = "vehicle")
+    private ChecklistEntity checklist;
 
     public VehicleEntity(VehicleRequestDTO data) {
         this.licensePlateNumber = data.licensePlateNumber();

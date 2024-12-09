@@ -3,6 +3,7 @@ package br.com.api_str_innovation.dto.employee.general_manager;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.entities.employee.Role;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,8 +13,8 @@ public record GeneralManagerResponseDTO(UUID id,
                                         String login,
                                         String password,
                                         Role role,
-                                        LocalDateTime createdDt,
-                                        LocalDateTime inactivatedDt) {
+                                        LocalDate createdDt,
+                                        LocalDate inactivatedDt) {
 
     public GeneralManagerResponseDTO(GeneralManagerEntity data) {
         this(data.getId(),

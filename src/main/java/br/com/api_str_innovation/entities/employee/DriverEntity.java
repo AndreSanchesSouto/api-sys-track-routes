@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.entities.employee;
 
 import br.com.api_str_innovation.dto.employee.driver.DriverRequestDTO;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -63,4 +64,5 @@ public class DriverEntity extends AbstractEmployeeEntity {
                 "status='" + status + '\'' +
                 '}';
     }
+
 }

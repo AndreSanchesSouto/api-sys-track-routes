@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -48,13 +49,11 @@ public abstract class AbstractEmployeeEntity implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
-    private final LocalDateTime createdDt = LocalDateTime.now();
+    private final LocalDate createdDt = LocalDate.now();
 
     @Setter
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime inactivatedDt;
+    private LocalDate inactivatedDt;
 
     public AbstractEmployeeEntity(EmployeeRequestDTO data) {
         this.name = data.getName();

@@ -1,14 +1,14 @@
 package br.com.api_str_innovation.dto.checklist;
 
-import lombok.Getter;
+import java.util.UUID;
 
 public record ChecklistRequestDTO(String tire,
                                   String licensePlateNumber,
                                   String spareTire,
-                                  @Getter String kilometersNumber,
-                                  String fuelLevel,
-                                  String oilLevel,
-                                  String waterLevel,
+                                  Double kilometersNumber,
+                                  Double fuelLevel,
+                                  Double oilLevel,
+                                  Double waterLevel,
                                   String suspension,
                                   String brakes,
                                   String lights,
@@ -17,5 +17,7 @@ public record ChecklistRequestDTO(String tire,
                                   String jack,
                                   String toolbox,
                                   String documentation,
-                                  String observationNotes) {
+                                  String observationNotes,
+                                  UUID employeeId,
+                                  String employeeRole) {
 }

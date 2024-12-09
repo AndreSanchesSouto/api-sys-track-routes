@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -72,7 +73,7 @@ public class GeneralManagerService {
 
     public void inactivate(UUID id) {
         GeneralManagerEntity generalManager = getById(id);
-        generalManager.setInactivatedDt(LocalDateTime.now());
+        generalManager.setInactivatedDt(LocalDate.now());
         repository.save(generalManager);
     }
 

@@ -5,6 +5,6 @@ CREATE TABLE shipping_manager (
     login VARCHAR(100) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     role VARCHAR(100) NOT NULL,
-    created_dt TIMESTAMP NOT NULL,
-    inactivated_dt TIMESTAMP NULL
+    created_dt DATE NOT NULL,
+    inactivated_dt DATE NULL
 );
