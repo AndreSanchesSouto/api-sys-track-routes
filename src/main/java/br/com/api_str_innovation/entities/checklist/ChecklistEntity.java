@@ -102,18 +102,15 @@ public class ChecklistEntity {
     @Setter
     private LocalDate editedDt;
 
-    @Getter
     @Setter
     @OneToOne
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private UUID employeeId;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private String employeeRole;

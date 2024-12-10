@@ -41,6 +41,16 @@ public class ChecklistController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
+    @PostMapping("/count-active")
+    public ResponseEntity<Double> countChecklistActive(@RequestBody ChecklistLogRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.countChecklistActive(data));
+    }
+
+    @PostMapping("/count-inactive")
+    public ResponseEntity<Double> countChecklistInactive(@RequestBody ChecklistLogRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.countChecklistInactive(data));
+    }
+
     @PostMapping("/count-km/{vehicleId}")
     public ResponseEntity<Double> countKmDriven(@PathVariable UUID vehicleId, @RequestBody ChecklistLogRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.countKmDriven(vehicleId, data));
