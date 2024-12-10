@@ -2,6 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.employee.driver.DriverRequestDTO;
 import br.com.api_str_innovation.dto.employee.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.repository.DriverRepository;
 import jakarta.validation.Valid;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,6 +62,10 @@ public class DriverService {
     public void post(@Valid DriverRequestDTO data) {
         DriverEntity driverData = new DriverEntity(data);
         repository.save(driverData);
+    }
+
+    public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO) {
+        return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
     }
 
     public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {

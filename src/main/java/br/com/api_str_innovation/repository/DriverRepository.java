@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,5 +28,16 @@ public interface DriverRepository extends JpaRepository<DriverEntity, UUID> {
 
     @Query("SELECT d FROM DriverEntity d WHERE d.login = :login AND d.password = :password")
     DriverEntity authIdentity(@Param("login") String login, @Param("password") String password);
+
+    @Query("SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount " +
+            "FROM DriverEntity d " +
+            "WHERE d.createdDt BETWEEN :from AND :to " +
+            "GROUP BY EXTRACT(YEAR FROM d.createdDt), EXTRACT(MONTH FROM d.createdDt) " +
+            "ORDER BY year, month")
+    List<Object[]> periodTime(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+
+
+
 
 }
