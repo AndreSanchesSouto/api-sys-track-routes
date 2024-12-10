@@ -7,6 +7,7 @@ import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.repository.ChecklistLogRepository;
 import br.com.api_str_innovation.repository.ChecklistRepository;
 import br.com.api_str_innovation.repository.VehicleRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,7 +59,6 @@ public class ChecklistService {
     public ChecklistResponseDTO put(@PathVariable UUID id, ChecklistRequestDTO data) {
         ChecklistEntity checklist = this.getById(id);
         checklist.setTire(data.tire());
-        checklist.setLicensePlateNumber(data.licensePlateNumber());
         checklist.setSpareTire(data.spareTire());
         checklist.setKilometersNumber(data.kilometersNumber());
         checklist.setFuelLevel(data.fuelLevel());
@@ -94,5 +94,13 @@ public class ChecklistService {
 
     public Double countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {
         return checklistLogRepository.countKmDriven(vehicleId, data.startDate(), data.endDate());
+    }
+
+    public Double countChecklistActive(ChecklistLogRequestDTO data) {
+        return checklistLogRepository.countChecklistActive(data.startDate(), data.endDate());
+    }
+
+    public Double countChecklistInactive(ChecklistLogRequestDTO data) {
+        return checklistLogRepository.countChecklistInactive(data.startDate(), data.endDate());
     }
 }

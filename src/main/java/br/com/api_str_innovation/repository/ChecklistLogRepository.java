@@ -25,8 +25,23 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
             "    SUM(COALESCE(kilometers_number - previous_kilometers, 0)) AS total_kilometers " +
             "FROM " +
             "    vehicle_km_log", nativeQuery = true)
+
     Double countKmDriven(@Param("vehicleId") UUID vehicleId,
                          @Param("startDate") LocalDate startDate,
                          @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT COUNT(c) " +
+            "FROM ChecklistLogEntity c " +
+            "WHERE c.vehicleStatus = 'ACTIVE' " +
+            "AND c.createdDt BETWEEN :startDate AND :endDate")
+    Double countChecklistActive(@Param("startDate") LocalDate startDate,
+                                @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT COUNT(c) " +
+            "FROM ChecklistLogEntity c " +
+            "WHERE c.vehicleStatus = 'INACTIVE' " +
+            "AND c.createdDt BETWEEN :startDate AND :endDate")
+    Double countChecklistInactive(@Param("startDate") LocalDate startDate,
+                                  @Param("endDate") LocalDate endDate);
 
 }

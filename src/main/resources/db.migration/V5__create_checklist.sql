@@ -1,7 +1,6 @@
 CREATE TABLE checklist (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     tire VARCHAR(100) NOT NULL,
-    license_plate_number VARCHAR(100) NOT NULL,
     spare_tire VARCHAR(100) NOT NULL,
     kilometers_number NUMERIC NOT NULL,
     fuel_level NUMERIC NOT NULL,

@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,30 +30,25 @@ public class ChecklistEntity {
     @Setter
     @NotBlank
     @Column(nullable = false)
-    private String licensePlateNumber;
-
-    @Setter
-    @NotBlank
-    @Column(nullable = false)
     private String spareTire;
 
     @Setter
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private Double kilometersNumber;
 
     @Setter
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private Double fuelLevel;
 
     @Setter
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private Double oilLevel;
 
     @Setter
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private Double waterLevel;
 
@@ -106,23 +102,21 @@ public class ChecklistEntity {
     @Setter
     private LocalDate editedDt;
 
-    @Getter
     @Setter
     @OneToOne
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
-    @Getter
     @Setter
+    @Column(nullable = false)
     private UUID employeeId;
 
-    @Getter
     @Setter
+    @Column(nullable = false)
     private String employeeRole;
 
     public ChecklistEntity(ChecklistRequestDTO data) {
         this.tire = data.tire();
-        this.licensePlateNumber = data.licensePlateNumber();
         this.spareTire = data.spareTire();
         this.kilometersNumber = data.kilometersNumber();
         this.fuelLevel = data.fuelLevel();

@@ -24,9 +24,6 @@ public class ChecklistLogEntity {
     private String tire;
 
     @Column(nullable = false)
-    private String license_plate_number;
-
-    @Column(nullable = false)
     private String spareTire;
 
     @Column(nullable = false)
@@ -66,6 +63,10 @@ public class ChecklistLogEntity {
     private String documentation;
 
     private String observationNotes;
+
+    @Setter
+    @Column(nullable = false)
+    private String vehicleStatus;
 
     @Column(nullable = false, updatable = false)
     private LocalDate createdDt = LocalDate.now();

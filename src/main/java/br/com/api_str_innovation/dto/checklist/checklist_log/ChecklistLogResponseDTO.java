@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public record ChecklistLogResponseDTO(UUID id,
                                       String tire,
-                                      String licensePlateNumber,
                                       String spareTire,
                                       Double kilometersNumber,
                                       Double fuelLevel,

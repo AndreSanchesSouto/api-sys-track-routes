@@ -1,7 +1,6 @@
 CREATE TABLE checklist_log (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     tire VARCHAR(100) NOT NULL,
-    license_plate_number VARCHAR(100) NOT NULL,
     spare_tire VARCHAR(100) NOT NULL,
     kilometers_number NUMERIC NOT NULL,
     fuel_level NUMERIC NOT NULL,
@@ -16,8 +15,8 @@ CREATE TABLE checklist_log (
     toolbox VARCHAR(100) NOT NULL,
     documentation VARCHAR(100) NOT NULL,
     observation_notes VARCHAR(255) NULL,
+    vehicle_status VARCHAR(100) NOT NULL,
     created_dt DATE NOT NULL,
-    edited_dt DATE NULL,
     vehicle_id UUID NOT NULL,
     employee_id UUID NOT NULL,
     employee_role VARCHAR(100) NOT NULL
