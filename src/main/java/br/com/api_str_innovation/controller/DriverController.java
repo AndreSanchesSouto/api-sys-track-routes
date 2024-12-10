@@ -3,6 +3,7 @@ package br.com.api_str_innovation.controller;
 import br.com.api_str_innovation.dto.employee.ResponseDTO;
 import br.com.api_str_innovation.dto.employee.driver.DriverRequestDTO;
 import br.com.api_str_innovation.dto.employee.driver.DriverResponseDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.employee.DriverEntity;
 import br.com.api_str_innovation.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,10 @@ public class DriverController {
         System.out.print(data.toString());
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
+    }
+
+    @PostMapping("/period-of-creation") ResponseEntity<List<Object[]>> periodOfCreation(@RequestBody PeriodTimeRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
     }
 
     @PutMapping("/{id}")
