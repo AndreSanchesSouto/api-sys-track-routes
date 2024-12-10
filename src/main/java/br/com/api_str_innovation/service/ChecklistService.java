@@ -58,7 +58,6 @@ public class ChecklistService {
     public ChecklistResponseDTO put(@PathVariable UUID id, ChecklistRequestDTO data) {
         ChecklistEntity checklist = this.getById(id);
         checklist.setTire(data.tire());
-        checklist.setLicensePlateNumber(data.licensePlateNumber());
         checklist.setSpareTire(data.spareTire());
         checklist.setKilometersNumber(data.kilometersNumber());
         checklist.setFuelLevel(data.fuelLevel());

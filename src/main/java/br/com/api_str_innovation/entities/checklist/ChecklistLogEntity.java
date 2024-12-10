@@ -24,9 +24,6 @@ public class ChecklistLogEntity {
     private String tire;
 
     @Column(nullable = false)
-    private String license_plate_number;
-
-    @Column(nullable = false)
     private String spareTire;
 
     @Column(nullable = false)

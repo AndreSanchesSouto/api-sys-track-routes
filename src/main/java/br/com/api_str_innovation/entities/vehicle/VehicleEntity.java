@@ -70,7 +70,7 @@ public class VehicleEntity {
         this.model = data.model();
         this.brand = data.brand();
         this.yearDt = data.yearDt();
-        this.status = getStatus() == null ? "ACTIVE" : getStatus();
+        this.status = getStatus() == null ? "WAITING" : getStatus();
     }
 
 }

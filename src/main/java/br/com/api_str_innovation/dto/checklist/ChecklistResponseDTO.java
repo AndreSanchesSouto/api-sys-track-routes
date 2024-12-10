@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public record ChecklistResponseDTO(UUID id,
                                    String tire,
-                                   String licensePlateNumber,
                                    String spareTire,
                                    Double kilometersNumber,
                                    Double fuelLevel,
@@ -29,7 +28,6 @@ public record ChecklistResponseDTO(UUID id,
         this(
             data.getId(),
             data.getTire(),
-            data.getLicensePlateNumber(),
             data.getSpareTire(),
             data.getKilometersNumber(),
             data.getFuelLevel(),
