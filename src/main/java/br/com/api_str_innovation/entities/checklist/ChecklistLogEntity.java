@@ -64,6 +64,10 @@ public class ChecklistLogEntity {
 
     private String observationNotes;
 
+    @Setter
+    @Column(nullable = false)
+    private String vehicleStatus;
+
     @Column(nullable = false, updatable = false)
     private LocalDate createdDt = LocalDate.now();
 

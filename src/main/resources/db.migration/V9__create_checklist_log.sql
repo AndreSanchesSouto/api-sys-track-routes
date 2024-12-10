@@ -15,8 +15,8 @@ CREATE TABLE checklist_log (
     toolbox VARCHAR(100) NOT NULL,
     documentation VARCHAR(100) NOT NULL,
     observation_notes VARCHAR(255) NULL,
+    vehicle_status VARCHAR(100) NOT NULL,
     created_dt DATE NOT NULL,
-    edited_dt DATE NULL,
     vehicle_id UUID NOT NULL,
     employee_id UUID NOT NULL,
     employee_role VARCHAR(100) NOT NULL

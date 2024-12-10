@@ -84,6 +84,7 @@ public class VehicleService {
 
         ChecklistLogEntity checklistLog = new ChecklistLogEntity(data);
         checklistLog.setVehicleId(vehicleId);
+        checklistLog.setVehicleStatus(vehicle.getStatus());
         checklistLogRepository.save(checklistLog);
     }
 
