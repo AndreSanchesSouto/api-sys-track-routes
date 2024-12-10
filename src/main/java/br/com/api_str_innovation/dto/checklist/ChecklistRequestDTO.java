@@ -3,7 +3,6 @@ package br.com.api_str_innovation.dto.checklist;
 import java.util.UUID;
 
 public record ChecklistRequestDTO(String tire,
-                                  String licensePlateNumber,
                                   String spareTire,
                                   Double kilometersNumber,
                                   Double fuelLevel,

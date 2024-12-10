@@ -7,6 +7,7 @@ import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -71,8 +72,12 @@ public class VehicleService {
         vehicleRepository.save(vehicleData);
     }
 
+    @Transactional
     public void createChecklist(UUID vehicleId, @Valid ChecklistRequestDTO data) {
         VehicleEntity vehicle = getById(vehicleId);
+        vehicle.setStatus(changeStatusVehicle(data));
+        vehicleRepository.updateStatusVehicle(vehicle.getStatus(), vehicleId);
+
         ChecklistEntity checklist = new ChecklistEntity(data);
         checklist.setVehicle(vehicle);
         checklistRepository.save(checklist);
@@ -82,8 +87,7 @@ public class VehicleService {
         checklistLogRepository.save(checklistLog);
     }
 
-
-    public VehicleResponseDTO put(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
+    public VehicleResponseDTO put(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
         VehicleEntity vehicle = this.getById(id);
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());
@@ -101,4 +105,21 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
     }
 
+    private static String changeStatusVehicle(ChecklistRequestDTO data) {
+        if (data.tire().equals("Faltando")
+        || data.tire().equals("Danificados")
+        || data.fuelLevel() <= 5
+        || data.oilLevel() <= 4
+        || data.waterLevel() <= 2
+        || data.brakes().equals("Danificados")
+        || data.lights().equals("Danificados")
+        || data.glasses().equals("Danificados")
+        || data.documentation().equals("Não")) {
+            return "INACTIVE";
+        } else {
+            return "ACTIVE";
+        }
+    }
+
 }
+
