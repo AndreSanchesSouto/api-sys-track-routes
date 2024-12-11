@@ -68,6 +68,16 @@ public class DriverService {
         return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
     }
 
+    public DriverResponseDTO patch(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+        DriverEntity driver = this.getById(id);
+        driver.setName(data.getName());
+        driver.setLogin(data.getLogin());
+        driver.setEmail(data.getEmail());
+        driver.setStatus(data.getStatus());
+        repository.save(driver);
+        return new DriverResponseDTO(driver);
+    }
+
     public DriverResponseDTO put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
         DriverEntity driver = this.getById(id);
         driver.setName(data.getName());

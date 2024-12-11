@@ -59,17 +59,10 @@ public abstract class AbstractEmployeeEntity implements UserDetails {
         this.name = data.getName();
         this.email = data.getEmail();
         this.login = data.getLogin();
-        this.password = data.getPassword();
+        this.password = Encrypter.encrypt(data.getPassword());
         this.role = data.getRole();
     }
 
-    @PrePersist
-    @PreUpdate
-    private void encryptPassword() {
-        if (this.password != null) {
-            this.password = Encrypter.encrypt(this.password);
-        }
-    }
 
     @Override
     public String toString() {
