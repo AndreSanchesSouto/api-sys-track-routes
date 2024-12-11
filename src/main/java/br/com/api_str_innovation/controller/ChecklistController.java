@@ -1,12 +1,10 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequestDTO;
-import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogResponseDTO;
 import br.com.api_str_innovation.dto.employee.ResponseDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
-import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.service.ChecklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,7 +50,7 @@ public class ChecklistController {
     }
 
     @PostMapping("/count-km/{vehicleId}")
-    public ResponseEntity<Double> countKmDriven(@PathVariable UUID vehicleId, @RequestBody ChecklistLogRequestDTO data) {
+    public ResponseEntity<List<Object[]>> countKmDriven(@PathVariable UUID vehicleId, @RequestBody ChecklistLogRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.countKmDriven(vehicleId, data));
     }
 

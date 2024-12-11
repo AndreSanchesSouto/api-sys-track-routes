@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -25,10 +26,9 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
             "    SUM(COALESCE(kilometers_number - previous_kilometers, 0)) AS total_kilometers " +
             "FROM " +
             "    vehicle_km_log", nativeQuery = true)
-
-    Double countKmDriven(@Param("vehicleId") UUID vehicleId,
-                         @Param("startDate") LocalDate startDate,
-                         @Param("endDate") LocalDate endDate);
+    List<Object[]> countKmDriven(@Param("vehicleId") UUID vehicleId,
+                                 @Param("startDate") LocalDate startDate,
+                                 @Param("endDate") LocalDate endDate);
 
     @Query("SELECT COUNT(c) " +
             "FROM ChecklistLogEntity c " +

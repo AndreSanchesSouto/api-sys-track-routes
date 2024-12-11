@@ -2,6 +2,7 @@ package br.com.api_str_innovation.entities.checklist;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -102,6 +103,7 @@ public class ChecklistEntity {
     @Setter
     private LocalDate editedDt;
 
+    @JsonIgnore
     @Setter
     @OneToOne
     @JoinColumn(name = "vehicle_id")

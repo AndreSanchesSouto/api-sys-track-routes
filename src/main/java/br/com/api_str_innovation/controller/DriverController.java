@@ -50,7 +50,8 @@ public class DriverController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
     }
 
-    @PostMapping("/period-of-creation") ResponseEntity<List<Object[]>> periodOfCreation(@RequestBody PeriodTimeRequestDTO data) {
+    @PostMapping("/period-of-creation")
+    ResponseEntity<List<Object[]>> periodOfCreation(@RequestBody PeriodTimeRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
     }
 
