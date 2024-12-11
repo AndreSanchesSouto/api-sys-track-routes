@@ -95,11 +95,11 @@ public class ChecklistService {
         return checklistLogRepository.countKmDriven(vehicleId, data.startDate(), data.endDate());
     }
 
-    public Double countChecklistActive(ChecklistLogRequestDTO data) {
+    public List<Object[]> countChecklistActive(ChecklistLogRequestDTO data) {
         return checklistLogRepository.countChecklistActive(data.startDate(), data.endDate());
     }
 
-    public Double countChecklistInactive(ChecklistLogRequestDTO data) {
+    public List<Object[]> countChecklistInactive(ChecklistLogRequestDTO data) {
         return checklistLogRepository.countChecklistInactive(data.startDate(), data.endDate());
     }
 }

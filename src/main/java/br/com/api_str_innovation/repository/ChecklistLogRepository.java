@@ -59,18 +59,22 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
                                  @Param("startDate") LocalDate startDate,
                                  @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT COUNT(c) " +
+    @Query("SELECT EXTRACT(YEAR FROM c.createdDt) AS year, EXTRACT(MONTH FROM c.createdDt) AS month, COUNT(c) AS checklistCount " +
             "FROM ChecklistLogEntity c " +
             "WHERE c.vehicleStatus = 'ACTIVE' " +
-            "AND c.createdDt BETWEEN :startDate AND :endDate")
-    Double countChecklistActive(@Param("startDate") LocalDate startDate,
+            "AND c.createdDt BETWEEN :startDate AND :endDate " +
+            "GROUP BY EXTRACT(YEAR FROM c.createdDt), EXTRACT(MONTH FROM c.createdDt) " +
+            "ORDER BY year, month")
+    List<Object[]> countChecklistActive(@Param("startDate") LocalDate startDate,
                                 @Param("endDate") LocalDate endDate);
 
-    @Query("SELECT COUNT(c) " +
+    @Query("SELECT EXTRACT(YEAR FROM c.createdDt) AS year, EXTRACT(MONTH FROM c.createdDt) AS month, COUNT(c) AS checklistCount " +
             "FROM ChecklistLogEntity c " +
             "WHERE c.vehicleStatus = 'INACTIVE' " +
-            "AND c.createdDt BETWEEN :startDate AND :endDate")
-    Double countChecklistInactive(@Param("startDate") LocalDate startDate,
+            "AND c.createdDt BETWEEN :startDate AND :endDate " +
+            "GROUP BY EXTRACT(YEAR FROM c.createdDt), EXTRACT(MONTH FROM c.createdDt) " +
+            "ORDER BY year, month")
+    List<Object[]> countChecklistInactive(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate);
 
 }
