@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +41,7 @@ public class ShippingManagerService {
 
     public Page<ShippingManagerResponseDTO> getPaged(Pageable pageable) {
         Page<ShippingManagerResponseDTO> shippingManagers = repository
-                .findAll(pageable)
+                .findActiveShippingManager(pageable)
                 .map(ShippingManagerResponseDTO::new);
         return shippingManagers;
     }

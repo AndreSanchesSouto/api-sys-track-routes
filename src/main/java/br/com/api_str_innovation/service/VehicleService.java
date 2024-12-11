@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -107,15 +106,15 @@ public class VehicleService {
     }
 
     private static String changeStatusVehicle(ChecklistRequestDTO data) {
-        if (data.tire().equals("Faltando")
-        || data.tire().equals("Danificados")
+        if (data.tire().equals("missing")
+        || data.tire().equals("damaged")
         || data.fuelLevel() <= 5
         || data.oilLevel() <= 4
         || data.waterLevel() <= 2
-        || data.brakes().equals("Danificados")
-        || data.lights().equals("Danificados")
-        || data.glasses().equals("Danificados")
-        || data.documentation().equals("Não")) {
+        || data.brakes().equals("damaged")
+        || data.lights().equals("damaged")
+        || data.glasses().equals("damaged")
+        || data.documentation().equals("false")) {
             return "INACTIVE";
         } else {
             return "ACTIVE";

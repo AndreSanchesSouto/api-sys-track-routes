@@ -38,7 +38,7 @@ public class GeneralManagerService {
     @GetMapping(value = "/page")
     public Page<GeneralManagerResponseDTO> getPaged(Pageable pageable) {
         Page<GeneralManagerResponseDTO> generalManagers = repository
-                .findAll(pageable)
+                .findActiveGeneralManager(pageable)
                 .map(GeneralManagerResponseDTO::new);
         return generalManagers;
     }
