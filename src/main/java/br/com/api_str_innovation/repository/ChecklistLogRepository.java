@@ -65,7 +65,7 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
             "AND c.createdDt BETWEEN :startDate AND :endDate " +
             "GROUP BY EXTRACT(YEAR FROM c.createdDt), EXTRACT(MONTH FROM c.createdDt) " +
             "ORDER BY year, month")
-    List<Object[]> countChecklistActive(@Param("startDate") LocalDate startDate,
+    List<Object[]> countChecklistStatusVehicleActive(@Param("startDate") LocalDate startDate,
                                 @Param("endDate") LocalDate endDate);
 
     @Query("SELECT EXTRACT(YEAR FROM c.createdDt) AS year, EXTRACT(MONTH FROM c.createdDt) AS month, COUNT(c) AS checklistCount " +
@@ -74,7 +74,7 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
             "AND c.createdDt BETWEEN :startDate AND :endDate " +
             "GROUP BY EXTRACT(YEAR FROM c.createdDt), EXTRACT(MONTH FROM c.createdDt) " +
             "ORDER BY year, month")
-    List<Object[]> countChecklistInactive(@Param("startDate") LocalDate startDate,
+    List<Object[]> countChecklistStatusVehicleInactive(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate);
 
 }
