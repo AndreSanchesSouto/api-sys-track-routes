@@ -55,6 +55,11 @@ public class DriverController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<DriverResponseDTO> patch(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<DriverResponseDTO> put(@PathVariable UUID id, @RequestBody DriverRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
