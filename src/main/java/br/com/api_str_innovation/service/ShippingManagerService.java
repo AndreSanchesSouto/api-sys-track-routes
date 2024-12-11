@@ -58,6 +58,15 @@ public class ShippingManagerService {
         repository.save(shippingManagerData);
     }
 
+    public ShippingManagerResponseDTO patch(UUID id, ShippingManagerRequestDTO data) {
+        ShippingManagerEntity shippingManager = this.getById(id);
+        shippingManager.setName(data.getName());
+        shippingManager.setEmail(data.getEmail());
+        shippingManager.setLogin(data.getLogin());
+        repository.save(shippingManager);
+        return new ShippingManagerResponseDTO(shippingManager);
+    }
+
     public ShippingManagerResponseDTO put(UUID id, ShippingManagerRequestDTO data) {
         ShippingManagerEntity shippingManager = this.getById(id);
         shippingManager.setName(data.getName());

@@ -1,6 +1,8 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.driver.DriverRequestDTO;
+import br.com.api_str_innovation.dto.employee.driver.DriverResponseDTO;
 import br.com.api_str_innovation.dto.employee.shipping_manager.ShippingManagerRequestDTO;
 import br.com.api_str_innovation.dto.employee.shipping_manager.ShippingManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
@@ -48,6 +50,11 @@ public class ShippingManagerController {
         System.out.println(data);
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ShippingManagerResponseDTO> patch(@PathVariable UUID id, @RequestBody ShippingManagerRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
     }
 
     @PutMapping("/{id}")
