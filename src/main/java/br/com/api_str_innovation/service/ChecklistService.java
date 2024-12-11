@@ -87,19 +87,20 @@ public class ChecklistService {
 //        }
 //    }
 
-    public void deleteById(UUID id) {
-        checklistRepository.deleteById(id);
+    public void deleteById(UUID vehicleId) {
+        checklistRepository.deleteById(vehicleId);
+        vehicleRepository.updateStatusVehicle("WAITING", vehicleId);
     }
 
     public List<Object[]> countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {
         return checklistLogRepository.countKmDriven(vehicleId, data.startDate(), data.endDate());
     }
 
-    public List<Object[]> countChecklistActive(ChecklistLogRequestDTO data) {
-        return checklistLogRepository.countChecklistActive(data.startDate(), data.endDate());
+    public List<Object[]> countChecklistStatusVehicleActive(ChecklistLogRequestDTO data) {
+        return checklistLogRepository.countChecklistStatusVehicleActive(data.startDate(), data.endDate());
     }
 
-    public List<Object[]> countChecklistInactive(ChecklistLogRequestDTO data) {
-        return checklistLogRepository.countChecklistInactive(data.startDate(), data.endDate());
+    public List<Object[]> countChecklistStatusVehicleInactive(ChecklistLogRequestDTO data) {
+        return checklistLogRepository.countChecklistStatusVehicleInactive(data.startDate(), data.endDate());
     }
 }

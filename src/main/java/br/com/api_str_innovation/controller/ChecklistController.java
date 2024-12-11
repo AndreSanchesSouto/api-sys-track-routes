@@ -40,13 +40,13 @@ public class ChecklistController {
     }
 
     @PostMapping("/count-active")
-    public ResponseEntity<List<Object[]>> countChecklistActive(@RequestBody ChecklistLogRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.countChecklistActive(data));
+    public ResponseEntity<List<Object[]>> countChecklistStatusVehicleActive(@RequestBody ChecklistLogRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.countChecklistStatusVehicleActive(data));
     }
 
     @PostMapping("/count-inactive")
-    public ResponseEntity<List<Object[]>> countChecklistInactive(@RequestBody ChecklistLogRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.countChecklistInactive(data));
+    public ResponseEntity<List<Object[]>> countChecklistStatusVehicleInactive(@RequestBody ChecklistLogRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.countChecklistStatusVehicleInactive(data));
     }
 
     @PostMapping("/count-km/{vehicleId}")
