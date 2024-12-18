@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerRequ
 import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerResponseDTO;
 import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
 import br.com.api_str_innovation.repository.GeneralManagerRepository;
+import br.com.api_str_innovation.security.Encrypter;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,7 @@ public class GeneralManagerService {
         if (repository.findByLogin(data.getLogin()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO("Usuário já cadastrado"));
         }
-        GeneralManagerEntity generalManager = new GeneralManagerEntity(data.getName(), data.getEmail(), data.getLogin(), data.getPassword(), data.getRole());
+        GeneralManagerEntity generalManager = new GeneralManagerEntity(data.getName(), data.getEmail(), data.getLogin(), Encrypter.encrypt(data.getPassword()), data.getRole());
         repository.save(generalManager);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
 
