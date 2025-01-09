@@ -1,8 +1,6 @@
 package br.com.api_str_innovation.dto.vehicle;
 
-import br.com.api_str_innovation.entities.employee.DriverEntity;
-import br.com.api_str_innovation.entities.employee.GeneralManagerEntity;
-import br.com.api_str_innovation.entities.employee.ShippingManagerEntity;
+import br.com.api_str_innovation.entities.employee.UserEntity;
 
 public record VehicleRequestDTO(String licensePlateNumber,
                                 String sideNumber,

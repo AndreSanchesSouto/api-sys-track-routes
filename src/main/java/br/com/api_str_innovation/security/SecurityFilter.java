@@ -1,8 +1,6 @@
 package br.com.api_str_innovation.security;
 
-import br.com.api_str_innovation.repository.DriverRepository;
-import br.com.api_str_innovation.repository.GeneralManagerRepository;
-import br.com.api_str_innovation.repository.ShippingManagerRepository;
+import br.com.api_str_innovation.repository.UserRepository;
 import br.com.api_str_innovation.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,13 +22,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Autowired
-    GeneralManagerRepository generalManagerRepository;
-
-    @Autowired
-    DriverRepository driverRepository;
-
-    @Autowired
-    ShippingManagerRepository shippingManagerRepository;
+    UserRepository repository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, NullPointerException {
@@ -52,17 +44,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private UserDetails findByLogin(String username) {
-        UserDetails employee =  generalManagerRepository.findByLogin(username);
-
-        if(employee == null) {
-            employee = driverRepository.findByLogin(username);
-        }
-
-        if(employee == null) {
-            employee = shippingManagerRepository.findByLogin(username);
-        }
-
-        return employee;
+        return repository.findByLogin(username);
     }
 
 }

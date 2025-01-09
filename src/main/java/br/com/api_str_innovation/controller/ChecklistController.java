@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequestDTO;
-import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
@@ -60,9 +60,9 @@ public class ChecklistController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO> deleteById(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteById(@PathVariable UUID id) {
         this.service.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Deletado com sucesso"));
+        return ResponseEntity.status(HttpStatus.OK).body("Deletado com sucesso");
     }
 
 }

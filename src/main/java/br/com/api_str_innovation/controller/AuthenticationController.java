@@ -2,12 +2,13 @@ package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
 import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
-import br.com.api_str_innovation.dto.employee.ResponseDTO;
-import br.com.api_str_innovation.dto.employee.general_manager.GeneralManagerRequestDTO;
+import br.com.api_str_innovation.dto.employee.UserRequestDTO;
+import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.service.AuthorizationService;
-import br.com.api_str_innovation.service.GeneralManagerService;
+import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class AuthenticationController {
     private AuthorizationService authorizationService;
 
     @Autowired
-    private GeneralManagerService service;
+    private UserService service;
 
 
     @PostMapping("/login")
@@ -28,8 +29,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@RequestBody @Valid GeneralManagerRequestDTO data) {
-        return this.service.post(data);
+    public ResponseEntity<String> register(@RequestBody @Valid UserRequestDTO data) {
+        this.service.post(data);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
+
     }
 
     @GetMapping

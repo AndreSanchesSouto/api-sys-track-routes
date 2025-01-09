@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.employee.ResponseDTO;
+import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
@@ -43,9 +43,9 @@ public class ClientControlller {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> post(@RequestBody ClientRequestDTO data) {
+    public ResponseEntity<String> post(@RequestBody ClientRequestDTO data) {
         this.service.post(data);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO("Criado com sucesso"));
+        return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
     @PutMapping("/{id}")
@@ -54,9 +54,9 @@ public class ClientControlller {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO> inactivate(@PathVariable UUID id) {
+    public ResponseEntity<String> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO("Deletado com sucesso"));
+        return ResponseEntity.status(HttpStatus.OK).body("Deletado com sucesso");
     }
 
 }

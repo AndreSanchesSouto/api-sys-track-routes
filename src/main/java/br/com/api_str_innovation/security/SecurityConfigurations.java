@@ -1,6 +1,5 @@
 package br.com.api_str_innovation.security;
 
-import br.com.api_str_innovation.entities.employee.AbstractEmployeeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.entities.employee.AbstractEmployeeEntity;
+import br.com.api_str_innovation.entities.employee.UserEntity;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -17,7 +17,7 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String generateToken(AbstractEmployeeEntity employee) {
+    public String generateToken(UserEntity employee) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
