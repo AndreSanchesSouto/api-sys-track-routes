@@ -5,7 +5,6 @@ import br.com.api_str_innovation.security.Encrypter;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Table(name = "general_manager")
+@Table(name = "users")
 @Entity
 @Getter
 @NoArgsConstructor
@@ -30,28 +29,23 @@ public class UserEntity implements UserDetails {
     private UUID id;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String name;
 
     @Setter
     @Email
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 
     @Setter
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String login;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String password;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String status;
 
@@ -78,6 +72,7 @@ public class UserEntity implements UserDetails {
         this.setEmail(data.email());
         this.setLogin(data.login());
         this.setPassword(Encrypter.encrypt(data.password()));
+        this.setStatus(data.status());
         this.setRole(data.role());
     }
 

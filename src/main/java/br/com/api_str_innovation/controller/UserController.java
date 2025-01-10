@@ -45,7 +45,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<String> post(@RequestBody UserRequestDTO data) {
         this.service.post(data);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Inativado");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Criado");
     }
 
     @PutMapping("/{id}")
