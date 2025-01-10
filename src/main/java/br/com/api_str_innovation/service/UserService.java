@@ -7,6 +7,7 @@ import br.com.api_str_innovation.entities.employee.UserEntity;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -55,8 +56,8 @@ public class UserService {
     }
 
     public void post(@Valid UserRequestDTO data) {
-        UserEntity driverData = new UserEntity(data);
-        repository.save(driverData);
+        UserEntity user = new UserEntity(data);
+        repository.save(user);
     }
 
     public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO) {

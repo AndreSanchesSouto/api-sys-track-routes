@@ -30,14 +30,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid UserRequestDTO data) {
+
         this.service.post(data);
+
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
 
     }
-
-    @GetMapping
-    public String verify() {
-        return "Okay";
-    }
-
 }

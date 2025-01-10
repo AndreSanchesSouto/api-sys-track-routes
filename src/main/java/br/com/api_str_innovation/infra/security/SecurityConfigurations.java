@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.security;
+package br.com.api_str_innovation.infra.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
