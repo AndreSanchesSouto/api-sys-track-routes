@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.employee.UserRequestDTO;
 import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.exceptions.UserRegisteredException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,14 @@ public class UserService {
     }
 
     public void post(@Valid UserRequestDTO data) {
+        if (repository.findByEmail(data.email()).isPresent() ) {
+            throw new UserRegisteredException(String.format("O email %s já está em uso.", data.email()));
+        }
+
+        if(repository.findByLogin(data.login()) != null ){
+            throw new UserRegisteredException(String.format("O login %s já está em uso.", data.login()));
+        }
+
         UserEntity user = new UserEntity(data);
         repository.save(user);
     }

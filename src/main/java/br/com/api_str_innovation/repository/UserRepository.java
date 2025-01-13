@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -45,5 +46,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             ORDER BY year, month
             """)
     List<Object[]> periodTime(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+    Optional<UserEntity> findByEmail(String email);
 
 }
