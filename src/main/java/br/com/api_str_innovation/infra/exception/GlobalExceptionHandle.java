@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
 
-
     @ExceptionHandler(UserRegisteredException.class)
     private ResponseEntity<ExceptionMessage> userRegisteredHandle(UserRegisteredException exception) {
 
