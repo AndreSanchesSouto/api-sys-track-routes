@@ -27,7 +27,7 @@ public class ChecklistService {
     private ChecklistRepository checklistRepository;
 
     @Autowired
-    VehicleRepository vehicleRepository;
+    private VehicleRepository vehicleRepository;
 
     @Autowired ChecklistLogRepository checklistLogRepository;
 
