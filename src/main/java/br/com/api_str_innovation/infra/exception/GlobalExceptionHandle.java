@@ -15,10 +15,8 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserRegisteredException.class)
     private ResponseEntity<ExceptionMessage> userRegisteredHandle(UserRegisteredException exception) {
-        ExceptionMessage response = new ExceptionMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        ExceptionMessage response = new ExceptionMessage(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
-
-
 
 }
