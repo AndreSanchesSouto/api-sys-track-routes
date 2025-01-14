@@ -18,6 +18,7 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 exception.getMessage()
         );
+
         return ResponseEntity.
                 status(response.getStatus()).
                 body(response);
