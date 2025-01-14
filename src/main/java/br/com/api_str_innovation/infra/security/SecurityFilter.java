@@ -29,10 +29,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if(token != null) {
             var login = tokenService.validateToken(token);
-            UserDetails user = findByLogin(login);
-
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                UserDetails user = findByLogin(login);
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (NullPointerException exception) {
+                System.out.printf("The token: %s expired%n", token);
+            }
         }
         filterChain.doFilter(request, response);
     }
