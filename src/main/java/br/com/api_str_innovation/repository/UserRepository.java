@@ -1,9 +1,11 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.entities.employee.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,20 +25,12 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     @Query("SELECT g FROM UserEntity g WHERE g.login = :login AND g.password = :password")
     UserEntity authIdentity(@Param("login") String login, @Param("password") String password);
 
-    @Query("SELECT s FROM UserEntity s WHERE s.inactivatedDt IS NULL")
-    Page<UserEntity> findActiveGeneralManager(Pageable pageable);
-
     @Query("SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL")
-    Page<UserEntity> findActiveDrivers(Pageable pageable);
+    Page<UserEntity> findActiveUsers(Pageable pageable);
 
-    @Query("SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL")
-    List<UserEntity> findActiveDrivers();
-
-    @Query("SELECT s FROM UserEntity s WHERE s.inactivatedDt IS NULL")
-    Page<UserEntity> findActiveUser(Pageable pageable);
-
-    @Query("SELECT s FROM UserEntity s WHERE s.inactivatedDt IS NULL")
-    List<UserEntity> findActiveUser();
+    @Query("""
+            SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL""")
+    List<UserEntity> findActiveUsers();
 
     @Query(""" 
             SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
@@ -48,5 +42,22 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     List<Object[]> periodTime(@Param("from") LocalDate from, @Param("to") LocalDate to);
 
     Optional<UserEntity> findByEmail(String email);
+
+    @Modifying
+    @Query("""
+        UPDATE UserEntity u SET
+            u.name = :name,
+            u.email = :email,
+            u.login = :login,
+            u.status = :status
+        WHERE u.id = :id
+        """)
+    int update(
+            @Param("id") UUID id,
+            @Param("name") String name,
+            @Param("email") String email,
+            @Param("login") String login,
+            @Param("status") String status
+    );
 
 }

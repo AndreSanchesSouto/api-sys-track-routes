@@ -19,11 +19,8 @@ public record UserResponseDTO (
         String name,
         String email,
         String login,
-        String password,
         String status,
-        Role role,
-        LocalDate createdDt,
-        LocalDate inactivatedDt
+        Role role
 ){
     public static UserResponseDTO create(UserEntity user) {
         return new UserResponseDTO(
@@ -31,11 +28,8 @@ public record UserResponseDTO (
                 user.getName(),
                 user.getEmail(),
                 user.getLogin(),
-                user.getPassword(),
                 user.getStatus(),
-                user.getRole(),
-                user.getCreatedDt(),
-                user.getInactivatedDt()
+                user.getRole()
         );
     }
 }
