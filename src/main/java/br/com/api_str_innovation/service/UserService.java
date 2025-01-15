@@ -120,6 +120,7 @@ public class UserService {
 
         user.setInactivatedDt(LocalDate.now());
         repository.save(user);
+
     }
 
 }
