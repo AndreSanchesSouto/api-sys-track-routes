@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.security;
+package br.com.api_str_innovation.infra.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,9 +34,9 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorized -> authorized
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/driver").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/shipping-manager").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/vehicle").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/user").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

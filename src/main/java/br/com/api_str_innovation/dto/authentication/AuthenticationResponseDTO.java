@@ -9,6 +9,7 @@ public class AuthenticationResponseDTO {
     @Getter
     private String token;
     private UserEntity employee;
+    @Getter
     private UserResponseDTO response;
 
     public AuthenticationResponseDTO(String token, UserEntity employee) {
@@ -18,15 +19,9 @@ public class AuthenticationResponseDTO {
                 employee.getName(),
                 employee.getEmail(),
                 employee.getLogin(),
-                employee.getPassword(),
                 employee.getStatus(),
-                employee.getRole(),
-                employee.getCreatedDt(),
-                employee.getInactivatedDt()
+                employee.getRole()
         );
     }
 
-    public Object getEmployee() {
-        return response;
-    }
 }

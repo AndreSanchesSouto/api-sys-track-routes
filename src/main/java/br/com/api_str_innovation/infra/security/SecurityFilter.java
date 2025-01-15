@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.security;
+package br.com.api_str_innovation.infra.security;
 
 import br.com.api_str_innovation.repository.UserRepository;
 import br.com.api_str_innovation.service.TokenService;
@@ -29,10 +29,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if(token != null) {
             var login = tokenService.validateToken(token);
-            UserDetails user = findByLogin(login);
-
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                UserDetails user = findByLogin(login);
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (NullPointerException exception) {
+                System.out.printf("The token: %s expired%n", token);
+            }
         }
         filterChain.doFilter(request, response);
     }

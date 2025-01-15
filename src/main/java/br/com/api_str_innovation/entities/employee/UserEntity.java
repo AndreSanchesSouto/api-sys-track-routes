@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.entities.employee;
 
 import br.com.api_str_innovation.dto.employee.UserRequestDTO;
-import br.com.api_str_innovation.security.Encrypter;
+import br.com.api_str_innovation.infra.security.Encrypter;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

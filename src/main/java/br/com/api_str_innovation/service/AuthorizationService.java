@@ -3,8 +3,9 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
 import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
 import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
-import br.com.api_str_innovation.security.Encrypter;
+import br.com.api_str_innovation.infra.security.Encrypter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class AuthorizationService implements UserDetailsService {
 
     @Autowired
-    UserRepository repository;
+    private UserRepository repository;
 
     @Autowired
     private TokenService tokenService;
@@ -29,10 +30,10 @@ public class AuthorizationService implements UserDetailsService {
 
     public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
         String hashPassword = Encrypter.encrypt(credentials.password());
-        UserEntity employee = authIdentity(credentials.login(), hashPassword);
+        UserEntity employee = repository.authIdentity(credentials.login(), hashPassword);
 
         if(employee == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthenticationResponseDTO("Não encontado",null));
+            verifyUserRegistered(credentials.login());
         }
 
         String token = tokenService.generateToken(employee);
@@ -40,8 +41,11 @@ public class AuthorizationService implements UserDetailsService {
 
     }
 
-    private UserEntity authIdentity(String login, String hashPassword) {
-        return repository.authIdentity(login, hashPassword);
+    private void verifyUserRegistered(String login) {
+        String error = repository.findByLogin(login) != null ?
+                "Senha incorreta" :
+                "Usuário não cadastrado";
+        throw new UserException(error);
     }
 
     private UserDetails findByLogin(String username) {

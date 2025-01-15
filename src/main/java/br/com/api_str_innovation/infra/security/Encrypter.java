@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.security;
+package br.com.api_str_innovation.infra.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
