@@ -60,4 +60,15 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             @Param("status") String status
     );
 
+    @Modifying
+    @Query("""
+            UPDATE UserEntity u SET
+                u.inactivatedDt = :now
+            WHERE u.id = :id
+            """)
+    int inactivateUser(
+            @Param("id") UUID id,
+            @Param("now") LocalDate now
+    );
+
 }
