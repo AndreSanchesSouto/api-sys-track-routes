@@ -1,9 +1,9 @@
 package br.com.api_str_innovation.dto.employee;
 
-import br.com.api_str_innovation.entities.employee.Role;
+import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public record UserRequestDTO(
             @NotBlank
@@ -16,7 +16,7 @@ public record UserRequestDTO(
             @NotBlank
             String password,
             @NotBlank
-            String status,
+            Status status,
             @NotBlank
             Role role
 ) {

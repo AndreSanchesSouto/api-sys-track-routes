@@ -1,17 +1,9 @@
 package br.com.api_str_innovation.dto.employee;
 
-import br.com.api_str_innovation.entities.employee.Role;
-import br.com.api_str_innovation.entities.employee.UserEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserEntity;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 public record UserResponseDTO (
@@ -19,7 +11,7 @@ public record UserResponseDTO (
         String name,
         String email,
         String login,
-        String status,
+        Status status,
         Role role
 ){
     public static UserResponseDTO create(UserEntity user) {
@@ -28,7 +20,7 @@ public record UserResponseDTO (
                 user.getName(),
                 user.getEmail(),
                 user.getLogin(),
-                user.getStatus(),
+                Status.valueOf(user.getStatus()),
                 user.getRole()
         );
     }

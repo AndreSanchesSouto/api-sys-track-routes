@@ -1,7 +1,8 @@
 package br.com.api_str_innovation.dto.authentication;
 
 import br.com.api_str_innovation.dto.employee.UserResponseDTO;
-import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import lombok.Getter;
 
 public class AuthenticationResponseDTO {
@@ -12,6 +13,7 @@ public class AuthenticationResponseDTO {
     @Getter
     private UserResponseDTO response;
 
+
     public AuthenticationResponseDTO(String token, UserEntity employee) {
         this.token = token;
         this.response = new UserResponseDTO(
@@ -19,7 +21,7 @@ public class AuthenticationResponseDTO {
                 employee.getName(),
                 employee.getEmail(),
                 employee.getLogin(),
-                employee.getStatus(),
+                Status.valueOf(employee.getStatus()),
                 employee.getRole()
         );
     }

@@ -3,7 +3,6 @@ package br.com.api_str_innovation.controller;
 import br.com.api_str_innovation.dto.employee.UserRequestDTO;
 import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
-import br.com.api_str_innovation.entities.employee.UserEntity;
 import br.com.api_str_innovation.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -3,7 +3,8 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.employee.UserRequestDTO;
 import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
-import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -91,7 +92,7 @@ public class UserService {
                 data.name() == null ? userData.getName() : data.name(),
                 data.email() == null ? userData.getEmail() : data.email(),
                 data.login() == null ? userData.getLogin() : data.login(),
-                data.status() == null ? userData.getStatus() : data.status()
+                data.status() == null ? Status.valueOf(userData.getStatus()) : data.status()
         );
     }
 
@@ -105,7 +106,7 @@ public class UserService {
                 data.name() == null ? userData.getName() : data.name(),
                 data.email() == null ? userData.getEmail() : data.email(),
                 data.login() == null ? userData.getLogin() : data.login(),
-                data.status() == null ? userData.getStatus() : data.status()
+                data.status() == null ? Status.valueOf(userData.getStatus()) : data.status()
         );
     }
 

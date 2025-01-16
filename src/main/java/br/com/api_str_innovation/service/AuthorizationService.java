@@ -2,7 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
 import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
-import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
 import br.com.api_str_innovation.infra.security.Encrypter;
