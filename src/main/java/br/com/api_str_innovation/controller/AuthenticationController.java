@@ -2,8 +2,7 @@ package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
 import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
-import br.com.api_str_innovation.dto.employee.UserRequestDTO;
-import br.com.api_str_innovation.dto.employee.UserResponseDTO;
+import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.service.AuthorizationService;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;

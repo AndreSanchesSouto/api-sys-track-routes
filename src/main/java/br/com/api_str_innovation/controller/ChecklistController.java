@@ -1,7 +1,6 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequestDTO;
-import br.com.api_str_innovation.dto.employee.UserResponseDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;

@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.employee.UserRequestDTO;
-import br.com.api_str_innovation.dto.employee.UserResponseDTO;
+import br.com.api_str_innovation.dto.user.UserRequestDTO;
+import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.entities.user.UserEntity;

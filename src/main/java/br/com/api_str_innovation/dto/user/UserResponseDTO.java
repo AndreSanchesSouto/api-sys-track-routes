@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.dto.employee;
+package br.com.api_str_innovation.dto.user;
 
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.Status;
@@ -20,7 +20,7 @@ public record UserResponseDTO (
                 user.getName(),
                 user.getEmail(),
                 user.getLogin(),
-                Status.valueOf(user.getStatus()),
+                Status.valueOf(user.getStatus().toUpperCase()),
                 user.getRole()
         );
     }
