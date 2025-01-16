@@ -1,6 +1,7 @@
-package br.com.api_str_innovation.dto.employee;
+package br.com.api_str_innovation.dto.user;
 
-import br.com.api_str_innovation.entities.employee.Role;
+import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,9 +16,9 @@ public record UserRequestDTO(
             String login,
             @NotBlank
             String password,
-            @NotBlank
-            String status,
-            @NotBlank
+            @NotNull
+            Status status,
+            @NotNull
             Role role
 ) {
     @Override

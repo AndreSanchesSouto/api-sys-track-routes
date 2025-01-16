@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;

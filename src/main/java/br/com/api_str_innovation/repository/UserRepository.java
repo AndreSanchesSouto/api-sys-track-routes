@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.dto.employee.UserResponseDTO;
-import br.com.api_str_innovation.entities.employee.UserEntity;
+import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,7 +57,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             @Param("name") String name,
             @Param("email") String email,
             @Param("login") String login,
-            @Param("status") String status
+            @Param("status") Status status
     );
 
     @Modifying

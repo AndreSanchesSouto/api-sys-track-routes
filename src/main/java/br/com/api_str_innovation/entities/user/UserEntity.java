@@ -1,6 +1,6 @@
-package br.com.api_str_innovation.entities.employee;
+package br.com.api_str_innovation.entities.user;
 
-import br.com.api_str_innovation.dto.employee.UserRequestDTO;
+import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.infra.security.Encrypter;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -72,7 +72,7 @@ public class UserEntity implements UserDetails {
         this.setEmail(data.email());
         this.setLogin(data.login());
         this.setPassword(Encrypter.encrypt(data.password()));
-        this.setStatus(data.status());
+        this.setStatus(data.status().getStatus());
         this.setRole(data.role());
     }
 

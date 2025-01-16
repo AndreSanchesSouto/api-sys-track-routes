@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.entities.employee;
+package br.com.api_str_innovation.entities.user;
 
 public enum Role {
     GENERAL_MANAGER("general_manager"),

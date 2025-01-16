@@ -2,8 +2,7 @@ package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.authentication.AuthenticationRequestDTO;
 import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
-import br.com.api_str_innovation.dto.employee.UserRequestDTO;
-import br.com.api_str_innovation.dto.employee.UserResponseDTO;
+import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.service.AuthorizationService;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
@@ -30,6 +29,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid UserRequestDTO data) {
+        System.out.println(data);
         this.service.post(data);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
