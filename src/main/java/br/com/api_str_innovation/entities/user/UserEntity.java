@@ -5,6 +5,7 @@ import br.com.api_str_innovation.infra.security.Encrypter;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity implements UserDetails {
 
     @Id
@@ -51,7 +53,7 @@ public class UserEntity implements UserDetails {
 
     @Setter
     @Column(nullable = false)
-    private Role role;
+    private String role;
 
     @Column(nullable = false, updatable = false)
     private final LocalDate createdDt = LocalDate.now();
@@ -59,25 +61,17 @@ public class UserEntity implements UserDetails {
     @Setter
     private LocalDate inactivatedDt;
 
-    public UserEntity(String name, String email, String login, String hashPassword, Role role) {
-        this.setName(name);
-        this.setEmail(email);
-        this.setLogin(login);
-        this.setPassword(hashPassword);
-        this.setRole(role);
-    }
-
     public UserEntity(@Valid UserRequestDTO data) {
         this.setName(data.name());
         this.setEmail(data.email());
         this.setLogin(data.login());
         this.setPassword(Encrypter.encrypt(data.password()));
         this.setStatus(data.status().getStatus());
-        this.setRole(data.role());
+        this.setRole(data.role().getRole());
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.getRole() == Role.GENERAL_MANAGER){
+        if(this.getRole().equals(Role.GENERAL_MANAGER.getRole())){
             return List.of(
                         new SimpleGrantedAuthority("ROLE_ADMIN"),
                         new SimpleGrantedAuthority("ROLE_USER")

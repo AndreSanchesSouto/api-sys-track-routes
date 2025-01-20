@@ -21,7 +21,7 @@ public record UserResponseDTO (
                 user.getEmail(),
                 user.getLogin(),
                 Status.valueOf(user.getStatus().toUpperCase()),
-                user.getRole()
+                Role.valueOf(user.getRole().toUpperCase())
         );
     }
 }
