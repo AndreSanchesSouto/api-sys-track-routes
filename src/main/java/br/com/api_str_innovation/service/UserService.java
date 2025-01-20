@@ -100,7 +100,6 @@ public class UserService {
     public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
         existsMailOrLogin(data);
         UserEntity userData = findById(id);
-
         repository.update(
                 id,
                 data.name() == null ? userData.getName() : data.name(),

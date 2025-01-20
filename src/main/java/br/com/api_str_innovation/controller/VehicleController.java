@@ -60,6 +60,11 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<VehicleResponseDTO> patch(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);

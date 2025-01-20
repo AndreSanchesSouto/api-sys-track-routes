@@ -1,13 +1,11 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
-import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
-import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
@@ -37,45 +35,39 @@ public class VehicleService {
     @Autowired
     private ChecklistLogRepository checklistLogRepository;
 
+    public VehicleEntity getById(UUID id) {
+        return vehicleRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+    }
+
     private void existsPlateNumber(String licensePlateNumber) {
         if (vehicleRepository.findByLicensePlateNumber(licensePlateNumber).isPresent() ) {
             throw new VehicleException(String.format("A placa '%s' já está em uso.", licensePlateNumber));
         }
-
     }
 
     public List<VehicleResponseDTO> getAll() {
-        List<VehicleResponseDTO> vehicle = vehicleRepository
+        return vehicleRepository
                 .findAll()
                 .stream()
                 .map(VehicleResponseDTO::new)
                 .toList();
-        return vehicle;
     }
 
     public Integer count() {
-        Integer count = vehicleRepository
+        return vehicleRepository
                 .findActiveVehicles()
                 .toArray()
                 .length;
-        return count;
     }
 
     @GetMapping(value = "/page")
     public Page<VehicleResponseDTO> getPaged(Pageable pageable) {
-        Page<VehicleResponseDTO> vehicle = vehicleRepository
+        return vehicleRepository
                 .findActiveVehicles(pageable)
                 .map(VehicleResponseDTO::new);
-        return vehicle;
     }
-
-    public VehicleEntity getById(UUID id) {
-        VehicleEntity vehicle = vehicleRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
-        return vehicle;
-    }
-
 
     public void post(@Valid VehicleRequestDTO data) {
         existsPlateNumber(data.licensePlateNumber());
@@ -98,7 +90,24 @@ public class VehicleService {
         checklistLogRepository.save(checklistLog);
     }
 
+    @Transactional
     public VehicleResponseDTO put(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
+        existsPlateNumber(data.licensePlateNumber());
+        VehicleEntity vehicle = getById(id);
+
+        vehicleRepository.update(
+                id,
+                data.licensePlateNumber() == null ? vehicle.getLicensePlateNumber() : data.licensePlateNumber(),
+                data.sideNumber() == null ? vehicle.getSideNumber() : data.sideNumber(),
+                data.model() == null ? vehicle.getModel() : data.model(),
+                data.brand() == null ? vehicle.getBrand() : data.brand(),
+                data.yearDt() == null ? vehicle.getYearDt() : data.yearDt(),
+                data.status() == null ? vehicle.getStatus() : data.status().getStatus()
+        );
+        return new VehicleResponseDTO(vehicle);
+    }
+
+    public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
         VehicleEntity vehicle = this.getById(id);
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());

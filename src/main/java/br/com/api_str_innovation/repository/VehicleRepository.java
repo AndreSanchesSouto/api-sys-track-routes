@@ -16,15 +16,49 @@ import java.util.UUID;
 @Repository
 public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
-    @Query("SELECT v FROM VehicleEntity v WHERE v.inactivatedDt IS NULL")
+    @Query("""
+            SELECT v FROM VehicleEntity v
+                WHERE v.inactivatedDt IS NULL
+            """)
     Page<VehicleEntity> findActiveVehicles(Pageable pageable);
 
-    @Query("SELECT v FROM VehicleEntity v WHERE v.inactivatedDt IS NULL")
+    @Query("""
+            SELECT v FROM VehicleEntity v
+                WHERE v.inactivatedDt IS NULL
+            """)
     List<VehicleEntity> findActiveVehicles();
 
     Optional<VehicleEntity> findByLicensePlateNumber(String licensePlateNumber);
 
     @Modifying
-    @Query("UPDATE VehicleEntity v SET v.status = :status WHERE v.id = :vehicleId")
-    void updateStatusVehicle(@Param("status") String status, @Param("vehicleId") UUID vehicleId);
+    @Query("""
+            UPDATE VehicleEntity v
+                SET v.status = :status
+            WHERE v.id = :vehicleId
+            """)
+    void updateStatusVehicle(
+            @Param("status") String status,
+            @Param("vehicleId") UUID vehicleId
+    );
+
+    @Modifying
+    @Query("""
+            UPDATE VehicleEntity v SET
+                v.licensePlateNumber = :licensePlateNumber,
+                v.sideNumber = :sideNumber,
+                v.model = :model,
+                v.brand = :brand,
+                v.yearDt = :yearDt,
+                v.status = :status
+            WHERE v.id = :id
+            """)
+    int update(
+            @Param("id") UUID id,
+            @Param("licensePlateNumber") String licensePlateNumber,
+            @Param("sideNumber") String sideNumber,
+            @Param("model") String model,
+            @Param("brand") String brand,
+            @Param("yearDt") String yearDt,
+            @Param("status") String status
+    );
 }
