@@ -1,11 +1,14 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
+import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -33,6 +36,13 @@ public class VehicleService {
 
     @Autowired
     private ChecklistLogRepository checklistLogRepository;
+
+    private void existsPlateNumber(String licensePlateNumber) {
+        if (vehicleRepository.findByLicensePlateNumber(licensePlateNumber).isPresent() ) {
+            throw new VehicleException(String.format("A placa '%s' já está em uso.", licensePlateNumber));
+        }
+
+    }
 
     public List<VehicleResponseDTO> getAll() {
         List<VehicleResponseDTO> vehicle = vehicleRepository
@@ -66,9 +76,10 @@ public class VehicleService {
         return vehicle;
     }
 
+
     public void post(@Valid VehicleRequestDTO data) {
-        VehicleEntity vehicleData = new VehicleEntity(data);
-        vehicleRepository.save(vehicleData);
+        existsPlateNumber(data.licensePlateNumber());
+        vehicleRepository.save(new VehicleEntity(data));
     }
 
     @Transactional
@@ -94,7 +105,7 @@ public class VehicleService {
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicle.setStatus(data.status());
+//        vehicle.setStatus(data.status());
         vehicleRepository.save(vehicle);
         return new VehicleResponseDTO(vehicle);
     }

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -20,6 +21,8 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
     @Query("SELECT v FROM VehicleEntity v WHERE v.inactivatedDt IS NULL")
     List<VehicleEntity> findActiveVehicles();
+
+    Optional<VehicleEntity> findByLicensePlateNumber(String licensePlateNumber);
 
     @Modifying
     @Query("UPDATE VehicleEntity v SET v.status = :status WHERE v.id = :vehicleId")

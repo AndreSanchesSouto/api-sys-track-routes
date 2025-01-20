@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.infra.exception;
 
 import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.exceptions.VehicleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,9 +20,21 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 exception.getMessage()
         );
 
-        return ResponseEntity.
-                status(response.getStatus()).
-                body(response);
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(response);
+    }
+
+    @ExceptionHandler(VehicleException.class)
+    private ResponseEntity<ExceptionMessage> vehicleRegisteredHandle(VehicleException exception) {
+        ExceptionMessage response = new ExceptionMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage()
+        );
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(response);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -31,9 +44,9 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 exception.getMessage()
         );
-        return ResponseEntity.
-                status(response.getStatus()).
-                body(response);
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(response);
     }
 
 //    @ExceptionHandler(NullPointerException.class)

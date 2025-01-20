@@ -49,7 +49,7 @@ public class UserService {
         return repository
                 .findAll()
                 .stream()
-                .map(UserResponseDTO::create)
+                .map(UserResponseDTO::new)
                 .toList();
     }
 
@@ -64,12 +64,12 @@ public class UserService {
     public Page<UserResponseDTO> getPaged(Pageable pageable) {
         return repository
                 .findActiveUsers(pageable)
-                .map(UserResponseDTO::create);
+                .map(UserResponseDTO::new);
     }
 
     public UserResponseDTO getById(UUID id) {
         UserEntity user = findById(id);
-        return UserResponseDTO.create(user);
+        return new UserResponseDTO(user);
     }
 
     public void post(@Valid UserRequestDTO data) {

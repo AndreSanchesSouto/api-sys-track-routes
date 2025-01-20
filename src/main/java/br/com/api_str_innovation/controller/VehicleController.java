@@ -45,12 +45,11 @@ public class VehicleController {
     @PostMapping
     public ResponseEntity<String> post(@RequestBody VehicleRequestDTO data) {
         this.service.post(data);
-        // There is an error when the message show "Criado com sucesso", but the driver wasn`t created.
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
     @PostMapping("/{vehicleId}/checklist")
-    public ResponseEntity<String> post(@PathVariable UUID vehicleId,
+    public ResponseEntity<String> postChecklist(@PathVariable UUID vehicleId,
                                                 @RequestBody ChecklistRequestDTO data) {
         this.service.createChecklist(vehicleId, data);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
@@ -61,11 +60,9 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
-    // inactivate driver
     @DeleteMapping("/{id}")
     public ResponseEntity<String> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);
-        // There is an error when the message show "Inativado com sucesso", but the driver wasn`t inactivated.
         return ResponseEntity.status(HttpStatus.OK).body("Inativado com sucesso");
     }
 
