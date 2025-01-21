@@ -27,16 +27,16 @@ public class ChecklistLogEntity {
     private String spareTire;
 
     @Column(nullable = false)
-    private Double kilometersNumber;
+    private String kilometersNumber;
 
     @Column(nullable = false)
-    private Double fuelLevel;
+    private String fuelLevel;
 
     @Column(nullable = false)
-    private Double oilLevel;
+    private String oilLevel;
 
     @Column(nullable = false)
-    private Double waterLevel;
+    private String waterLevel;
 
     @Column(nullable = false)
     private String suspension;

@@ -1,6 +1,5 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -45,13 +43,6 @@ public class VehicleController {
     @PostMapping
     public ResponseEntity<String> post(@RequestBody VehicleRequestDTO data) {
         this.service.post(data);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
-    }
-
-    @PostMapping("/{vehicleId}/checklist")
-    public ResponseEntity<String> postChecklist(@PathVariable UUID vehicleId,
-                                                @RequestBody ChecklistRequestDTO data) {
-        this.service.createChecklist(vehicleId, data);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
