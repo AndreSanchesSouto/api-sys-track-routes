@@ -64,7 +64,7 @@ public class VehicleEntity {
         this.model = data.model();
         this.brand = data.brand();
         this.yearDt = data.yearDt();
-        this.status = getStatus() == null ? "WAITING" : getStatus();
+        this.status = getStatus() == null ? Status.WAITING.getStatus() : getStatus();
     }
 
 }

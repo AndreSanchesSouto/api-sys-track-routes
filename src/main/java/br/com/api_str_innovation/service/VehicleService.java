@@ -38,7 +38,7 @@ public class VehicleService {
     public VehicleEntity getById(UUID id) {
         return vehicleRepository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
     }
 
     private void existsPlateNumber(String licensePlateNumber) {
@@ -95,32 +95,40 @@ public class VehicleService {
         existsPlateNumber(data.licensePlateNumber());
         VehicleEntity vehicle = getById(id);
 
-        vehicleRepository.update(
-                id,
-                data.licensePlateNumber() == null ? vehicle.getLicensePlateNumber() : data.licensePlateNumber(),
-                data.sideNumber() == null ? vehicle.getSideNumber() : data.sideNumber(),
-                data.model() == null ? vehicle.getModel() : data.model(),
-                data.brand() == null ? vehicle.getBrand() : data.brand(),
-                data.yearDt() == null ? vehicle.getYearDt() : data.yearDt(),
-                data.status() == null ? vehicle.getStatus() : data.status().getStatus()
-        );
-        return new VehicleResponseDTO(vehicle);
-    }
-
-    public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
-        VehicleEntity vehicle = this.getById(id);
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-//        vehicle.setStatus(data.status());
+        vehicle.setStatus(data.status().getStatus());
         vehicleRepository.save(vehicle);
+
         return new VehicleResponseDTO(vehicle);
     }
 
+    @Transactional
+    public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
+        VehicleEntity vehicle = this.getById(id);
+
+        vehicle.setLicensePlateNumber(data.licensePlateNumber());
+        vehicle.setSideNumber(data.sideNumber());
+        vehicle.setModel(data.model());
+        vehicle.setBrand(data.brand());
+        vehicle.setYearDt(data.yearDt());
+        vehicle.setStatus(data.status().getStatus());
+        vehicleRepository.save(vehicle);
+
+        return new VehicleResponseDTO(vehicle);
+    }
+
+    @Transactional
     public void inactivate(UUID id) {
         VehicleEntity vehicle = getById(id);
+
+        if(vehicle.getInactivatedDt() != null) {
+            throw new VehicleException("Veículo já inativo");
+        }
+
         vehicle.setInactivatedDt(LocalDateTime.now());
         vehicleRepository.save(vehicle);
     }

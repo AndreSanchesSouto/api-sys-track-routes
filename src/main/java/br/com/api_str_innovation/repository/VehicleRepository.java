@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,24 +43,4 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             @Param("vehicleId") UUID vehicleId
     );
 
-    @Modifying
-    @Query("""
-            UPDATE VehicleEntity v SET
-                v.licensePlateNumber = :licensePlateNumber,
-                v.sideNumber = :sideNumber,
-                v.model = :model,
-                v.brand = :brand,
-                v.yearDt = :yearDt,
-                v.status = :status
-            WHERE v.id = :id
-            """)
-    int update(
-            @Param("id") UUID id,
-            @Param("licensePlateNumber") String licensePlateNumber,
-            @Param("sideNumber") String sideNumber,
-            @Param("model") String model,
-            @Param("brand") String brand,
-            @Param("yearDt") String yearDt,
-            @Param("status") String status
-    );
 }
