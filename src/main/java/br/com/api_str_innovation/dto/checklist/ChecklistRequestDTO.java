@@ -1,22 +1,42 @@
 package br.com.api_str_innovation.dto.checklist;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.UUID;
 
-public record ChecklistRequestDTO(String tire,
-                                  String spareTire,
-                                  Double kilometersNumber,
-                                  Double fuelLevel,
-                                  Double oilLevel,
-                                  Double waterLevel,
-                                  String suspension,
-                                  String brakes,
-                                  String lights,
-                                  String glasses,
-                                  String windshieldWipers,
-                                  String jack,
-                                  String toolbox,
-                                  String documentation,
-                                  String observationNotes,
-                                  UUID employeeId,
-                                  String employeeRole) {
-}
+public record ChecklistRequestDTO(
+        @NotBlank
+        String tire,
+        @NotBlank
+        String spareTire,
+        @NotBlank
+        String kilometersNumber,
+        @NotBlank
+        String fuelLevel,
+        @NotBlank
+        String oilLevel,
+        @NotBlank
+        String waterLevel,
+        @NotBlank
+        String suspension,
+        @NotBlank
+        String brakes,
+        @NotBlank
+        String lights,
+        @NotBlank
+        String glasses,
+        @NotBlank
+        String windshieldWipers,
+        @NotBlank
+        String jack,
+        @NotBlank
+        String toolbox,
+        @NotBlank
+        String documentation,
+        @NotBlank
+        String observationNotes,
+        @NotBlank
+        UUID employeeId,
+        @NotBlank
+        String employeeRole
+) { }

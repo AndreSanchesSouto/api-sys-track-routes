@@ -1,10 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
-import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
-import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
@@ -28,12 +25,6 @@ public class VehicleService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-
-    @Autowired
-    private ChecklistRepository checklistRepository;
-
-    @Autowired
-    private ChecklistLogRepository checklistLogRepository;
 
     public VehicleEntity getById(UUID id) {
         return vehicleRepository
@@ -72,22 +63,6 @@ public class VehicleService {
     public void post(@Valid VehicleRequestDTO data) {
         existsPlateNumber(data.licensePlateNumber());
         vehicleRepository.save(new VehicleEntity(data));
-    }
-
-    @Transactional
-    public void createChecklist(UUID vehicleId, @Valid ChecklistRequestDTO data) {
-        VehicleEntity vehicle = getById(vehicleId);
-        vehicle.setStatus(changeStatusVehicle(data));
-        vehicleRepository.updateStatusVehicle(vehicle.getStatus(), vehicleId);
-
-        ChecklistEntity checklist = new ChecklistEntity(data);
-        checklist.setVehicle(vehicle);
-        checklistRepository.save(checklist);
-
-        ChecklistLogEntity checklistLog = new ChecklistLogEntity(data);
-        checklistLog.setVehicleId(vehicleId);
-        checklistLog.setVehicleStatus(vehicle.getStatus());
-        checklistLogRepository.save(checklistLog);
     }
 
     @Transactional
@@ -131,22 +106,6 @@ public class VehicleService {
 
         vehicle.setInactivatedDt(LocalDateTime.now());
         vehicleRepository.save(vehicle);
-    }
-
-    private static String changeStatusVehicle(ChecklistRequestDTO data) {
-        if (data.tire().equals("missing")
-        || data.tire().equals("damaged")
-        || data.fuelLevel() <= 5
-        || data.oilLevel() <= 4
-        || data.waterLevel() <= 2
-        || data.brakes().equals("damaged")
-        || data.lights().equals("damaged")
-        || data.glasses().equals("damaged")
-        || data.documentation().equals("false")) {
-            return "INACTIVE";
-        } else {
-            return "ACTIVE";
-        }
     }
 
 }

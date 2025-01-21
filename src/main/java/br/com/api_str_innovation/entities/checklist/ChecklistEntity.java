@@ -24,77 +24,62 @@ public class ChecklistEntity {
     private UUID id;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String tire;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String spareTire;
 
     @Setter
-    @NotNull
     @Column(nullable = false)
-    private Double kilometersNumber;
+    private String kilometersNumber;
 
     @Setter
-    @NotNull
     @Column(nullable = false)
-    private Double fuelLevel;
+    private String fuelLevel;
 
     @Setter
-    @NotNull
     @Column(nullable = false)
-    private Double oilLevel;
+    private String oilLevel;
 
     @Setter
-    @NotNull
     @Column(nullable = false)
-    private Double waterLevel;
+    private String waterLevel;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String suspension;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String brakes;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String lights;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String glasses;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String windshieldWipers;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String jack;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String toolbox;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String documentation;
 
     @Setter
-    @NotBlank
     private String observationNotes;
 
     @Column(nullable = false, updatable = false)
