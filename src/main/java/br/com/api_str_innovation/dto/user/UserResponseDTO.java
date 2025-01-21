@@ -14,14 +14,14 @@ public record UserResponseDTO (
         Status status,
         Role role
 ){
-    public static UserResponseDTO create(UserEntity user) {
-        return new UserResponseDTO(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getLogin(),
-                Status.valueOf(user.getStatus().toUpperCase()),
-                Role.valueOf(user.getRole().toUpperCase())
+    public UserResponseDTO (UserEntity user) {
+        this(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getLogin(),
+            Status.valueOf(user.getStatus().toUpperCase()),
+            Role.valueOf(user.getRole().toUpperCase())
         );
     }
 }

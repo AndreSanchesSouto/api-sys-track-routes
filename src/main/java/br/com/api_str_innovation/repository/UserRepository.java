@@ -43,32 +43,4 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findByEmail(String email);
 
-    @Modifying
-    @Query("""
-        UPDATE UserEntity u SET
-            u.name = :name,
-            u.email = :email,
-            u.login = :login,
-            u.status = :status
-        WHERE u.id = :id
-        """)
-    int update(
-            @Param("id") UUID id,
-            @Param("name") String name,
-            @Param("email") String email,
-            @Param("login") String login,
-            @Param("status") Status status
-    );
-
-    @Modifying
-    @Query("""
-            UPDATE UserEntity u SET
-                u.inactivatedDt = :now
-            WHERE u.id = :id
-            """)
-    int inactivateUser(
-            @Param("id") UUID id,
-            @Param("now") LocalDate now
-    );
-
 }

@@ -22,32 +22,26 @@ public class VehicleEntity {
     private UUID id;
 
     @Setter
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String licensePlateNumber;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String sideNumber;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String model;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String brand;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String yearDt;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String status;
 
@@ -70,7 +64,7 @@ public class VehicleEntity {
         this.model = data.model();
         this.brand = data.brand();
         this.yearDt = data.yearDt();
-        this.status = getStatus() == null ? "WAITING" : getStatus();
+        this.status = getStatus() == null ? Status.WAITING.getStatus() : getStatus();
     }
 
 }

@@ -3,9 +3,9 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
-import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class UserService {
 
     private UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
         );
     }
 
@@ -49,7 +49,7 @@ public class UserService {
         return repository
                 .findAll()
                 .stream()
-                .map(UserResponseDTO::create)
+                .map(UserResponseDTO::new)
                 .toList();
     }
 
@@ -64,12 +64,12 @@ public class UserService {
     public Page<UserResponseDTO> getPaged(Pageable pageable) {
         return repository
                 .findActiveUsers(pageable)
-                .map(UserResponseDTO::create);
+                .map(UserResponseDTO::new);
     }
 
     public UserResponseDTO getById(UUID id) {
         UserEntity user = findById(id);
-        return UserResponseDTO.create(user);
+        return new UserResponseDTO(user);
     }
 
     public void post(@Valid UserRequestDTO data) {
@@ -85,41 +85,38 @@ public class UserService {
     @Transactional
     public void patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
         existsMailOrLogin(data);
-        UserEntity userData = findById(id);
+        UserEntity user = findById(id);
 
-        repository.update(
-                id,
-                data.name() == null ? userData.getName() : data.name(),
-                data.email() == null ? userData.getEmail() : data.email(),
-                data.login() == null ? userData.getLogin() : data.login(),
-                data.status() == null ? Status.valueOf(userData.getStatus()) : data.status()
-        );
+        user.setName(data.name());
+        user.setEmail(data.email());
+        user.setLogin(data.login());
+        user.setStatus(data.status().getStatus());
+        repository.save(user);
     }
 
     @Transactional
     public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
         existsMailOrLogin(data);
-        UserEntity userData = findById(id);
+        UserEntity user = findById(id);
 
-        repository.update(
-                id,
-                data.name() == null ? userData.getName() : data.name(),
-                data.email() == null ? userData.getEmail() : data.email(),
-                data.login() == null ? userData.getLogin() : data.login(),
-                data.status() == null ? Status.valueOf(userData.getStatus()) : data.status()
-        );
+        user.setName(data.name());
+        user.setEmail(data.email());
+        user.setLogin(data.login());
+        user.setStatus(data.status().getStatus());
+        repository.save(user);
+
     }
 
     @Transactional
     public void inactivate(UUID id) {
         UserEntity user = findById(id);
 
-        if (user.getInactivatedDt() != null) {
-            throw new UserException("Cliente já inativo");
+        if(user.getInactivatedDt() != null) {
+            throw new VehicleException("Veículo já inativo");
         }
 
-        repository.inactivateUser(id, LocalDate.now());
-
+        user.setInactivatedDt(LocalDate.now());
+        repository.save(user);
     }
 
 }

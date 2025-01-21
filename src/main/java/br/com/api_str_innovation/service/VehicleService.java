@@ -6,6 +6,7 @@ import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -34,41 +35,43 @@ public class VehicleService {
     @Autowired
     private ChecklistLogRepository checklistLogRepository;
 
+    public VehicleEntity getById(UUID id) {
+        return vehicleRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
+    }
+
+    private void existsPlateNumber(String licensePlateNumber) {
+        if (vehicleRepository.findByLicensePlateNumber(licensePlateNumber).isPresent() ) {
+            throw new VehicleException(String.format("A placa '%s' já está em uso.", licensePlateNumber));
+        }
+    }
+
     public List<VehicleResponseDTO> getAll() {
-        List<VehicleResponseDTO> vehicle = vehicleRepository
+        return vehicleRepository
                 .findAll()
                 .stream()
                 .map(VehicleResponseDTO::new)
                 .toList();
-        return vehicle;
     }
 
     public Integer count() {
-        Integer count = vehicleRepository
+        return vehicleRepository
                 .findActiveVehicles()
                 .toArray()
                 .length;
-        return count;
     }
 
     @GetMapping(value = "/page")
     public Page<VehicleResponseDTO> getPaged(Pageable pageable) {
-        Page<VehicleResponseDTO> vehicle = vehicleRepository
+        return vehicleRepository
                 .findActiveVehicles(pageable)
                 .map(VehicleResponseDTO::new);
-        return vehicle;
-    }
-
-    public VehicleEntity getById(UUID id) {
-        VehicleEntity vehicle = vehicleRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
-        return vehicle;
     }
 
     public void post(@Valid VehicleRequestDTO data) {
-        VehicleEntity vehicleData = new VehicleEntity(data);
-        vehicleRepository.save(vehicleData);
+        existsPlateNumber(data.licensePlateNumber());
+        vehicleRepository.save(new VehicleEntity(data));
     }
 
     @Transactional
@@ -87,20 +90,45 @@ public class VehicleService {
         checklistLogRepository.save(checklistLog);
     }
 
+    @Transactional
     public VehicleResponseDTO put(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
-        VehicleEntity vehicle = this.getById(id);
+        existsPlateNumber(data.licensePlateNumber());
+        VehicleEntity vehicle = getById(id);
+
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicle.setStatus(data.status());
+        vehicle.setStatus(data.status().getStatus());
         vehicleRepository.save(vehicle);
+
         return new VehicleResponseDTO(vehicle);
     }
 
+    @Transactional
+    public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
+        VehicleEntity vehicle = this.getById(id);
+
+        vehicle.setLicensePlateNumber(data.licensePlateNumber());
+        vehicle.setSideNumber(data.sideNumber());
+        vehicle.setModel(data.model());
+        vehicle.setBrand(data.brand());
+        vehicle.setYearDt(data.yearDt());
+        vehicle.setStatus(data.status().getStatus());
+        vehicleRepository.save(vehicle);
+
+        return new VehicleResponseDTO(vehicle);
+    }
+
+    @Transactional
     public void inactivate(UUID id) {
         VehicleEntity vehicle = getById(id);
+
+        if(vehicle.getInactivatedDt() != null) {
+            throw new VehicleException("Veículo já inativo");
+        }
+
         vehicle.setInactivatedDt(LocalDateTime.now());
         vehicleRepository.save(vehicle);
     }
