@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.dto.vehicle;
 
 
+import br.com.api_str_innovation.entities.vehicle.Status;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ public record VehicleResponseDTO(UUID id,
                                  String model,
                                  String brand,
                                  String yearDt,
-                                 String status,
+                                 Status status,
                                  LocalDateTime createdDt,
                                  LocalDateTime inactivatedDt) {
 
@@ -23,7 +24,7 @@ public record VehicleResponseDTO(UUID id,
                 vehicle.getModel(),
                 vehicle.getBrand(),
                 vehicle.getYearDt(),
-                vehicle.getStatus(),
+                Status.valueOf(vehicle.getStatus().toUpperCase()),
                 vehicle.getCreatedDt(),
                 vehicle.getInactivatedDt());
     }
