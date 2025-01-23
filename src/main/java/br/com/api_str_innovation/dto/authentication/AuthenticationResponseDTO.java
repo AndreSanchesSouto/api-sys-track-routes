@@ -12,12 +12,12 @@ public class AuthenticationResponseDTO {
     private String token;
     private UserEntity employee;
     @Getter
-    private UserResponseDTO response;
+    private UserResponseDTO user;
 
 
     public AuthenticationResponseDTO(String token, UserEntity employee) {
         this.token = token;
-        this.response = new UserResponseDTO(
+        this.user = new UserResponseDTO(
                 employee.getId(),
                 employee.getName(),
                 employee.getEmail(),
