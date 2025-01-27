@@ -82,7 +82,6 @@ public class VehicleService {
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicle.setStatus(data.status().getStatus());
         vehicleRepository.save(vehicle);
 
         return new VehicleResponseDTO(vehicle);
@@ -97,7 +96,6 @@ public class VehicleService {
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicle.setStatus(data.status().getStatus());
         vehicleRepository.save(vehicle);
 
         return new VehicleResponseDTO(vehicle);
