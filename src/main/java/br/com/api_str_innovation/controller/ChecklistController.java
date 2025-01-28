@@ -21,4 +21,9 @@ public class ChecklistController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable UUID id) {
+        this.service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Deletado");
+    }
 }
