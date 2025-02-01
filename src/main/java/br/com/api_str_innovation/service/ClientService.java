@@ -63,8 +63,8 @@ public class ClientService {
     public ClientResponseDTO put(UUID id, ClientRequestDTO data) {
         ClientEntity client = this.getById(id);
         client.setName(data.name());
-        client.setContactType(data.contactType());
-        client.setContact(data.contact());
+        client.setEmail(data.email());
+        client.setDocument(data.document());
         repository.save(client);
         return new ClientResponseDTO(client);
     }

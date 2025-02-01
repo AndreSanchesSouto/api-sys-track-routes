@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/clients")
 public class ClientControlller {
 
     @Autowired

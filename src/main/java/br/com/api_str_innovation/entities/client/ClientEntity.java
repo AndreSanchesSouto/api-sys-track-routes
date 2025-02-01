@@ -28,12 +28,17 @@ public class ClientEntity {
     @Setter
     @NotBlank
     @Column(nullable = false)
-    private String contactType;
+    private String email;
 
     @Setter
     @NotBlank
     @Column(nullable = false)
-    private String contact;
+    private String cellphone;
+
+    @Setter
+    @NotBlank
+    @Column(nullable = false)
+    private String document;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
@@ -46,8 +51,9 @@ public class ClientEntity {
 
     public ClientEntity(ClientRequestDTO data) {
         this.name = data.name();
-        this.contactType = data.contactType();
-        this.contact = data.contact();
+        this.email = data.email();
+        this.cellphone = data.cellphone();
+        this.document = data.document();
     }
 
 }
