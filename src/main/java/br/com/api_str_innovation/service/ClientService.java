@@ -69,6 +69,15 @@ public class ClientService {
         return new ClientResponseDTO(client);
     }
 
+    public ClientResponseDTO patch(UUID id, ClientRequestDTO data) {
+        ClientEntity client = this.getById(id);
+        client.setName(data.name());
+        client.setEmail(data.email());
+        client.setDocument(data.document());
+        repository.save(client);
+        return new ClientResponseDTO(client);
+    }
+
     public void inactivate(UUID id) {
         ClientEntity client = getById(id);
         client.setInactivatedDt(LocalDateTime.now());

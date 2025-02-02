@@ -52,6 +52,11 @@ public class ClientControlller {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ClientResponseDTO> patch(@PathVariable UUID id, @RequestBody ClientRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> inactivate(@PathVariable UUID id) {
         this.service.inactivate(id);
