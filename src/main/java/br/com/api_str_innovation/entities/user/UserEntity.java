@@ -66,8 +66,12 @@ public class UserEntity implements UserDetails {
         this.setEmail(data.email());
         this.setLogin(data.login());
         this.setPassword(Encrypter.encrypt(data.password()));
-        this.setStatus(data.status().getStatus());
+        this.setStatus(userStatus(data.status()));
         this.setRole(data.role().getRole());
+    }
+
+    private String userStatus(Status status) {
+        return status == null ? Status.ACTIVE.getStatus() : status.getStatus();
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

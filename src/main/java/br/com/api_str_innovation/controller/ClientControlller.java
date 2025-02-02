@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/clients")
 public class ClientControlller {
 
     @Autowired
@@ -50,6 +50,11 @@ public class ClientControlller {
     @PutMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> put(@PathVariable UUID id, @RequestBody ClientRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ClientResponseDTO> patch(@PathVariable UUID id, @RequestBody ClientRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
     }
 
     @DeleteMapping("/{id}")

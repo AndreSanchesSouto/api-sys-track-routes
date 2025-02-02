@@ -43,4 +43,12 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             @Param("vehicleId") UUID vehicleId
     );
 
+    @Query("""
+            SELECT v FROM VehicleEntity v
+                WHERE v.checklist.id = :checklistId
+            """)
+    Optional<VehicleEntity> findVehicleFromChecklistId(
+            @Param("checklistId") UUID checklistId
+    );
+
 }

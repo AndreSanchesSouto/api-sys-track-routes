@@ -26,7 +26,14 @@ public class VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    public VehicleEntity getById(UUID id) {
+    public VehicleResponseDTO getById(UUID id) {
+        return vehicleRepository
+                .findById(id)
+                .map(VehicleResponseDTO::new)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
+    }
+
+    public VehicleEntity findById(UUID id) {
         return vehicleRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
@@ -68,14 +75,13 @@ public class VehicleService {
     @Transactional
     public VehicleResponseDTO put(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
         existsPlateNumber(data.licensePlateNumber());
-        VehicleEntity vehicle = getById(id);
+        VehicleEntity vehicle = findById(id);
 
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicle.setStatus(data.status().getStatus());
         vehicleRepository.save(vehicle);
 
         return new VehicleResponseDTO(vehicle);
@@ -83,14 +89,13 @@ public class VehicleService {
 
     @Transactional
     public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
-        VehicleEntity vehicle = this.getById(id);
+        VehicleEntity vehicle = findById(id);
 
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
         vehicle.setSideNumber(data.sideNumber());
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicle.setStatus(data.status().getStatus());
         vehicleRepository.save(vehicle);
 
         return new VehicleResponseDTO(vehicle);
@@ -98,7 +103,7 @@ public class VehicleService {
 
     @Transactional
     public void inactivate(UUID id) {
-        VehicleEntity vehicle = getById(id);
+        VehicleEntity vehicle = findById(id);
 
         if(vehicle.getInactivatedDt() != null) {
             throw new VehicleException("Veículo já inativo");

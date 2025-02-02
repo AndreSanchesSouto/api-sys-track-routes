@@ -36,7 +36,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehicleEntity> getById(@PathVariable UUID id) {
+    public ResponseEntity<VehicleResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 

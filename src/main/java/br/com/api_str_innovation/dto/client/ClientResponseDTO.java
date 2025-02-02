@@ -7,16 +7,19 @@ import java.util.UUID;
 
 public record ClientResponseDTO(UUID id,
                                 String name,
-                                String contactType,
-                                String contact,
+                                String document,
+                                String email,
+                                String cellphone,
                                 LocalDateTime created_dt,
                                 LocalDateTime inactivated_dt) {
 
     public ClientResponseDTO(ClientEntity data) {
-        this(data.getId(),
+        this(
+                data.getId(),
                 data.getName(),
-                data.getContactType(),
-                data.getContact(),
+                data.getDocument(),
+                data.getEmail(),
+                data.getCellphone(),
                 data.getCreatedDt(),
                 data.getInactivatedDt());
     }

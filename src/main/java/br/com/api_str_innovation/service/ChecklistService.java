@@ -159,9 +159,12 @@ public class ChecklistService {
 //    }
 
     @Transactional
-    public void deleteById(UUID vehicleId) {
-        checklistRepository.deleteById(vehicleId);
-        vehicleRepository.updateStatusVehicle(Status.WAITING.getStatus(), vehicleId);
+    public void deleteById(UUID id) {
+        VehicleEntity vehicle = vehicleRepository.findVehicleFromChecklistId(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "aaaa")
+        );
+        checklistRepository.deleteById(vehicle.getId());
+        vehicleRepository.updateStatusVehicle(Status.WAITING.getStatus(), vehicle.getId());
     }
 
     public List<Object[]> countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {

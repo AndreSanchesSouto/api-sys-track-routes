@@ -14,7 +14,5 @@ public record VehicleRequestDTO(
         @NotBlank
         String brand,
         @NotBlank
-        String yearDt,
-        @Nullable
-        Status status
+        String yearDt
 ) { }
