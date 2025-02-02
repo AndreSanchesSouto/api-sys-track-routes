@@ -112,7 +112,7 @@ public class UserService {
         UserEntity user = findById(id);
 
         if(user.getInactivatedDt() != null) {
-            throw new VehicleException("Veículo já inativo");
+            throw new UserException("Usuário já inativo");
         }
 
         user.setInactivatedDt(LocalDate.now());
