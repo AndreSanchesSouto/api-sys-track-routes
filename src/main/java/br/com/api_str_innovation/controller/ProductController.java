@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
@@ -28,6 +29,11 @@ public class ProductController {
     @GetMapping(value = "/page")
     public ResponseEntity<Page<ProductResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
     @PostMapping

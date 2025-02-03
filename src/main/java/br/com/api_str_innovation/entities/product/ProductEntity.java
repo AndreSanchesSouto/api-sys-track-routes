@@ -31,13 +31,13 @@ public class ProductEntity {
     private Integer quantity;
 
     @Column(nullable = false)
-    private Double value;
+    private String unitValue;
 
     @Column(nullable = false)
     private Double price;
 
     @Column(nullable = false)
-    private String scale;
+    private Double measure;
 
     @Column(nullable = false, updatable = false)
     private final LocalDate createdDt = LocalDate.now();
@@ -48,9 +48,9 @@ public class ProductEntity {
     public ProductEntity(@Valid ProductRequestDTO data) {
         this.name = data.name();
         this.description = data.description() != null ? data.description() : "";
-        this.scale = data.scale();
+        this.unitValue = data.unitValue();
         this.quantity = Integer.parseInt(data.quantity());
-        this.value = Double.parseDouble(data.value());
+        this.measure = Double.parseDouble(data.measure());
         this.price = Double.parseDouble(data.price());
     }
 }

@@ -51,11 +51,11 @@ public class ProductService {
                 .map(ProductResponseDTO::new);
     }
 
-//    public ProductResponseDTO getById(UUID id) {
-//        ProductEntity product = findById(id);
-//        return new ProductResponseDTO(product);
-//    }
-//
+    public ProductResponseDTO getById(UUID id) {
+        ProductEntity product = findById(id);
+        return new ProductResponseDTO(product);
+    }
+
     public ProductResponseDTO post(@Valid ProductRequestDTO data) {
         ProductEntity product = new ProductEntity(data);
         repository.save(product);

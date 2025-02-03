@@ -9,9 +9,9 @@ public record ProductResponseDTO(
         String name,
         String description,
         String quantity,
-        String value,
+        String unitValue,
         String price,
-        String scale,
+        String measure,
         LocalDate createdDt,
         LocalDate inactivatedDt
 ) {
@@ -21,9 +21,9 @@ public record ProductResponseDTO(
             data.getName(),
             data.getDescription(),
             data.getQuantity().toString(),
-            data.getValue().toString(),
+            data.getUnitValue(),
             data.getPrice().toString(),
-            data.getScale(),
+            data.getMeasure().toString(),
             data.getCreatedDt(),
             data.getInactivatedDt()
         );

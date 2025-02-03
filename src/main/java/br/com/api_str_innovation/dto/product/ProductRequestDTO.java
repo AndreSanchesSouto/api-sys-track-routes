@@ -11,10 +11,10 @@ public record ProductRequestDTO(
         String description,
         @NotBlank(message = "O campo 'quantity' não pode estar vazio ou em branco.")
         String quantity,
-        @NotBlank(message = "O campo 'value' não pode estar vazio ou em branco.")
-        String value,
+        @NotBlank(message = "O campo 'unitValue' não pode estar vazio ou em branco.")
+        String unitValue,
         @NotBlank(message = "O campo 'price' não pode estar vazio ou em branco.")
         String price,
-        @NotBlank(message = "O campo 'scale' não pode estar vazio ou em branco.")
-        String scale
+        @NotBlank(message = "O campo 'measure' não pode estar vazio ou em branco.")
+        String measure
 ) { }
