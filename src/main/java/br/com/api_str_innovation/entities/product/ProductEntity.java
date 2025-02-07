@@ -22,21 +22,27 @@ public class ProductEntity {
     private UUID id;
 
     @Column(nullable = false)
+    @Setter
     private String name;
 
     @Column
+    @Setter
     private String description;
 
     @Column(nullable = false)
+    @Setter
     private Integer quantity;
 
     @Column(nullable = false)
+    @Setter
     private String unitValue;
 
     @Column(nullable = false)
+    @Setter
     private Double price;
 
     @Column(nullable = false)
+    @Setter
     private Double measure;
 
     @Column(nullable = false, updatable = false)

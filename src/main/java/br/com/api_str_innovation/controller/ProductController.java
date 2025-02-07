@@ -41,8 +41,19 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.post(data));
     }
 
+    @PatchMapping("{id}")
+    public ResponseEntity<ProductResponseDTO> patch(@PathVariable UUID id, @Valid @RequestBody ProductRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> count() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable UUID id) {
+        this.service.inactivate(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 }
