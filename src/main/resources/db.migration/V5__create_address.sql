@@ -1,12 +1,14 @@
 CREATE TABLE address (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    address_type VARCHAR(100) NOT NULL,
+    zip_code CHAR(8) NOT NULL,
     address VARCHAR(100) NOT NULL,
     number VARCHAR(100) NOT NULL,
-    zip_code CHAR(8) NULL,
-    reference VARCHAR(100) NULL,
-    client_fk UUID,
-    city_fk UUID,
-    FOREIGN KEY (client_fk) REFERENCES client(id),
-    FOREIGN KEY (city_fk) REFERENCES city(id)
+    address_type VARCHAR(100) NOT NULL,
+    neighborhood VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state CHAR(2) NOT NULL,
+    complement VARCHAR(100) NULL,
+    reference_point VARCHAR(100) NULL,
+    client_id UUID,
+    FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
 );

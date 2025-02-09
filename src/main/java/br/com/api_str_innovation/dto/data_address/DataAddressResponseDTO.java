@@ -1,23 +1,36 @@
 package br.com.api_str_innovation.dto.data_address;
 
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
+import br.com.api_str_innovation.entities.client.ClientEntity;
 
 import java.util.UUID;
 
-public record DataAddressResponseDTO(UUID id,
-                                     String address_type,
-                                     String address,
-                                     String number,
-                                     String zip_code,
-                                     String reference) {
-
+public record DataAddressResponseDTO(
+        UUID id,
+        String addressType,
+        String address,
+        String number,
+        String zipCode,
+        String neighborhood,
+        String city,
+        String state,
+        String complement,
+        String referencePoint,
+        ClientEntity client
+) {
     public DataAddressResponseDTO(DataAddressEntity data) {
-        this(data.getId(),
-                data.getAddress_type(),
-                data.getAddress(),
-                data.getNumber(),
-                data.getZip_code(),
-                data.getReference());
+        this(
+            data.getId(),
+            data.getAddressType(),
+            data.getAddress(),
+            data.getNumber(),
+            data.getZipCode(),
+            data.getNeighborhood(),
+            data.getCity(),
+            data.getState(),
+            data.getComplement(),
+            data.getReferencePoint(),
+            data.getClient()
+        );
     }
-
 }
