@@ -25,7 +25,7 @@ public class DataAddressController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
-    @GetMapping("{clientId}")
+    @GetMapping("/client/{clientId}")
     public ResponseEntity<List<DataAddressResponseDTO>> getByClientId(@PathVariable UUID clientId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getByClientId(clientId));
     }
