@@ -9,6 +9,7 @@ import br.com.api_str_innovation.repository.DataAddressRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -56,6 +57,10 @@ public class DataAddressService {
         repository.save(address);
 
         return new DataAddressResponseDTO(address);
+    }
+
+    public DataAddressResponseDTO put(UUID id, @RequestBody DataAddressRequestDTO data) {
+        DataAddressEntity dataAddress = this.repository.findById(id);
     }
 
 }

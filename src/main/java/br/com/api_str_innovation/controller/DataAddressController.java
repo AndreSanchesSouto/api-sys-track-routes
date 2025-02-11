@@ -45,5 +45,10 @@ public class DataAddressController {
                 .body(this.service.post(clientId, data));
     }
 
-
+    @PutMapping("{id}")
+    public ResponseEntity<DataAddressResponseDTO> put(
+            @PathVariable UUID id,
+          @RequestBody @Valid DataAddressRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
+    }
 }
