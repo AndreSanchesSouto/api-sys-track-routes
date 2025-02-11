@@ -4,11 +4,14 @@ import br.com.api_str_innovation.dto.data_address.DataAddressRequestDTO;
 import br.com.api_str_innovation.dto.data_address.DataAddressResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
+import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.repository.DataAddressRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +40,14 @@ public class DataAddressService {
                 .stream()
                 .map(DataAddressResponseDTO::new)
                 .toList();
+    }
+
+    public DataAddressResponseDTO getById(UUID id) {
+        DataAddressEntity data =  repository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+        return new DataAddressResponseDTO(data);
+
     }
 
     public DataAddressResponseDTO post(UUID idClient, @RequestBody DataAddressRequestDTO data) {

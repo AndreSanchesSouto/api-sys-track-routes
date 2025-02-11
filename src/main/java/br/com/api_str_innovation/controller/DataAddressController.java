@@ -30,6 +30,11 @@ public class DataAddressController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getByClientId(clientId));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<DataAddressResponseDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
+    }
+
     @PostMapping("{clientId}")
     public ResponseEntity<DataAddressResponseDTO> post(
             @PathVariable UUID clientId,
