@@ -11,7 +11,7 @@ public record DataAddressRequestDTO(
         String zipCode,
 
         @NotBlank(message = "O campo endereço não pode estar vazio")
-        String address,
+        String street,
 
         @NotBlank(message = "O campo número não pode estar vazio")
         String number,

@@ -8,7 +8,7 @@ import java.util.UUID;
 public record DataAddressResponseDTO(
         UUID id,
         String addressType,
-        String address,
+        String street,
         String number,
         String zipCode,
         String neighborhood,
@@ -22,7 +22,7 @@ public record DataAddressResponseDTO(
         this(
             data.getId(),
             data.getAddressType(),
-            data.getAddress(),
+            data.getStreet(),
             data.getNumber(),
             data.getZipCode(),
             data.getNeighborhood(),

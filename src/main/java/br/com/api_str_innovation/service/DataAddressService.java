@@ -60,7 +60,24 @@ public class DataAddressService {
     }
 
     public DataAddressResponseDTO put(UUID id, @RequestBody DataAddressRequestDTO data) {
-        DataAddressEntity dataAddress = this.repository.findById(id);
+        DataAddressEntity dataAddress = this.repository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+
+        dataAddress.setStreet(data.street());
+        dataAddress.setZipCode(data.zipCode());
+        dataAddress.setStreet(data.street());
+        dataAddress.setNumber(data.number());
+        dataAddress.setAddressType(data.addressType());
+        dataAddress.setNeighborhood(data.neighborhood());
+        dataAddress.setCity(data.city());
+        dataAddress.setState(data.state());
+        dataAddress.setComplement(data.complement());
+        dataAddress.setReferencePoint(data.referencePoint());
+
+        this.repository.save(dataAddress);
+
+        return new DataAddressResponseDTO(dataAddress);
     }
 
 }

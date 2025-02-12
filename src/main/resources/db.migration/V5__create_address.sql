@@ -1,7 +1,7 @@
 CREATE TABLE address (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     zip_code CHAR(8) NOT NULL,
-    address VARCHAR(100) NOT NULL,
+    street VARCHAR(100) NOT NULL,
     number VARCHAR(100) NOT NULL,
     address_type VARCHAR(100) NOT NULL,
     neighborhood VARCHAR(100) NOT NULL,

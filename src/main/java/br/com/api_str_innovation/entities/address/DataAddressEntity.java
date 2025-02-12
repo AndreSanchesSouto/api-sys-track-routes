@@ -27,7 +27,7 @@ public class DataAddressEntity {
 
     @Setter
     @Column(nullable = false)
-    private String address;
+    private String street;
 
     @Setter
     @Column(nullable = false)
@@ -63,7 +63,7 @@ public class DataAddressEntity {
 
     public DataAddressEntity(DataAddressRequestDTO data, ClientEntity client) {
         this.zipCode = data.zipCode();
-        this.address = data.address();
+        this.street = data.street();
         this.number = data.number();
         this.addressType = data.addressType();
         this.neighborhood = data.neighborhood();
