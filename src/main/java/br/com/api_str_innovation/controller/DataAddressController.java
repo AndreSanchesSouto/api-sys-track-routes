@@ -48,7 +48,12 @@ public class DataAddressController {
     @PutMapping("/{id}")
     public ResponseEntity<DataAddressResponseDTO> put(
             @PathVariable UUID id,
-          @RequestBody @Valid DataAddressRequestDTO data) {
+            @RequestBody @Valid DataAddressRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> delete(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.delete(id));
     }
 }

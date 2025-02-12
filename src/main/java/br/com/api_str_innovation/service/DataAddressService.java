@@ -80,4 +80,9 @@ public class DataAddressService {
         return new DataAddressResponseDTO(dataAddress);
     }
 
+    public String delete(UUID id) {
+        this.repository.deleteById(id);
+        return "Deleted";
+    }
+
 }

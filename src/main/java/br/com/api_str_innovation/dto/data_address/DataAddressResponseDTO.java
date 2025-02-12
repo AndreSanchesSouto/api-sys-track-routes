@@ -15,8 +15,7 @@ public record DataAddressResponseDTO(
         String city,
         String state,
         String complement,
-        String referencePoint,
-        ClientEntity client
+        String referencePoint
 ) {
     public DataAddressResponseDTO(DataAddressEntity data) {
         this(
@@ -29,8 +28,7 @@ public record DataAddressResponseDTO(
             data.getCity(),
             data.getState(),
             data.getComplement(),
-            data.getReferencePoint(),
-            data.getClient()
+            data.getReferencePoint()
         );
     }
 }
