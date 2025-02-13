@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.entities.client;
 
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
+import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -47,7 +48,6 @@ public class ClientEntity {
     @Setter
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime inactivatedDt;
-
 
     public ClientEntity(ClientRequestDTO data) {
         this.name = data.name();

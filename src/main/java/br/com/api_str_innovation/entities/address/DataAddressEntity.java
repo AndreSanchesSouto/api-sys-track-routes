@@ -1,7 +1,9 @@
 package br.com.api_str_innovation.entities.address;
 
+import br.com.api_str_innovation.dto.data_address.DataAddressRequestDTO;
+import br.com.api_str_innovation.entities.client.ClientEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class DataAddressEntity {
 
     @Id
@@ -19,30 +22,55 @@ public class DataAddressEntity {
     private UUID id;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
-    private String address_type;
+    private String zipCode;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
-    private String address;
+    private String street;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
     private String number;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
-    private String zip_code;
+    private String addressType;
 
     @Setter
-    @NotBlank
     @Column(nullable = false)
-    private String reference;
+    private String neighborhood;
 
+    @Setter
+    @Column(nullable = false)
+    private String city;
 
+    @Setter
+    @Column(nullable = false)
+    private String state;
 
+    @Setter
+    @Column(nullable = false)
+    private String complement;
+
+    @Setter
+    @Column(nullable = true)
+    private String referencePoint;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private ClientEntity client;
+
+    public DataAddressEntity(DataAddressRequestDTO data, ClientEntity client) {
+        this.zipCode = data.zipCode();
+        this.street = data.street();
+        this.number = data.number();
+        this.addressType = data.addressType();
+        this.neighborhood = data.neighborhood();
+        this.city = data.city();
+        this.state = data.state();
+        this.complement = data.complement();
+        this.referencePoint = data.referencePoint();
+        this.client = client;
+    }
 }

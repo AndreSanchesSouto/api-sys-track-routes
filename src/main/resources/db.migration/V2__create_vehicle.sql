@@ -9,7 +9,5 @@ CREATE TABLE vehicle (
     created_dt DATE NOT NULL,
     inactivated_dt DATE NULL,
     user_fk UUID,
-    shipping_manager_fk UUID,
-    general_manager_fk UUID,
     FOREIGN KEY (user_fk) REFERENCES users(id)
 );
