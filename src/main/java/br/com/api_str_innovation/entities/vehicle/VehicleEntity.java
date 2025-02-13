@@ -55,7 +55,7 @@ public class VehicleEntity {
 
     @Getter
     @Setter
-    @OneToOne(mappedBy = "vehicle")
+    @OneToOne(mappedBy = "vehicle", fetch = FetchType.LAZY)
     private ChecklistEntity checklist;
 
     public VehicleEntity(VehicleRequestDTO data) {

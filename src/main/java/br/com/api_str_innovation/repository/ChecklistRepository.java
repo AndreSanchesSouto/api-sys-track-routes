@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface ChecklistRepository extends JpaRepository<ChecklistEntity, UUID> {
     @Query("SELECT c FROM ChecklistEntity c JOIN c.vehicle v WHERE v.id = :vehicleId")
-    Page<ChecklistEntity> findChecklistsByVehicleId(@Param("vehicleId") UUID vehicleId, Pageable pageable);
+    Optional<ChecklistEntity> findChecklistsByVehicleId(@Param("vehicleId") UUID vehicleId);
 }

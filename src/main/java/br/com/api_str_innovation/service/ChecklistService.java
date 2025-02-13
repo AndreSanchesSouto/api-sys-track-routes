@@ -44,13 +44,23 @@ public class ChecklistService {
                 .toList();
     }
 
-    public Page<ChecklistResponseDTO> getPaged(Pageable pageable, @PathVariable UUID id) {
-        vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+//    public Page<ChecklistResponseDTO> getPaged(Pageable pageable, @PathVariable UUID id) {
+//        vehicleRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+//
+//        Page<ChecklistEntity> checklist = checklistRepository.findChecklistsByVehicleId(id, pageable);
+//
+//        return checklist.map(ChecklistResponseDTO::new);
+//    }
 
-        Page<ChecklistEntity> checklist = checklistRepository.findChecklistsByVehicleId(id, pageable);
+    public ChecklistResponseDTO getByVehicleId(UUID vehicleId) {
+        ChecklistEntity checklist =  this.checklistRepository
+                .findChecklistsByVehicleId(vehicleId)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Checklist not found")
+                );
 
-        return checklist.map(ChecklistResponseDTO::new);
+        return new ChecklistResponseDTO(checklist);
     }
 
     public ChecklistEntity getById(@PathVariable UUID id) {
