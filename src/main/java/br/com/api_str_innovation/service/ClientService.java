@@ -48,6 +48,14 @@ public class ClientService {
         return client;
     }
 
+    @GetMapping(value = "/search")
+    public Page<ClientResponseDTO> getSearched(Pageable pageable, String name) {
+        Page<ClientResponseDTO> client = repository
+                .findSearchClients(pageable, name)
+                .map(ClientResponseDTO::new);
+        return client;
+    }
+
     public ClientEntity getById(UUID id) {
         ClientEntity client = repository
                 .findById(id)
