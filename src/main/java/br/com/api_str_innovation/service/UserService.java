@@ -40,7 +40,7 @@ public class UserService {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
-        if(repository.findByLogin(data.login()) != null ){
+        if(repository.findByLogin(data.login()).isPresent() ){
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
     }
