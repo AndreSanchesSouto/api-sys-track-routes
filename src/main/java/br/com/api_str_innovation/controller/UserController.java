@@ -31,6 +31,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
+    @GetMapping(value = "/search/name")
+    public ResponseEntity<Page<UserResponseDTO>> getSearched(Pageable pageable, String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name));
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> count() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.count());

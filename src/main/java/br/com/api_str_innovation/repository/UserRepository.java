@@ -28,6 +28,11 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     @Query("SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL")
     Page<UserEntity> findActiveUsers(Pageable pageable);
 
+    @Query("SELECT u FROM UserEntity u WHERE " +
+            "LOWER(FUNCTION('unaccent', u.name)) " +
+            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))")
+    Page<UserEntity> findSearchClients(Pageable pageable, String name);
+
     @Query("""
             SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL""")
     List<UserEntity> findActiveUsers();

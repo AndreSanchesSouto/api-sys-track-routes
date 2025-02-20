@@ -67,6 +67,13 @@ public class VehicleService {
                 .map(VehicleResponseDTO::new);
     }
 
+    @GetMapping(value = "/search/license-plate")
+    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber) {
+        return vehicleRepository
+                .findSearchedVehicles(pageable, licensePlateNumber)
+                .map(VehicleResponseDTO::new);
+    }
+
     public void post(@Valid VehicleRequestDTO data) {
         existsPlateNumber(data.licensePlateNumber());
         vehicleRepository.save(new VehicleEntity(data));
