@@ -17,7 +17,9 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
     @Query("SELECT c FROM ClientEntity c WHERE c.inactivatedDt IS NULL")
     Page<ClientEntity> findActiveClients(Pageable pageable);
 
-    @Query("SELECT c from ClientEntity c WHERE c.name = :name")
+    @Query("SELECT c FROM ClientEntity c WHERE " +
+            "LOWER(FUNCTION('unaccent', c.name)) " +
+            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))")
     Page<ClientEntity> findSearchClients(Pageable pageable, String name);
 
     @Query("SELECT c FROM ClientEntity c WHERE c.inactivatedDt IS NULL")
