@@ -2,6 +2,7 @@ package br.com.api_str_innovation.entities.address;
 
 import br.com.api_str_innovation.dto.data_address.DataAddressRequestDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -57,6 +58,7 @@ public class DataAddressEntity {
     @Column(nullable = true)
     private String referencePoint;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "client_id")
     private ClientEntity client;

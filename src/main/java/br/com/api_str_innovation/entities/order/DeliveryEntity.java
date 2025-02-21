@@ -3,7 +3,9 @@ package br.com.api_str_innovation.entities.order;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.order_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.product.ProductEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +39,7 @@ public class DeliveryEntity {
     private LocalDate inactivatedDt;
 
     @Setter
+
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
@@ -48,7 +51,18 @@ public class DeliveryEntity {
     public DeliveryEntity(DeliveryRequestDTO data) {
         this.setStatus(data.status());
         this.setClient(data.client());
-//        this.setDeliveryProducts(data.products());
+        this.setDeliveryProducts(this.parseProductToDelivery(data.products()));
     }
+
+    private List<DeliveryProductEntity> parseProductToDelivery(List<ProductEntity> products) {
+        return products
+                .stream()
+                .map(productEntity ->
+                        new DeliveryProductEntity(this, productEntity)
+                )
+                .toList();
+    }
+
+
 
 }
