@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.order_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,6 @@ public class DeliveryEntity {
     private LocalDate inactivatedDt;
 
     @Setter
-
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
@@ -47,6 +47,10 @@ public class DeliveryEntity {
     @Setter
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryProductEntity> deliveryProducts;
+
+    @OneToOne
+    @JoinColumn(name = "vehicle_id")
+    private VehicleEntity vehicle;
 
     public DeliveryEntity(DeliveryRequestDTO data) {
         this.setStatus(data.status());

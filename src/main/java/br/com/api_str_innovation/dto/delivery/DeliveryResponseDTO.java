@@ -3,6 +3,7 @@ package br.com.api_str_innovation.dto.delivery;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.order.DeliveryEntity;
 import br.com.api_str_innovation.entities.order_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public record DeliveryResponseDTO(
          String status,
          ClientEntity client,
          List<DeliveryProductEntity> deliveryProducts,
+         VehicleEntity vehicle,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
@@ -25,6 +27,7 @@ public record DeliveryResponseDTO(
                 data.getStatus(),
                 data.getClient(),
                 data.getDeliveryProducts(),
+                data.getVehicle(),
                 data.getCreatedDt(),
                 data.getInactivatedDt()
         );

@@ -21,8 +21,6 @@ public class DeliveryController {
 
     @PostMapping
     public ResponseEntity<DeliveryResponseDTO> post(@Valid @RequestBody DeliveryRequestDTO data) {
-        System.out.print("dataaaaaaa");
-        System.out.print(data.products());
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data));
     }
 

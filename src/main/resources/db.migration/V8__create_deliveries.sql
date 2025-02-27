@@ -4,5 +4,7 @@ CREATE TABLE deliveries (
     created_dt DATE NOT NULL,
     inactivated_dt DATE NULL;
     client_id UUID,
+    vehicle_id UUID,
     FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
+    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id) ON DELETE CASCADE
 )

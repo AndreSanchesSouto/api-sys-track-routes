@@ -1,9 +1,8 @@
 package br.com.api_str_innovation.dto.delivery;
 
-import br.com.api_str_innovation.dto.client.ClientResponseDTO;
-import br.com.api_str_innovation.dto.product.ProductResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,7 +17,10 @@ public record DeliveryRequestDTO(
         ClientEntity client,
 
         @NotNull(message = "O campo products não pode ser vazio")
-        List<ProductEntity> products
+        List<ProductEntity> products,
+
+        @NotNull(message = "O campo vehicle não pode ser vazio")
+        VehicleEntity vehicle
 
 ) {
 
