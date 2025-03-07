@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.entities.order.DeliveryEntity;
+import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

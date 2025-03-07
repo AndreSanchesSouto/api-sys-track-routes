@@ -1,12 +1,11 @@
-package br.com.api_str_innovation.entities.order;
+package br.com.api_str_innovation.entities.delivery;
 
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
-import br.com.api_str_innovation.entities.order_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +15,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Table(name = "deliveries")
 @Entity
+@Table(name = "deliveries")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -32,7 +31,7 @@ public class DeliveryEntity {
     @Column(nullable = false, updatable = true)
     private String status;
 
-
+    @Setter
     @Column(nullable = false, updatable = false)
     private LocalDate createdDt = LocalDate.now();
 
@@ -41,32 +40,15 @@ public class DeliveryEntity {
 
     @Setter
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = true)
     private ClientEntity client;
 
     @Setter
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryProductEntity> deliveryProducts;
 
-    @OneToOne
+    @Setter
+    @ManyToOne
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
-
-    public DeliveryEntity(DeliveryRequestDTO data) {
-        this.setStatus(data.status());
-        this.setClient(data.client());
-        this.setDeliveryProducts(this.parseProductToDelivery(data.products()));
-    }
-
-    private List<DeliveryProductEntity> parseProductToDelivery(List<ProductEntity> products) {
-        return products
-                .stream()
-                .map(productEntity ->
-                        new DeliveryProductEntity(this, productEntity)
-                )
-                .toList();
-    }
-
-
-
 }

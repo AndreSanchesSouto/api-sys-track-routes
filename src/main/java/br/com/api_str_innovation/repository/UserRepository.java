@@ -19,10 +19,13 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
-    @Query("SELECT g FROM UserEntity g WHERE g.login = :login")
+    @Query("SELECT u FROM UserEntity u WHERE u.login = :login")
     Optional<UserEntity> findByLogin(@Param("login") String login);
 
-    @Query("SELECT g FROM UserEntity g WHERE g.login = :login AND g.password = :password")
+    @Query("SELECT u FROM UserEntity u WHERE u.login = :login")
+    Optional<UserDetails> findUserDetailsByLogin(@Param("login") String login);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.login = :login AND u.password = :password")
     UserEntity authIdentity(@Param("login") String login, @Param("password") String password);
 
     @Query("SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL")

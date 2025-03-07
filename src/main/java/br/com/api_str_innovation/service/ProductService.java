@@ -28,7 +28,7 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    private ProductEntity findById(UUID id) {
+    public ProductEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado")
         );
@@ -59,6 +59,10 @@ public class ProductService {
     public ProductResponseDTO getById(UUID id) {
         ProductEntity product = findById(id);
         return new ProductResponseDTO(product);
+    }
+
+    public ProductEntity getProductEntityById(UUID id) {
+        return findById(id);
     }
 
     public ProductResponseDTO post(@Valid ProductRequestDTO data) {
@@ -109,6 +113,10 @@ public class ProductService {
 
         product.setInactivatedDt(LocalDate.now());
         repository.save(product);
+    }
+
+    public List<ProductEntity> findAllByIds(List<UUID> productIds) {
+        return this.repository.findAllById(productIds);
     }
 
 }

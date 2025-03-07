@@ -1,15 +1,11 @@
-package br.com.api_str_innovation.entities.order_product;
+package br.com.api_str_innovation.entities.delivery_product;
 
-import br.com.api_str_innovation.entities.order.DeliveryEntity;
+import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class DeliveryProductEntity {
 
     @Id
@@ -27,21 +24,20 @@ public class DeliveryProductEntity {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private DeliveryEntity delivery;
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product;
+    @JoinColumn(name = "delivery_id", nullable = false)
+    private DeliveryEntity delivery;
 
     @Column(nullable = false)
     private Integer quantity;
 
-    public DeliveryProductEntity(DeliveryEntity delivery, ProductEntity product) {
-        this.delivery = delivery;
+    public DeliveryProductEntity(ProductEntity product, Integer quantity) {
         this.product = product;
-        this.quantity = 1;
+        this.quantity = quantity;
     }
 
 }

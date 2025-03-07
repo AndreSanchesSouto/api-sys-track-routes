@@ -1,11 +1,9 @@
 package br.com.api_str_innovation.dto.delivery;
 
 import br.com.api_str_innovation.entities.client.ClientEntity;
-import br.com.api_str_innovation.entities.order.DeliveryEntity;
-import br.com.api_str_innovation.entities.order_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
+import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
-import jakarta.persistence.*;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;

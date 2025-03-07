@@ -48,7 +48,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private UserDetails findByLogin(String username) {
-        return repository.findByLogin(username).orElseThrow(
+        return repository.findUserDetailsByLogin(username).orElseThrow(
                 () -> new UserException("NotFund")
         );
     }
