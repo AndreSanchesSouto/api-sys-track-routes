@@ -3,6 +3,8 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
+import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.exceptions.VehicleException;
@@ -48,6 +50,14 @@ public class UserService {
     public List<UserResponseDTO> getAll() {
         return repository
                 .findAll()
+                .stream()
+                .map(UserResponseDTO::new)
+                .toList();
+    }
+
+    public List<UserResponseDTO> getDrivers() {
+        return repository
+                .findUsersActivated(Role.DRIVER.getRole(), Status.ACTIVE.getStatus())
                 .stream()
                 .map(UserResponseDTO::new)
                 .toList();
