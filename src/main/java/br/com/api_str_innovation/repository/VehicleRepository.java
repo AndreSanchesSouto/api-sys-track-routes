@@ -51,4 +51,11 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             @Param("checklistId") UUID checklistId
     );
 
+    @Query(value = """
+            SELECT * FROM vehicle v
+                WHERE v.status = 'active'
+                AND v.inactivated_dt IS NULL
+            """, nativeQuery = true)
+    List<VehicleEntity> findAvailableVehicles();
+
 }

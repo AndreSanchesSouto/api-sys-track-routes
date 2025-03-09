@@ -53,6 +53,14 @@ public class VehicleService {
                 .toList();
     }
 
+    public List<VehicleResponseDTO> findAvailableVehicles() {
+        return vehicleRepository
+                .findAvailableVehicles()
+                .stream()
+                .map(VehicleResponseDTO::new)
+                .toList();
+    }
+
     public Integer count() {
         return vehicleRepository
                 .findActiveVehicles()
