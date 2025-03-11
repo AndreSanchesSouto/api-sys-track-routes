@@ -32,6 +32,14 @@ public class ClientService {
         return client;
     }
 
+    public List<ClientResponseDTO> findAvailable() {
+        return repository
+                .findAvailable()
+                .stream()
+                .map(ClientResponseDTO::new)
+                .toList();
+    }
+
     public Integer count() {
         Integer count = repository
                 .findActiveClients()

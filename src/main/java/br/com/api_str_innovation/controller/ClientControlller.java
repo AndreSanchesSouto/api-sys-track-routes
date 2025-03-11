@@ -26,6 +26,11 @@ public class ClientControlller {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/available")
+   public ResponseEntity<List<ClientResponseDTO>> getAvailable() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailable());
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> count() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
