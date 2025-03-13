@@ -31,6 +31,11 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<ProductResponseDTO>> getAvailable() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAvailable());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));

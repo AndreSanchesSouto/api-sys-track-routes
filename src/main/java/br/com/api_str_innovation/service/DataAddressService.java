@@ -48,6 +48,12 @@ public class DataAddressService {
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
         return new DataAddressResponseDTO(data);
+    }
+
+    public DataAddressEntity findById(UUID id) {
+        return this.repository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
 
     }
 

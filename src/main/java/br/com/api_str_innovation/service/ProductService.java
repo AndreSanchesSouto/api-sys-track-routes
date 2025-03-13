@@ -56,6 +56,14 @@ public class ProductService {
                 .map(ProductResponseDTO::new);
     }
 
+    public List<ProductResponseDTO> getAvailable() {
+        return repository
+                .findActiveProducts()
+                .stream()
+                .map(ProductResponseDTO::new)
+                .toList();
+    }
+
     public ProductResponseDTO getById(UUID id) {
         ProductEntity product = findById(id);
         return new ProductResponseDTO(product);

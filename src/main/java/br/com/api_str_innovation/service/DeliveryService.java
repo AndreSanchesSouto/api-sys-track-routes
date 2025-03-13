@@ -3,12 +3,19 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
+import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.entities.vehicle.Status;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.exceptions.DataAddressException;
+import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.DeliveryRepository;
+import org.hibernate.mapping.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,13 +38,28 @@ public class DeliveryService {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private DataAddressService addressService;
+
+    @Autowired
+    private UserService userService;
+
     public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data) {
         ClientEntity client = this.clientService.getById(data.clientId());
+        DataAddressEntity address = this.addressService.findById(data.addressId());
+
+        this.validateAddressToClient(client, address);
+
         VehicleEntity vehicle = this.vehicleService.findById(data.vehicleId());
+        UserEntity driver = this.userService.findById(data.driverId());
+
+        this.validateUserType(driver);
+
         DeliveryEntity delivery = new DeliveryEntity();
 
         delivery.setClient(client);
-        delivery.setStatus(data.status());
+        delivery.setAddress(address);
+        delivery.setStatus(Status.ACTIVE.getStatus());
         delivery.setVehicle(vehicle);
         delivery = repository.save(delivery);
 
@@ -57,5 +79,26 @@ public class DeliveryService {
 
         this.repository.save(delivery);
         return new DeliveryResponseDTO(delivery);
+    }
+
+    private void validateUserType(UserEntity driver) {
+        boolean isADriver = driver.getRole().equalsIgnoreCase(Role.DRIVER.getRole());
+        if(!isADriver) {
+            throw new UserException("Esse usuário não é do tipo motorista");
+        }
+    }
+
+    private void validateAddressToClient(ClientEntity client, DataAddressEntity addressWanted) {
+        boolean addressExistes = client
+                .getAddresses()
+                .stream()
+                .anyMatch(
+                        address -> address
+                                .getId()
+                                .equals(addressWanted.getId())
+                );
+        if(!addressExistes) {
+            throw new DataAddressException("Esse endereço não corresponde a esse cliente");
+        }
     }
 }

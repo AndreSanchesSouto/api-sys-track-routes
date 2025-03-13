@@ -1,9 +1,11 @@
 package br.com.api_str_innovation.entities.delivery;
 
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
+import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +44,16 @@ public class DeliveryEntity {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = true)
     private ClientEntity client;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = true)
+    private DataAddressEntity address;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "driver_id", nullable = true)
+    private UserEntity driver;
 
     @Setter
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -31,7 +31,7 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    private UserEntity findById(UUID id) {
+    public UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
         );
