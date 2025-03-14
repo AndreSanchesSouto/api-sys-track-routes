@@ -3,7 +3,6 @@ package br.com.api_str_innovation.entities.vehicle;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -66,7 +65,7 @@ public class VehicleEntity {
         this.model = data.model();
         this.brand = data.brand();
         this.yearDt = data.yearDt();
-        this.status = getStatus() == null ? Status.WAITING.getStatus() : getStatus();
+        this.status = getStatus() == null ? VehicleStatus.WAITING.getStatus() : getStatus();
     }
 
 }

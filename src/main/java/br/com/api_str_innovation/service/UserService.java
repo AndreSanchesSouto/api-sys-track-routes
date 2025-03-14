@@ -4,10 +4,9 @@ import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.user.Role;
-import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
-import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -57,7 +56,7 @@ public class UserService {
 
     public List<UserResponseDTO> getDrivers() {
         return repository
-                .findUsersActivated(Role.DRIVER.getRole(), Status.ACTIVE.getStatus())
+                .findUsersActivated(Role.DRIVER.getRole(), UserStatus.ACTIVE.getStatus())
                 .stream()
                 .map(UserResponseDTO::new)
                 .toList();
@@ -101,6 +100,13 @@ public class UserService {
         user.setEmail(data.email());
         user.setLogin(data.login());
         user.setStatus(data.status().getStatus());
+        repository.save(user);
+    }
+
+    @Transactional
+    public void patchStatus(@PathVariable UUID id, @RequestBody UserStatus status) {
+        UserEntity user = findById(id);
+        user.setStatus(status.getStatus());
         repository.save(user);
     }
 

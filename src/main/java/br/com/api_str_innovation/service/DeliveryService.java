@@ -10,12 +10,12 @@ import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
-import br.com.api_str_innovation.entities.vehicle.Status;
+import br.com.api_str_innovation.entities.user.UserStatus;
+import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.DeliveryRepository;
-import org.hibernate.mapping.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,20 +47,19 @@ public class DeliveryService {
     public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data) {
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
-
         this.validateAddressToClient(client, address);
 
-        VehicleEntity vehicle = this.vehicleService.findById(data.vehicleId());
         UserEntity driver = this.userService.findById(data.driverId());
-
         this.validateUserType(driver);
 
+        VehicleEntity vehicle = this.vehicleService.findById(data.vehicleId());
         DeliveryEntity delivery = new DeliveryEntity();
 
         delivery.setClient(client);
         delivery.setAddress(address);
-        delivery.setStatus(Status.ACTIVE.getStatus());
+        delivery.setStatus(VehicleStatus.ACTIVE.getStatus());
         delivery.setVehicle(vehicle);
+        delivery.setDriver(driver);
         delivery = repository.save(delivery);
 
         List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();
@@ -75,7 +74,8 @@ public class DeliveryService {
         }
         delivery.setDeliveryProducts(deliveryProducts);
 
-
+        userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
+        vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 
         this.repository.save(delivery);
         return new DeliveryResponseDTO(delivery);
