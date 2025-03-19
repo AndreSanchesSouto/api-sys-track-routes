@@ -1,5 +1,7 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
@@ -17,6 +19,8 @@ import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -81,6 +85,12 @@ public class DeliveryService {
         return new DeliveryResponseDTO(delivery);
     }
 
+    public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable) {
+        return repository
+                .findDeliveries(pageable)
+                .map(DeliveryGenericResponseDTO::new);
+    }
+
     private void validateUserType(UserEntity driver) {
         boolean isADriver = driver.getRole().equalsIgnoreCase(Role.DRIVER.getRole());
         if(!isADriver) {
@@ -89,7 +99,7 @@ public class DeliveryService {
     }
 
     private void validateAddressToClient(ClientEntity client, DataAddressEntity addressWanted) {
-        boolean addressExistes = client
+        boolean addressExists = client
                 .getAddresses()
                 .stream()
                 .anyMatch(
@@ -97,7 +107,7 @@ public class DeliveryService {
                                 .getId()
                                 .equals(addressWanted.getId())
                 );
-        if(!addressExistes) {
+        if(!addressExists) {
             throw new DataAddressException("Esse endereço não corresponde a esse cliente");
         }
     }
