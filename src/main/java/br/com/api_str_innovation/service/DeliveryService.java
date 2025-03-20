@@ -64,7 +64,7 @@ public class DeliveryService {
         delivery.setStatus(VehicleStatus.ACTIVE.getStatus());
         delivery.setVehicle(vehicle);
         delivery.setDriver(driver);
-        delivery.setDeliveryRequest(this.repository.getDeliveryQuantity());
+        delivery.setDeliveryRequest(this.repository.getDeliveryQuantity() + 1);
 
         List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
