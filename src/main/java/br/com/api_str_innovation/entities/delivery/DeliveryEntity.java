@@ -34,6 +34,10 @@ public class DeliveryEntity {
     private String status;
 
     @Setter
+    @Column(name = "delivery_request", nullable = false, updatable = true)
+    private Integer deliveryRequest;
+
+    @Setter
     @Column(nullable = false, updatable = false)
     private LocalDate createdDt = LocalDate.now();
 

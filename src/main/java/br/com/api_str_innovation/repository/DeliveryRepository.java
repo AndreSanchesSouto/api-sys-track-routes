@@ -16,4 +16,18 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
                 WHERE d.inactivatedDt IS NULL
             """)
     Page<DeliveryEntity> findDeliveries(Pageable pageable);
+
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+                WHERE d.inactivatedDt IS NULL
+            """)
+    List<DeliveryEntity> findDeliveries();
+
+    @Query(value = """
+            SELECT
+            	COUNT(d.id)
+             FROM deliveries d
+            """, nativeQuery = true)
+    Integer getDeliveryQuantity();
+
 }

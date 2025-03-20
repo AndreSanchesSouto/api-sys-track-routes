@@ -26,6 +26,11 @@ public class DeliveryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> count() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    }
+
     @GetMapping("/page")
     public ResponseEntity<Page<DeliveryGenericResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));

@@ -64,9 +64,9 @@ public class DeliveryService {
         delivery.setStatus(VehicleStatus.ACTIVE.getStatus());
         delivery.setVehicle(vehicle);
         delivery.setDriver(driver);
-        delivery = repository.save(delivery);
+        delivery.setDeliveryRequest(this.repository.getDeliveryQuantity());
 
-        List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();
+        List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
@@ -89,6 +89,14 @@ public class DeliveryService {
         return repository
                 .findDeliveries(pageable)
                 .map(DeliveryGenericResponseDTO::new);
+    }
+
+    public Integer count() {
+        Integer count = repository
+                .findDeliveries()
+                .toArray()
+                .length;
+        return count;
     }
 
     private void validateUserType(UserEntity driver) {

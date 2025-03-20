@@ -1,5 +1,6 @@
 CREATE TABLE deliveries (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    delivery_request INT NOT NULL,
     status VARCHAR(50),
     created_dt DATE NOT NULL,
     inactivated_dt DATE NULL,
