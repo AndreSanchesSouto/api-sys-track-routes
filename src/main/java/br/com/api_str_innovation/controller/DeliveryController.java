@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
+import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.service.DeliveryService;
@@ -33,7 +34,7 @@ public class DeliveryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeliveryResponseDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<DeliveryProductsResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 

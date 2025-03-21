@@ -1,10 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryProductRequestDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.product.ProductResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
@@ -123,9 +120,15 @@ public class DeliveryService {
         }
     }
 
-    public DeliveryResponseDTO getById(UUID id) {
+    public DeliveryProductsResponseDTO getById(UUID id) {
         DeliveryEntity delivery = findById(id);
-        return new DeliveryResponseDTO(delivery);
+
+        List<ProductEntity> products = delivery.getDeliveryProducts()
+                .stream()
+                .map(DeliveryProductEntity::getProduct)
+                .toList();
+
+        return new DeliveryProductsResponseDTO(delivery, products);
     }
 
     private DeliveryEntity findById(UUID id) {
