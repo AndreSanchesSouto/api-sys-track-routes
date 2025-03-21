@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.dto.delivery;
 
+import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
@@ -18,6 +19,7 @@ public record DeliveryResponseDTO(
          UserEntity driver,
          List<DeliveryProductEntity> deliveryProducts,
          VehicleEntity vehicle,
+         DataAddressEntity address,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
@@ -31,6 +33,7 @@ public record DeliveryResponseDTO(
                 data.getDriver(),
                 data.getDeliveryProducts(),
                 data.getVehicle(),
+                data.getAddress(),
                 data.getCreatedDt(),
                 data.getInactivatedDt()
         );
