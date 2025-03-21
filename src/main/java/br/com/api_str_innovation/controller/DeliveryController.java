@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/delivery")
@@ -30,6 +31,12 @@ public class DeliveryController {
     public ResponseEntity<Integer> count() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DeliveryResponseDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
+    }
+
 
     @GetMapping("/page")
     public ResponseEntity<Page<DeliveryGenericResponseDTO>> getPaged(Pageable pageable) {

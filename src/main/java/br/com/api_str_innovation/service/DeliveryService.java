@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.dto.product.ProductResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
@@ -16,6 +17,7 @@ import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.exceptions.DataAddressException;
+import br.com.api_str_innovation.exceptions.DeliveryException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.DeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DeliveryService {
@@ -118,5 +121,18 @@ public class DeliveryService {
         if(!addressExists) {
             throw new DataAddressException("Esse endereço não corresponde a esse cliente");
         }
+    }
+
+    public DeliveryResponseDTO getById(UUID id) {
+        DeliveryEntity delivery = findById(id);
+        return new DeliveryResponseDTO(delivery);
+    }
+
+    private DeliveryEntity findById(UUID id) {
+        return repository
+                .findById(id)
+                .orElseThrow(() ->
+                    new DeliveryException("Entrega não encontrada")
+        );
     }
 }

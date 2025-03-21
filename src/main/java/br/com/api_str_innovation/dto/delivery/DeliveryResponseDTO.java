@@ -3,6 +3,7 @@ package br.com.api_str_innovation.dto.delivery;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ public record DeliveryResponseDTO(
          UUID id,
          String status,
          ClientEntity client,
+         UserEntity driver,
          List<DeliveryProductEntity> deliveryProducts,
          VehicleEntity vehicle,
          LocalDate createdDt,
@@ -24,6 +26,7 @@ public record DeliveryResponseDTO(
                 data.getId(),
                 data.getStatus(),
                 data.getClient(),
+                data.getDriver(),
                 data.getDeliveryProducts(),
                 data.getVehicle(),
                 data.getCreatedDt(),
