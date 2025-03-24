@@ -119,13 +119,7 @@ public class DeliveryService {
 
     public DeliveryProductsResponseDTO getById(UUID id) {
         DeliveryEntity delivery = findById(id);
-
-        List<ProductEntity> products = delivery.getDeliveryProducts()
-                .stream()
-                .map(DeliveryProductEntity::getProduct)
-                .toList();
-
-        return new DeliveryProductsResponseDTO(delivery, products);
+        return new DeliveryProductsResponseDTO(delivery);
     }
 
     private DeliveryEntity findById(UUID id) {

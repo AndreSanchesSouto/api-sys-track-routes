@@ -19,14 +19,13 @@ public record DeliveryProductsResponseDTO(
          Integer deliveryRequest,
          UserEntity driver,
          List<DeliveryProductEntity> deliveryProducts,
-         List<ProductEntity> products,
          VehicleEntity vehicle,
          DataAddressEntity address,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
 
-    public DeliveryProductsResponseDTO(DeliveryEntity data, List<ProductEntity> products) {
+    public DeliveryProductsResponseDTO(DeliveryEntity data) {
         this(
                 data.getId(),
                 data.getStatus(),
@@ -34,7 +33,6 @@ public record DeliveryProductsResponseDTO(
                 data.getDeliveryRequest(),
                 data.getDriver(),
                 data.getDeliveryProducts(),
-                products,
                 data.getVehicle(),
                 data.getAddress(),
                 data.getCreatedDt(),
