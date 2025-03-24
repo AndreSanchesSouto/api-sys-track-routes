@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -24,19 +25,36 @@ public class DeliveryProductEntity {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product;
-
-    @JsonIgnore
-    @ManyToOne
     @JoinColumn(name = "delivery_id", nullable = false)
     private DeliveryEntity delivery;
 
     @Column(nullable = false)
     private Integer quantity;
 
+    @Column(nullable = false)
+    @Setter
+    private String name;
+
+    @Column(nullable = false)
+    @Setter
+    private String unitValue;
+
+    @Column(nullable = false)
+    @Setter
+    private Double price;
+
+    @Column(nullable = false)
+    @Setter
+    private Double measure;
+
+    @Column(nullable = false, updatable = false)
+    private final LocalDate createdDt = LocalDate.now();
+
     public DeliveryProductEntity(ProductEntity product, Integer quantity) {
-        this.product = product;
+        this.name = product.getName();
+        this.unitValue = product.getUnitValue();
+        this.price = product.getPrice();
+        this.measure = product.getMeasure();
         this.quantity = quantity;
     }
 
