@@ -1,8 +1,6 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.delivery.*;
-import br.com.api_str_innovation.dto.product.ProductResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
@@ -92,11 +90,10 @@ public class DeliveryService {
     }
 
     public Integer count() {
-        Integer count = repository
+        return repository
                 .findDeliveries()
                 .toArray()
                 .length;
-        return count;
     }
 
     private void validateUserType(UserEntity driver) {
