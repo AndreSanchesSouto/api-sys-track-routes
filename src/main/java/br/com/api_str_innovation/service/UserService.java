@@ -3,9 +3,9 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
+import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
-import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -81,6 +81,11 @@ public class UserService {
 
     public void post(@Valid UserRequestDTO data) {
         existsMailOrLogin(data);
+
+        if (data.role().equals(Role.GENERAL_MANAGER) && data.document() == null) {
+            throw new UserException("O CNPJ deve ser preenchido!");
+        }
+
         UserEntity user = new UserEntity(data);
         repository.save(user);
     }

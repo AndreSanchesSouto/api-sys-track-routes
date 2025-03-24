@@ -10,6 +10,7 @@ public record UserResponseDTO (
         UUID id,
         String name,
         String email,
+        String document,
         String login,
         Status status,
         Role role
@@ -19,6 +20,7 @@ public record UserResponseDTO (
             user.getId(),
             user.getName(),
             user.getEmail(),
+            user.getDocument(),
             user.getLogin(),
             Status.valueOf(user.getStatus().toUpperCase()),
             Role.valueOf(user.getRole().toUpperCase())

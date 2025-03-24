@@ -2,6 +2,7 @@ package br.com.api_str_innovation.dto.user;
 
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.Status;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,8 @@ public record UserRequestDTO(
             @NotBlank
             @Email
             String email,
+            @Nullable
+            String document,
             @NotBlank
             String login,
             @NotBlank
@@ -26,6 +29,7 @@ public record UserRequestDTO(
         return "UserRequestDTO{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", document='" + document + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +

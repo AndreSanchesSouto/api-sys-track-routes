@@ -40,6 +40,10 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @Setter
+    @Column(unique = true)
+    private String document;
+
+    @Setter
     @Column(nullable = false, unique = true)
     private String login;
 
@@ -64,6 +68,7 @@ public class UserEntity implements UserDetails {
     public UserEntity(@Valid UserRequestDTO data) {
         this.setName(data.name());
         this.setEmail(data.email());
+        this.setDocument(data.document());
         this.setLogin(data.login());
         this.setPassword(Encrypter.encrypt(data.password()));
         this.setStatus(userStatus(data.status()));
@@ -95,6 +100,7 @@ public class UserEntity implements UserDetails {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", document='" + document + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
