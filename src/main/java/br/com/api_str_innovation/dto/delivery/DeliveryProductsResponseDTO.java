@@ -3,10 +3,9 @@ package br.com.api_str_innovation.dto.delivery;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
-import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
-import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.service.ProductService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,21 +17,26 @@ public record DeliveryProductsResponseDTO(
          ClientEntity client,
          Integer deliveryRequest,
          UserEntity driver,
-         List<DeliveryProductEntity> deliveryProducts,
+         List<DeliveryProductResponseDTO> deliveryProducts,
          VehicleEntity vehicle,
          DataAddressEntity address,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
 
-    public DeliveryProductsResponseDTO(DeliveryEntity data) {
+    public DeliveryProductsResponseDTO(DeliveryEntity data, ProductService productService) {
         this(
                 data.getId(),
                 data.getStatus(),
                 data.getClient(),
                 data.getDeliveryRequest(),
                 data.getDriver(),
-                data.getDeliveryProducts(),
+                data.getDeliveryProducts()
+                        .stream()
+                        .map(deliveryProduct -> {
+                            return new DeliveryProductResponseDTO(deliveryProduct, Integer.parseInt(productService.getById(deliveryProduct.getProductId()).quantity()));
+                        })
+                        .toList(),
                 data.getVehicle(),
                 data.getAddress(),
                 data.getCreatedDt(),

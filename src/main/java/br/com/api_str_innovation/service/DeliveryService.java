@@ -119,7 +119,7 @@ public class DeliveryService {
 
     public DeliveryProductsResponseDTO getById(UUID id) {
         DeliveryEntity delivery = findById(id);
-        return new DeliveryProductsResponseDTO(delivery);
+        return new DeliveryProductsResponseDTO(delivery, productService);
     }
 
     private DeliveryEntity findById(UUID id) {
