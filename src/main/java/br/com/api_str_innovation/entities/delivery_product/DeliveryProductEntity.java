@@ -45,6 +45,10 @@ public class DeliveryProductEntity {
 
     @Column(nullable = false)
     @Setter
+    private UUID productId;
+
+    @Column(nullable = false)
+    @Setter
     private Double measure;
 
     @Column(nullable = false, updatable = false)
@@ -56,6 +60,7 @@ public class DeliveryProductEntity {
         this.price = product.getPrice();
         this.measure = product.getMeasure();
         this.quantity = quantity;
+        this.productId = product.getId();
     }
 
 }
