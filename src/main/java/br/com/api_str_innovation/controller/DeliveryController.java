@@ -38,9 +38,13 @@ public class DeliveryController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
-
     @GetMapping("/page")
     public ResponseEntity<Page<DeliveryGenericResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DeliveryProductsResponseDTO> put(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 }

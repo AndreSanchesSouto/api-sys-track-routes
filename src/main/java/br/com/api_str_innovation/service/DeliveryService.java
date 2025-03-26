@@ -15,10 +15,14 @@ import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.DeliveryException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.DeliveryRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
@@ -95,6 +99,46 @@ public class DeliveryService {
                 .toArray()
                 .length;
     }
+
+    @Transactional
+    public DeliveryProductsResponseDTO put(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
+        DeliveryEntity deliveryEntity = findById(id);
+        ClientEntity client = this.clientService.getById(data.clientId());
+        DataAddressEntity address = this.addressService.findById(data.addressId());
+        this.validateAddressToClient(client, address);
+
+        UserEntity driver = this.userService.findById(data.driverId());
+        this.validateUserType(driver);
+
+        VehicleEntity vehicle = this.vehicleService.findById(data.vehicleId());
+
+        deliveryEntity.setClient(client);
+        deliveryEntity.setAddress(address);
+        deliveryEntity.setStatus(VehicleStatus.ACTIVE.getStatus());
+        deliveryEntity.setVehicle(vehicle);
+        deliveryEntity.setDriver(driver);
+        deliveryEntity.setDeliveryRequest(this.repository.getDeliveryQuantity() + 1);
+
+        List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
+        for (DeliveryProductRequestDTO productDTO : data.products()) {
+            ProductEntity product = productService.findById(productDTO.productId());
+
+            DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
+
+            deliveryProduct.setDelivery(deliveryEntity);
+
+            deliveryProducts.add(deliveryProduct);
+        }
+        deliveryEntity.setDeliveryProducts(deliveryProducts);
+
+        userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
+        vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
+
+        this.repository.save(deliveryEntity);
+
+        return new DeliveryProductsResponseDTO(deliveryEntity, productService);
+    }
+
 
     private void validateUserType(UserEntity driver) {
         boolean isADriver = driver.getRole().equalsIgnoreCase(Role.DRIVER.getRole());
