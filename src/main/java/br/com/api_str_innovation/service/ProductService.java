@@ -56,6 +56,13 @@ public class ProductService {
                 .map(ProductResponseDTO::new);
     }
 
+    @GetMapping(value = "/description")
+    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name) {
+        return repository
+                .findSearchProducts(pageable, name)
+                .map(ProductResponseDTO::new);
+    }
+
     public List<ProductResponseDTO> getAvailable() {
         return repository
                 .findActiveProducts()

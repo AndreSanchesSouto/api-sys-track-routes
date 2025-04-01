@@ -41,6 +41,11 @@ public class ClientControlller {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
+    @GetMapping(value = "/search")
+    public ResponseEntity<Page<ClientResponseDTO>> getSearched(Pageable pageable, String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ClientEntity> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));

@@ -22,6 +22,11 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             """)
     Page<VehicleEntity> findActiveVehicles(Pageable pageable);
 
+    @Query("SELECT v FROM VehicleEntity v " +
+            "WHERE LOWER(FUNCTION('unaccent', v.licensePlateNumber))" +
+            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :licensePlateNumber, '%')))")
+    Page<VehicleEntity> findSearchedVehicles(Pageable pageable, String licensePlateNumber);
+
     @Query("""
             SELECT v FROM VehicleEntity v
                 WHERE v.inactivatedDt IS NULL

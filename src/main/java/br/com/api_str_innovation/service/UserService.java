@@ -76,6 +76,13 @@ public class UserService {
                 .map(UserResponseDTO::new);
     }
 
+    @GetMapping(value = "search/name")
+    public Page<UserResponseDTO> getSearched(Pageable pageable, String name) {
+        return repository
+                .findSearchClients(pageable, name)
+                .map(UserResponseDTO::new);
+    }
+
     public UserResponseDTO getById(UUID id) {
         UserEntity user = findById(id);
         return new UserResponseDTO(user);

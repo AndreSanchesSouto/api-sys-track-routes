@@ -40,6 +40,11 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
+    @GetMapping(value = "/search/license-plate")
+    public ResponseEntity<Page<VehicleResponseDTO>> getSearched(Pageable pageable, String licensePlateNumber) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, licensePlateNumber));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));

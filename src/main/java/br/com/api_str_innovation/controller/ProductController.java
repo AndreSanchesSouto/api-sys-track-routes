@@ -31,6 +31,11 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
     }
 
+    @GetMapping(value = "/search/name")
+    public ResponseEntity<Page<ProductResponseDTO>> getSearched(Pageable pageable, String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name));
+    }
+
     @GetMapping("/available")
     public ResponseEntity<List<ProductResponseDTO>> getAvailable() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAvailable());

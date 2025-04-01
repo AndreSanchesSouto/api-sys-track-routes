@@ -17,6 +17,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     """)
     Page<ProductEntity> findActiveProducts(Pageable pageable);
 
+    @Query("SELECT p FROM ProductEntity p WHERE " +
+            "LOWER(FUNCTION('unaccent', p.name)) " +
+            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))")
+    Page<ProductEntity> findSearchProducts(Pageable pageable, String name);
+
     @Query("""
         SELECT p FROM ProductEntity p
             WHERE p.inactivatedDt IS NULL
