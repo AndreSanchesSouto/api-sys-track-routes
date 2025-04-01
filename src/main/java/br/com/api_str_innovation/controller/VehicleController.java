@@ -25,6 +25,11 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<VehicleResponseDTO>> getAvailableVehicles() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailableVehicles());
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> count() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.count());

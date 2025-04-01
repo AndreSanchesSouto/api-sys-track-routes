@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.entities.vehicle;
 
-public enum Status {
+public enum VehicleStatus {
         WAITING("waiting"),
         ACTIVE("active"),
         UNAVAILABLE("unavailable"),
@@ -9,7 +9,7 @@ public enum Status {
 
         private String status;
 
-        Status(String status)  {
+        VehicleStatus(String status)  {
             this.status = status;
         }
 

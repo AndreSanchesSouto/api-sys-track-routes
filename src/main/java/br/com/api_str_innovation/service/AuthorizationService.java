@@ -49,7 +49,9 @@ public class AuthorizationService implements UserDetailsService {
     }
 
     private UserDetails findByLogin(String username) {
-        return repository.findByLogin(username);
+        return repository.findByLogin(username).orElseThrow(
+                () -> new UserException("NotFund")
+        );
     }
 
 }

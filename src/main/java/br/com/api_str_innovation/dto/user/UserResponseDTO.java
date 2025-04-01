@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.dto.user;
 
 import br.com.api_str_innovation.entities.user.Role;
-import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
 
 import java.util.UUID;
@@ -11,7 +11,7 @@ public record UserResponseDTO (
         String name,
         String email,
         String login,
-        Status status,
+        UserStatus status,
         Role role
 ){
     public UserResponseDTO (UserEntity user) {
@@ -20,7 +20,7 @@ public record UserResponseDTO (
             user.getName(),
             user.getEmail(),
             user.getLogin(),
-            Status.valueOf(user.getStatus().toUpperCase()),
+            UserStatus.valueOf(user.getStatus().toUpperCase()),
             Role.valueOf(user.getRole().toUpperCase())
         );
     }

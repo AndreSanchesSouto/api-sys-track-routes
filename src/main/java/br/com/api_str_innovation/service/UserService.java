@@ -3,9 +3,10 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
+import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
-import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    private UserEntity findById(UUID id) {
+    public UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
         );
@@ -40,7 +41,7 @@ public class UserService {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
-        if(repository.findByLogin(data.login()) != null ){
+        if(repository.findByLogin(data.login()).isPresent() ){
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
     }
@@ -48,6 +49,14 @@ public class UserService {
     public List<UserResponseDTO> getAll() {
         return repository
                 .findAll()
+                .stream()
+                .map(UserResponseDTO::new)
+                .toList();
+    }
+
+    public List<UserResponseDTO> getDrivers() {
+        return repository
+                .findUsersActivated(Role.DRIVER.getRole(), UserStatus.ACTIVE.getStatus())
                 .stream()
                 .map(UserResponseDTO::new)
                 .toList();
@@ -91,6 +100,13 @@ public class UserService {
         user.setEmail(data.email());
         user.setLogin(data.login());
         user.setStatus(data.status().getStatus());
+        repository.save(user);
+    }
+
+    @Transactional
+    public void patchStatus(@PathVariable UUID id, @RequestBody UserStatus status) {
+        UserEntity user = findById(id);
+        user.setStatus(status.getStatus());
         repository.save(user);
     }
 

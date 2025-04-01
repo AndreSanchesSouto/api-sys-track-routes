@@ -3,6 +3,7 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
@@ -48,6 +49,14 @@ public class VehicleService {
     public List<VehicleResponseDTO> getAll() {
         return vehicleRepository
                 .findAll()
+                .stream()
+                .map(VehicleResponseDTO::new)
+                .toList();
+    }
+
+    public List<VehicleResponseDTO> findAvailableVehicles() {
+        return vehicleRepository
+                .findAvailableVehicles()
                 .stream()
                 .map(VehicleResponseDTO::new)
                 .toList();
@@ -113,5 +122,11 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
     }
 
+    @Transactional
+    public void patchStatus(UUID id, VehicleStatus status) {
+        VehicleEntity vehicle = findById(id);
+        vehicle.setStatus(status.getStatus());
+        vehicleRepository.save(vehicle);
+    }
 }
 

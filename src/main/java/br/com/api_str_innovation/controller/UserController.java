@@ -26,6 +26,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/drivers")
+    public ResponseEntity<List<UserResponseDTO>> getDrivers() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getDrivers());
+    }
+
     @GetMapping(value = "/page")
     public ResponseEntity<Page<UserResponseDTO>> getPaged(Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));

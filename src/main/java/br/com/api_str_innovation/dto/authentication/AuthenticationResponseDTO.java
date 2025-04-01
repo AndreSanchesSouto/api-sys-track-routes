@@ -2,7 +2,7 @@ package br.com.api_str_innovation.dto.authentication;
 
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.user.Role;
-import br.com.api_str_innovation.entities.user.Status;
+import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import lombok.Getter;
 
@@ -22,7 +22,7 @@ public class AuthenticationResponseDTO {
                 employee.getName(),
                 employee.getEmail(),
                 employee.getLogin(),
-                Status.valueOf(employee.getStatus().toUpperCase()),
+                UserStatus.valueOf(employee.getStatus().toUpperCase()),
                 Role.valueOf(employee.getRole().toUpperCase())
         );
     }

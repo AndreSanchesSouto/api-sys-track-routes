@@ -1,6 +1,5 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,5 +48,12 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
     Optional<VehicleEntity> findVehicleFromChecklistId(
             @Param("checklistId") UUID checklistId
     );
+
+    @Query(value = """
+            SELECT * FROM vehicle v
+                WHERE v.status = 'active'
+                AND v.inactivated_dt IS NULL
+            """, nativeQuery = true)
+    List<VehicleEntity> findAvailableVehicles();
 
 }
