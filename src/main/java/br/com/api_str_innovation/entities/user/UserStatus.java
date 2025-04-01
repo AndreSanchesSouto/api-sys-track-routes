@@ -1,13 +1,13 @@
 package br.com.api_str_innovation.entities.user;
 
-public enum Status {
+public enum UserStatus {
     UNAVAILABLE("unavailable"),
     ACTIVE("active"),
     INACTIVE("inactive");
 
     private String status;
 
-    Status(String status)  {
+    UserStatus(String status)  {
         this.status = status;
     }
 

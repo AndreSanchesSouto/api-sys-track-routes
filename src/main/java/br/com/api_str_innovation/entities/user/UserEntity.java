@@ -70,8 +70,8 @@ public class UserEntity implements UserDetails {
         this.setRole(data.role().getRole());
     }
 
-    private String userStatus(Status status) {
-        return status == null ? Status.ACTIVE.getStatus() : status.getStatus();
+    private String userStatus(UserStatus status) {
+        return status == null ? UserStatus.ACTIVE.getStatus() : status.getStatus();
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

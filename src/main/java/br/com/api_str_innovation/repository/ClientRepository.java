@@ -24,4 +24,19 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
 
     @Query("SELECT c FROM ClientEntity c WHERE c.inactivatedDt IS NULL")
     List<ClientEntity> findActiveClients();
+
+    @Query(value = """
+            SELECT DISTINCT
+                c.id,
+                c.name,
+                c.email,
+                c.cellphone,
+                c.document,
+                c.created_dt,
+                c.inactivated_dt
+            FROM client c
+                INNER JOIN address ad ON ad.client_id = c.id
+            WHERE c.inactivated_dt IS NULL;
+           """, nativeQuery = true)
+    List<ClientEntity>findAvailable();
 }
