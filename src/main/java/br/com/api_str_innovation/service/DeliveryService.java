@@ -117,9 +117,8 @@ public class DeliveryService {
         deliveryEntity.setStatus(VehicleStatus.ACTIVE.getStatus());
         deliveryEntity.setVehicle(vehicle);
         deliveryEntity.setDriver(driver);
-        deliveryEntity.setDeliveryRequest(this.repository.getDeliveryQuantity() + 1);
+        deliveryEntity.getDeliveryProducts().clear();
 
-        List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
@@ -127,9 +126,9 @@ public class DeliveryService {
 
             deliveryProduct.setDelivery(deliveryEntity);
 
-            deliveryProducts.add(deliveryProduct);
+            deliveryEntity.getDeliveryProducts().add(deliveryProduct);
         }
-        deliveryEntity.setDeliveryProducts(deliveryProducts);
+
 
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
         vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);

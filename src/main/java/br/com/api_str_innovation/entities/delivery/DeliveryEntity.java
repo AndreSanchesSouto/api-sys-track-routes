@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class DeliveryEntity {
 
     @Setter
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeliveryProductEntity> deliveryProducts;
+    private List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();;
 
     @Setter
     @ManyToOne
