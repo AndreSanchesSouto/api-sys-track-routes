@@ -3,6 +3,8 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
+import br.com.api_str_innovation.exceptions.ClientException;
+import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.ClientRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,10 @@ public class ClientService {
     }
 
     public void post(@Valid ClientRequestDTO data) {
+        if (data.document() != null && data.document().length() != 14) {
+            throw new ClientException("Informe o CNPJ corretamente!");
+        }
+
         ClientEntity clientData = new ClientEntity(data);
         repository.save(clientData);
     }

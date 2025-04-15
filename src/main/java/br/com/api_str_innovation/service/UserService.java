@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -82,8 +83,15 @@ public class UserService {
     public void post(@Valid UserRequestDTO data) {
         existsMailOrLogin(data);
 
-        if (data.role().equals(Role.GENERAL_MANAGER) && data.document() == null) {
-            throw new UserException("O CNPJ deve ser preenchido!");
+        if ((data.role().equals(Role.DRIVER) || data.role().equals(Role.SHIPPING_MANAGER)) &&
+                data.document() != null &&
+                data.document().length() != 11) {
+            throw new UserException("O CPF deve ser preenchido corretamente!");
+        }
+
+        if (data.role().equals(Role.GENERAL_MANAGER) && data.document() == null ||
+                data.role().equals(Role.GENERAL_MANAGER) && data.document().length() != 14) {
+            throw new UserException("O CNPJ deve ser preenchido corretamente!");
         }
 
         UserEntity user = new UserEntity(data);
