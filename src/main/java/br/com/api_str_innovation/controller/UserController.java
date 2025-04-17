@@ -52,8 +52,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody UserRequestDTO data) {
-        this.service.post(data);
+    public ResponseEntity<String> post(
+            @RequestBody UserRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        this.service.post(data, generalManagerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado");
     }
 

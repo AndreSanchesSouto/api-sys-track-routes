@@ -5,5 +5,6 @@ CREATE TABLE client (
     document VARCHAR(100) NOT NULL,
     cellphone VARCHAR(100) NOT NULL,
     created_dt DATE NOT NULL,
-    inactivated_dt DATE NULL
+    inactivated_dt DATE NULL,
+    general_manager_id VARCHAR(50) NULL
 );

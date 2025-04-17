@@ -83,9 +83,9 @@ public class VehicleService {
                 .map(VehicleResponseDTO::new);
     }
 
-    public void post(@Valid VehicleRequestDTO data) {
+    public void post(@Valid VehicleRequestDTO data, UUID generalManagerId) {
         existsPlateNumber(data.licensePlateNumber());
-        vehicleRepository.save(new VehicleEntity(data));
+        vehicleRepository.save(new VehicleEntity(data, generalManagerId));
     }
 
     @Transactional

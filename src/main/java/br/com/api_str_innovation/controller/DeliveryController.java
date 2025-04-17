@@ -24,8 +24,11 @@ public class DeliveryController {
     DeliveryService service;
 
     @PostMapping
-    public ResponseEntity<DeliveryResponseDTO> post(@Valid @RequestBody DeliveryRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data));
+    public ResponseEntity<DeliveryResponseDTO> post(
+            @Valid @RequestBody DeliveryRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data, generalManagerId));
     }
 
     @GetMapping("/count")

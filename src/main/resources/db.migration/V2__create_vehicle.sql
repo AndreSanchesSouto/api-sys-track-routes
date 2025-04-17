@@ -8,6 +8,7 @@ CREATE TABLE vehicle (
     status VARCHAR(100) NOT NULL,
     created_dt DATE NOT NULL,
     inactivated_dt DATE NULL,
+    general_manager_id VARCHAR(50) NULL,
     user_fk UUID,
     FOREIGN KEY (user_fk) REFERENCES users(id)
 );

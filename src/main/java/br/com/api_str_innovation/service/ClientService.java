@@ -71,8 +71,8 @@ public class ClientService {
         return client;
     }
 
-    public void post(@Valid ClientRequestDTO data) {
-        ClientEntity clientData = new ClientEntity(data);
+    public void post(@Valid ClientRequestDTO data, UUID generalManagerId) {
+        ClientEntity clientData = new ClientEntity(data, generalManagerId);
         repository.save(clientData);
     }
 

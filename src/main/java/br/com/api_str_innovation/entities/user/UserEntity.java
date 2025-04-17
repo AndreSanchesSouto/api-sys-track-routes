@@ -52,6 +52,10 @@ public class UserEntity implements UserDetails {
     private String status;
 
     @Setter
+    @Column
+    private UUID generalManagerId;
+
+    @Setter
     @Column(nullable = false)
     private String role;
 
@@ -60,6 +64,16 @@ public class UserEntity implements UserDetails {
 
     @Setter
     private LocalDate inactivatedDt;
+
+    public UserEntity(@Valid UserRequestDTO data, UUID generalManagerId) {
+        this.setName(data.name());
+        this.setEmail(data.email());
+        this.setLogin(data.login());
+        this.setPassword(Encrypter.encrypt(data.password()));
+        this.setStatus(userStatus(data.status()));
+        this.setRole(data.role().getRole());
+        this.setGeneralManagerId(generalManagerId);
+    }
 
     public UserEntity(@Valid UserRequestDTO data) {
         this.setName(data.name());
@@ -74,16 +88,20 @@ public class UserEntity implements UserDetails {
         return status == null ? UserStatus.ACTIVE.getStatus() : status.getStatus();
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.getRole().equals(Role.GENERAL_MANAGER.getRole())){
-            return List.of(
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return switch (this.role.toUpperCase()) {
+                case "GENERAL_MANAGER" -> List.of(
                         new SimpleGrantedAuthority("ROLE_ADMIN"),
+                        new SimpleGrantedAuthority("ROLE_SHIPPING"),
                         new SimpleGrantedAuthority("ROLE_USER")
-            );
+                );
+                case "SHIPPING_MANAGER" -> List.of(
+                        new SimpleGrantedAuthority("ROLE_SHIPPING"),
+                        new SimpleGrantedAuthority("ROLE_USER")
+                );
+                default -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            };
         }
-
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-    }
 
     public String getUsername() {
         return this.getLogin();

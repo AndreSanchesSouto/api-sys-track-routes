@@ -46,6 +46,10 @@ public class ClientEntity {
     private String document;
 
     @Setter
+    @Column
+    private UUID generalManagerId;
+
+    @Setter
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DataAddressEntity> addresses;
 
@@ -58,11 +62,12 @@ public class ClientEntity {
     @Column(name = "inactivated_dt")
     private LocalDateTime inactivatedDt;
 
-    public ClientEntity(ClientRequestDTO data) {
+    public ClientEntity(ClientRequestDTO data, UUID generalManagerId) {
         this.name = data.name();
         this.email = data.email();
         this.cellphone = data.cellphone();
         this.document = data.document();
+        this.generalManagerId = generalManagerId;
     }
 
 }

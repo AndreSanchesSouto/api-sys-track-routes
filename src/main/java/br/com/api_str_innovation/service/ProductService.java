@@ -80,8 +80,8 @@ public class ProductService {
         return findById(id);
     }
 
-    public ProductResponseDTO post(@Valid ProductRequestDTO data) {
-        ProductEntity product = new ProductEntity(data);
+    public ProductResponseDTO post(@Valid ProductRequestDTO data, UUID generalManagerId) {
+        ProductEntity product = new ProductEntity(data, generalManagerId);
         repository.save(product);
         return new ProductResponseDTO(product);
     }

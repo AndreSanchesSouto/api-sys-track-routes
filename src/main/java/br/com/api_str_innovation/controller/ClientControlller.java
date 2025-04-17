@@ -27,7 +27,7 @@ public class ClientControlller {
     }
 
     @GetMapping("/available")
-   public ResponseEntity<List<ClientResponseDTO>> getAvailable() {
+    public ResponseEntity<List<ClientResponseDTO>> getAvailable() {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailable());
     }
 
@@ -52,8 +52,11 @@ public class ClientControlller {
     }
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody ClientRequestDTO data) {
-        this.service.post(data);
+    public ResponseEntity<String> post(
+            @RequestBody ClientRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        this.service.post(data, generalManagerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 

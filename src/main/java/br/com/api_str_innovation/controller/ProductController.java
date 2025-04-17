@@ -47,8 +47,11 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> post(@Valid @RequestBody ProductRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.post(data));
+    public ResponseEntity<ProductResponseDTO> post(
+            @Valid @RequestBody ProductRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.post(data, generalManagerId));
     }
 
     @PatchMapping("{id}")

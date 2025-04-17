@@ -88,9 +88,15 @@ public class UserService {
         return new UserResponseDTO(user);
     }
 
-    public void post(@Valid UserRequestDTO data) {
+    public void postGeneralManager(@Valid UserRequestDTO data) {
         existsMailOrLogin(data);
         UserEntity user = new UserEntity(data);
+        repository.save(user);
+    }
+
+    public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
+        existsMailOrLogin(data);
+        UserEntity user = new UserEntity(data, generalManagerId);
         repository.save(user);
     }
 

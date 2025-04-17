@@ -51,8 +51,11 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody VehicleRequestDTO data) {
-        this.service.post(data);
+    public ResponseEntity<String> post(
+            @RequestBody VehicleRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        this.service.post(data, generalManagerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
