@@ -83,14 +83,17 @@ public class UserService {
     public void post(@Valid UserRequestDTO data) {
         existsMailOrLogin(data);
 
-        if ((data.role().equals(Role.DRIVER) || data.role().equals(Role.SHIPPING_MANAGER)) &&
-                data.document() != null &&
-                data.document().length() != 11) {
+        assert data.document() != null;
+        String document = data.document().replaceAll("\\D", "");
+
+        if ((data.role().equals(Role.DRIVER) ||
+                data.role().equals(Role.SHIPPING_MANAGER)) &&
+                document.length() != 11) {
             throw new UserException("O CPF deve ser preenchido corretamente!");
         }
 
-        if (data.role().equals(Role.GENERAL_MANAGER) && data.document() == null ||
-                data.role().equals(Role.GENERAL_MANAGER) && data.document().length() != 14) {
+        if (data.role().equals(Role.GENERAL_MANAGER) &&
+                document.length() != 14) {
             throw new UserException("O CNPJ deve ser preenchido corretamente!");
         }
 
