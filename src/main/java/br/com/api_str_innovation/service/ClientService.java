@@ -4,7 +4,6 @@ import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
-import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.ClientRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,25 @@ public class ClientService {
 
     @Autowired
     private ClientRepository repository;
+
+    private void existsMailOrCnpj(ClientRequestDTO data) {
+        if (repository.findByEmail(data.email()).isPresent() ) {
+            throw new ClientException(String.format("O email %s já está em uso.", data.email()));
+        }
+
+        if (repository.findByDocument(data.document()).isPresent() ) {
+            throw new ClientException(String.format("O CNPJ %s já está em uso.", data.document()));
+        }
+    }
+
+    private void validDocumentLength(String document) {
+        assert document != null;
+        String cnpj = document.replaceAll("\\D", "");
+
+        if (cnpj.length() != 14) {
+            throw new ClientException("Informe o CNPJ corretamente!");
+        }
+    }
 
     public List<ClientResponseDTO> getAll() {
         List<ClientResponseDTO> client = repository
@@ -66,18 +84,17 @@ public class ClientService {
     }
 
     public void post(@Valid ClientRequestDTO data) {
-        assert data.document() != null;
-        String document = data.document().replaceAll("\\D", "");
-
-        if (document.length() != 14) {
-            throw new ClientException("Informe o CNPJ corretamente!");
-        }
+        existsMailOrCnpj(data);
+        validDocumentLength(data.document());
 
         ClientEntity clientData = new ClientEntity(data);
         repository.save(clientData);
     }
 
-    public ClientResponseDTO put(UUID id, ClientRequestDTO data) {
+    public ClientResponseDTO put(UUID id, @Valid ClientRequestDTO data) {
+        existsMailOrCnpj(data);
+        validDocumentLength(data.document());
+
         ClientEntity client = this.getById(id);
         client.setName(data.name());
         client.setEmail(data.email());
@@ -86,7 +103,10 @@ public class ClientService {
         return new ClientResponseDTO(client);
     }
 
-    public ClientResponseDTO patch(UUID id, ClientRequestDTO data) {
+    public ClientResponseDTO patch(UUID id, @Valid ClientRequestDTO data) {
+        existsMailOrCnpj(data);
+        validDocumentLength(data.document());
+
         ClientEntity client = this.getById(id);
         client.setName(data.name());
         client.setEmail(data.email());

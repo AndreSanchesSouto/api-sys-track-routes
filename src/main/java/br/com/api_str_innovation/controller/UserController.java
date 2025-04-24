@@ -54,18 +54,18 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
+    public ResponseEntity<String> put(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO data) {
         this.service.put(id, data);
         return ResponseEntity.status(HttpStatus.OK).body("Updated");
     }
 
     @PostMapping("/period-of-creation")
-    ResponseEntity<List<Object[]>> periodOfCreation(@RequestBody PeriodTimeRequestDTO data) {
+    ResponseEntity<List<Object[]>> periodOfCreation(@Valid @RequestBody PeriodTimeRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
+    public ResponseEntity<String> patch(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO data) {
         this.service.patch(id, data);
         return ResponseEntity.status(HttpStatus.OK).body("Atualizado");
     }

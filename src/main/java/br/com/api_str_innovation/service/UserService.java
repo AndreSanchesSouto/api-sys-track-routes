@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 
@@ -36,13 +36,26 @@ public class UserService {
         );
     }
 
-    private void existsMailOrLogin(UserRequestDTO data) {
+    private void existsMailOrLoginOrCnpj(UserRequestDTO data) {
         if (repository.findByEmail(data.email()).isPresent() ) {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
         if(repository.findByLogin(data.login()) != null ){
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
+        }
+
+        if(repository.findByDocument(data.document()).isPresent() ) {
+            throw new UserException(String.format("O CNPJ %s já está em uso.", data.document()));
+        }
+    }
+
+    private void validDocumentLength(String document) {
+        assert document != null;
+        String cnpj = document.replaceAll("\\D", "");
+
+        if (cnpj.length() != 14) {
+            throw new ClientException("Informe o CNPJ corretamente!");
         }
     }
 
@@ -81,7 +94,7 @@ public class UserService {
     }
 
     public void post(@Valid UserRequestDTO data) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
 
         assert data.document() != null;
         String document = data.document().replaceAll("\\D", "");
@@ -107,24 +120,30 @@ public class UserService {
 
     @Transactional
     public void patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
         UserEntity user = findById(id);
+
+        validDocumentLength(data.document());
 
         user.setName(data.name());
         user.setEmail(data.email());
         user.setLogin(data.login());
+        user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
         repository.save(user);
     }
 
     @Transactional
     public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
         UserEntity user = findById(id);
+
+        validDocumentLength(data.document());
 
         user.setName(data.name());
         user.setEmail(data.email());
         user.setLogin(data.login());
+        user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
         repository.save(user);
 
