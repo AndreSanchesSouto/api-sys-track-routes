@@ -66,7 +66,10 @@ public class ClientService {
     }
 
     public void post(@Valid ClientRequestDTO data) {
-        if (data.document() != null && data.document().length() != 14) {
+        assert data.document() != null;
+        String document = data.document().replaceAll("\\D", "");
+
+        if (document.length() != 14) {
             throw new ClientException("Informe o CNPJ corretamente!");
         }
 
