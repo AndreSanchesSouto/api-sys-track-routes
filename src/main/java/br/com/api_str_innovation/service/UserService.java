@@ -44,6 +44,8 @@ public class UserService {
         if(repository.findByLogin(data.login()) != null ){
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
+
+        // adicionar validacao de cnpj
     }
 
     public List<UserResponseDTO> getAll() {
