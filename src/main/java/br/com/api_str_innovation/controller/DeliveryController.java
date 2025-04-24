@@ -32,8 +32,8 @@ public class DeliveryController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    public ResponseEntity<Integer> count(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count(generalManagerId));
     }
 
     @GetMapping("/{id}")
@@ -42,8 +42,10 @@ public class DeliveryController {
     }
 
     @GetMapping("/page")
-    public ResponseEntity<Page<DeliveryGenericResponseDTO>> getPaged(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    public ResponseEntity<Page<DeliveryGenericResponseDTO>> getPaged(
+            Pageable pageable,
+            @RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
     @PutMapping("/{id}")

@@ -54,32 +54,32 @@ public class VehicleService {
                 .toList();
     }
 
-    public List<VehicleResponseDTO> findAvailableVehicles() {
+    public List<VehicleResponseDTO> findAvailableVehicles(UUID generalManagerId) {
         return vehicleRepository
-                .findAvailableVehicles()
+                .findAvailableVehicles(generalManagerId)
                 .stream()
                 .map(VehicleResponseDTO::new)
                 .toList();
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return vehicleRepository
-                .findActiveVehicles()
+                .findActiveVehicles(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<VehicleResponseDTO> getPaged(Pageable pageable) {
+    public Page<VehicleResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return vehicleRepository
-                .findActiveVehicles(pageable)
+                .findActiveVehicles(pageable, generalManagerId)
                 .map(VehicleResponseDTO::new);
     }
 
     @GetMapping(value = "/search/license-plate")
-    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber) {
+    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber, UUID generalManagerId) {
         return vehicleRepository
-                .findSearchedVehicles(pageable, licensePlateNumber)
+                .findSearchedVehicles(pageable, licensePlateNumber, generalManagerId)
                 .map(VehicleResponseDTO::new);
     }
 

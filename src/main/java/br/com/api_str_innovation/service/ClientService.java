@@ -32,34 +32,34 @@ public class ClientService {
         return client;
     }
 
-    public List<ClientResponseDTO> findAvailable() {
+    public List<ClientResponseDTO> findAvailable(UUID generalManagerId) {
         return repository
-                .findAvailable()
+                .findAvailable(generalManagerId)
                 .stream()
                 .map(ClientResponseDTO::new)
                 .toList();
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         Integer count = repository
-                .findActiveClients()
+                .findActiveClients(generalManagerId)
                 .toArray()
                 .length;
         return count;
     }
 
     @GetMapping(value = "/page")
-    public Page<ClientResponseDTO> getPaged(Pageable pageable) {
+    public Page<ClientResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         Page<ClientResponseDTO> client = repository
-                .findActiveClients(pageable)
+                .findActiveClients(pageable, generalManagerId)
                 .map(ClientResponseDTO::new);
         return client;
     }
 
     @GetMapping(value = "/search")
-    public Page<ClientResponseDTO> getSearched(Pageable pageable, String name) {
+    public Page<ClientResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
         Page<ClientResponseDTO> client = repository
-                .findSearchClients(pageable, name)
+                .findSearchClients(pageable, name, generalManagerId)
                 .map(ClientResponseDTO::new);
         return client;
     }

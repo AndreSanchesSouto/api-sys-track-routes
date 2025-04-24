@@ -42,30 +42,30 @@ public class ProductService {
                 .toList();
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return repository
-                .findActiveProducts()
+                .findActiveProducts(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<ProductResponseDTO> getPaged(Pageable pageable) {
+    public Page<ProductResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findActiveProducts(pageable)
+                .findActiveProducts(pageable, generalManagerId)
                 .map(ProductResponseDTO::new);
     }
 
     @GetMapping(value = "/description")
-    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name) {
+    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
         return repository
-                .findSearchProducts(pageable, name)
+                .findSearchProducts(pageable, name, generalManagerId)
                 .map(ProductResponseDTO::new);
     }
 
-    public List<ProductResponseDTO> getAvailable() {
+    public List<ProductResponseDTO> getAvailable(UUID generalManagerId) {
         return repository
-                .findActiveProducts()
+                .findActiveProducts(generalManagerId)
                 .stream()
                 .map(ProductResponseDTO::new)
                 .toList();

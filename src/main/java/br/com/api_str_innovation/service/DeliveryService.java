@@ -88,15 +88,15 @@ public class DeliveryService {
         return new DeliveryResponseDTO(delivery);
     }
 
-    public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable) {
+    public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findDeliveries(pageable)
+                .findDeliveries(pageable, generalManagerId)
                 .map(DeliveryGenericResponseDTO::new);
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return repository
-                .findDeliveries()
+                .findDeliveries(generalManagerId)
                 .toArray()
                 .length;
     }

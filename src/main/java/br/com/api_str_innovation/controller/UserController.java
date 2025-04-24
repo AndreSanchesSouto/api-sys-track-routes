@@ -27,23 +27,30 @@ public class UserController {
     }
 
     @GetMapping("/drivers")
-    public ResponseEntity<List<UserResponseDTO>> getDrivers() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getDrivers());
+    public ResponseEntity<List<UserResponseDTO>> getDrivers(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getDrivers(generalManagerId));
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<UserResponseDTO>> getPaged(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    public ResponseEntity<Page<UserResponseDTO>> getPaged(
+            Pageable pageable,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
     @GetMapping(value = "/search/name")
-    public ResponseEntity<Page<UserResponseDTO>> getSearched(Pageable pageable, String name) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name));
+    public ResponseEntity<Page<UserResponseDTO>> getSearched(
+            Pageable pageable,
+            String name,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name, generalManagerId));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    public ResponseEntity<Integer> count(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count(generalManagerId));
     }
 
     @GetMapping("/{id}")

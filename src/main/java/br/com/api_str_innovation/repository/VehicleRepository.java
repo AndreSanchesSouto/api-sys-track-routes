@@ -19,19 +19,28 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
     @Query("""
             SELECT v FROM VehicleEntity v
                 WHERE v.inactivatedDt IS NULL
+                AND v.generalManagerId = :generalManagerId
             """)
-    Page<VehicleEntity> findActiveVehicles(Pageable pageable);
+    Page<VehicleEntity> findActiveVehicles(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
-    @Query("SELECT v FROM VehicleEntity v " +
-            "WHERE LOWER(FUNCTION('unaccent', v.licensePlateNumber))" +
-            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :licensePlateNumber, '%')))")
-    Page<VehicleEntity> findSearchedVehicles(Pageable pageable, String licensePlateNumber);
+    @Query("""
+            SELECT v FROM VehicleEntity v
+            WHERE LOWER(FUNCTION('unaccent', v.licensePlateNumber))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :licensePlateNumber, '%')))
+            AND v.generalManagerId = :generalManagerId
+            """)
+    Page<VehicleEntity> findSearchedVehicles(
+            Pageable pageable,
+            @Param("licensePlateNumber") String licensePlateNumber,
+            @Param("generalManagerId") UUID generalManagerId
+    );
 
     @Query("""
             SELECT v FROM VehicleEntity v
                 WHERE v.inactivatedDt IS NULL
+                AND v.generalManagerId = :generalManagerId
             """)
-    List<VehicleEntity> findActiveVehicles();
+    List<VehicleEntity> findActiveVehicles(@Param("generalManagerId") UUID generalManagerId);
 
     Optional<VehicleEntity> findByLicensePlateNumber(String licensePlateNumber);
 
@@ -58,7 +67,8 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             SELECT * FROM vehicle v
                 WHERE v.status = 'active'
                 AND v.inactivated_dt IS NULL
+                AND v.general_manager_id = :generalManagerId
             """, nativeQuery = true)
-    List<VehicleEntity> findAvailableVehicles();
+    List<VehicleEntity> findAvailableVehicles(@Param("generalManagerId") UUID generalManagerId);
 
 }
