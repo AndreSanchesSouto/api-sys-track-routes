@@ -12,6 +12,7 @@ public record UserResponseDTO (
         String email,
         String login,
         UserStatus status,
+        UUID generalManagerId,
         Role role
 ){
     public UserResponseDTO (UserEntity user) {
@@ -21,6 +22,7 @@ public record UserResponseDTO (
             user.getEmail(),
             user.getLogin(),
             UserStatus.valueOf(user.getStatus().toUpperCase()),
+            user.getGeneralManagerId(),
             Role.valueOf(user.getRole().toUpperCase())
         );
     }

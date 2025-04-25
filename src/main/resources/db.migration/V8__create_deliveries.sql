@@ -4,6 +4,7 @@ CREATE TABLE deliveries (
     status VARCHAR(50),
     created_dt DATE NOT NULL,
     inactivated_dt DATE NULL,
+    general_manager_id VARCHAR(50) NULL,
     client_id UUID,
     vehicle_id UUID,
     address_id UUID,

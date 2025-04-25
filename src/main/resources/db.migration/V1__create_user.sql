@@ -10,5 +10,6 @@ CREATE TABLE users (
     status VARCHAR(100) NOT NULL,
     role VARCHAR(100) NOT NULL,
     created_dt DATE NOT NULL,
-    inactivated_dt DATE NULL
+    inactivated_dt DATE NULL,
+    general_manager_id VARCHAR(50) NULL
 );

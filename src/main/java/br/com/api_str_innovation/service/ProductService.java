@@ -42,30 +42,30 @@ public class ProductService {
                 .toList();
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return repository
-                .findActiveProducts()
+                .findActiveProducts(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<ProductResponseDTO> getPaged(Pageable pageable) {
+    public Page<ProductResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findActiveProducts(pageable)
+                .findActiveProducts(pageable, generalManagerId)
                 .map(ProductResponseDTO::new);
     }
 
     @GetMapping(value = "/description")
-    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name) {
+    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
         return repository
-                .findSearchProducts(pageable, name)
+                .findSearchProducts(pageable, name, generalManagerId)
                 .map(ProductResponseDTO::new);
     }
 
-    public List<ProductResponseDTO> getAvailable() {
+    public List<ProductResponseDTO> getAvailable(UUID generalManagerId) {
         return repository
-                .findActiveProducts()
+                .findActiveProducts(generalManagerId)
                 .stream()
                 .map(ProductResponseDTO::new)
                 .toList();
@@ -80,8 +80,8 @@ public class ProductService {
         return findById(id);
     }
 
-    public ProductResponseDTO post(@Valid ProductRequestDTO data) {
-        ProductEntity product = new ProductEntity(data);
+    public ProductResponseDTO post(@Valid ProductRequestDTO data, UUID generalManagerId) {
+        ProductEntity product = new ProductEntity(data, generalManagerId);
         repository.save(product);
         return new ProductResponseDTO(product);
     }

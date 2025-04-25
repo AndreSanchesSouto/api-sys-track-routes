@@ -46,6 +46,10 @@ public class DeliveryEntity {
     private LocalDate inactivatedDt;
 
     @Setter
+    @Column
+    private UUID generalManagerId;
+
+    @Setter
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = true)
     private ClientEntity client;

@@ -14,16 +14,27 @@ import java.util.UUID;
 @Repository
 public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
 
-    @Query("SELECT c FROM ClientEntity c WHERE c.inactivatedDt IS NULL")
-    Page<ClientEntity> findActiveClients(Pageable pageable);
+    @Query("""
+            SELECT c FROM ClientEntity c
+            WHERE c.inactivatedDt IS NULL
+            AND c.generalManagerId = :generalManagerId
+        """)
+    Page<ClientEntity> findActiveClients(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
-    @Query("SELECT c FROM ClientEntity c WHERE " +
-            "LOWER(FUNCTION('unaccent', c.name)) " +
-            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))")
-    Page<ClientEntity> findSearchClients(Pageable pageable, String name);
+    @Query("""
+            SELECT c FROM ClientEntity c 
+            WHERE LOWER(FUNCTION('unaccent', c.name))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))
+            AND c.generalManagerId = :generalManagerId
+            """)
+    Page<ClientEntity> findSearchClients(Pageable pageable, String name, @Param("generalManagerId") UUID generalManagerId);
 
-    @Query("SELECT c FROM ClientEntity c WHERE c.inactivatedDt IS NULL")
-    List<ClientEntity> findActiveClients();
+    @Query("""
+            SELECT c FROM ClientEntity c
+            WHERE c.inactivatedDt IS NULL
+            AND c.generalManagerId = :generalManagerId
+        """)
+    List<ClientEntity> findActiveClients(@Param("generalManagerId") UUID generalManagerId);
 
     @Query(value = """
             SELECT DISTINCT
@@ -33,10 +44,12 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
                 c.cellphone,
                 c.document,
                 c.created_dt,
-                c.inactivated_dt
+                c.inactivated_dt,
+                c.general_manager_id
             FROM client c
                 INNER JOIN address ad ON ad.client_id = c.id
-            WHERE c.inactivated_dt IS NULL;
+            WHERE c.inactivated_dt IS NULL
+            AND c.general_manager_id = :generalManagerId;
            """, nativeQuery = true)
-    List<ClientEntity>findAvailable();
+    List<ClientEntity>findAvailable(@Param("generalManagerId") UUID generalManagerId);
 }

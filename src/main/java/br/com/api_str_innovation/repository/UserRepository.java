@@ -26,17 +26,26 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     @Query("SELECT u FROM UserEntity u WHERE u.login = :login AND u.password = :password")
     UserEntity authIdentity(@Param("login") String login, @Param("password") String password);
 
-    @Query("SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL")
-    Page<UserEntity> findActiveUsers(Pageable pageable);
-
-    @Query("SELECT u FROM UserEntity u WHERE " +
-            "LOWER(FUNCTION('unaccent', u.name)) " +
-            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))")
-    Page<UserEntity> findSearchClients(Pageable pageable, String name);
+    @Query("SELECT u FROM UserEntity u WHERE u.inactivatedDt IS NULL AND u.generalManagerId = :generalManagerId")
+    Page<UserEntity> findActiveUsers(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
     @Query("""
-            SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL""")
-    List<UserEntity> findActiveUsers();
+            SELECT u FROM UserEntity u WHERE
+            LOWER(FUNCTION('unaccent', u.name))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))
+            AND u.generalManagerId = :generalManagerId
+            """)
+    Page<UserEntity> findSearchClients(
+            Pageable pageable,
+            @Param("name") String name,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT u FROM UserEntity u WHERE u.inactivatedDt IS NULL
+            AND u.generalManagerId = :generalManagerId
+            """)
+    List<UserEntity> findActiveUsers(@Param("generalManagerId") UUID generalManagerId);
 
     @Query(""" 
             SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
@@ -56,7 +65,11 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
                 WHERE u.role = :role
                 AND u.inactivated_dt IS NULL
                 AND u.status = :status
+                AND u.general_manager_id = :generalManagerId
             """, nativeQuery = true)
-    List<UserEntity> findUsersActivated(@Param("role") String role, @Param("status") String status);
+    List<UserEntity> findUsersActivated(@Param("role") String role,
+                                        @Param("status") String status,
+                                        @Param("generalManagerId") UUID generalManagerId
+    );
 
 }

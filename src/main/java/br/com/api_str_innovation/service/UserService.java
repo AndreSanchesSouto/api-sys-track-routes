@@ -54,32 +54,32 @@ public class UserService {
                 .toList();
     }
 
-    public List<UserResponseDTO> getDrivers() {
+    public List<UserResponseDTO> getDrivers(UUID generalManagerId) {
         return repository
-                .findUsersActivated(Role.DRIVER.getRole(), UserStatus.ACTIVE.getStatus())
+                .findUsersActivated(Role.DRIVER.getRole(), UserStatus.ACTIVE.getStatus(), generalManagerId)
                 .stream()
                 .map(UserResponseDTO::new)
                 .toList();
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return repository
-                .findActiveUsers()
+                .findActiveUsers(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<UserResponseDTO> getPaged(Pageable pageable) {
+    public Page<UserResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findActiveUsers(pageable)
+                .findActiveUsers(pageable, generalManagerId)
                 .map(UserResponseDTO::new);
     }
 
     @GetMapping(value = "search/name")
-    public Page<UserResponseDTO> getSearched(Pageable pageable, String name) {
+    public Page<UserResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
         return repository
-                .findSearchClients(pageable, name)
+                .findSearchClients(pageable, name, generalManagerId)
                 .map(UserResponseDTO::new);
     }
 
@@ -88,9 +88,15 @@ public class UserService {
         return new UserResponseDTO(user);
     }
 
-    public void post(@Valid UserRequestDTO data) {
+    public void postGeneralManager(@Valid UserRequestDTO data) {
         existsMailOrLogin(data);
         UserEntity user = new UserEntity(data);
+        repository.save(user);
+    }
+
+    public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
+        existsMailOrLogin(data);
+        UserEntity user = new UserEntity(data, generalManagerId);
         repository.save(user);
     }
 

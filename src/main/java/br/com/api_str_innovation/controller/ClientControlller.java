@@ -27,23 +27,23 @@ public class ClientControlller {
     }
 
     @GetMapping("/available")
-   public ResponseEntity<List<ClientResponseDTO>> getAvailable() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailable());
+    public ResponseEntity<List<ClientResponseDTO>> getAvailable(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailable(generalManagerId));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    public ResponseEntity<Integer> count(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count(generalManagerId));
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<ClientResponseDTO>> getPaged(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    public ResponseEntity<Page<ClientResponseDTO>> getPaged(Pageable pageable, @RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<Page<ClientResponseDTO>> getSearched(Pageable pageable, String name) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name));
+    public ResponseEntity<Page<ClientResponseDTO>> getSearched(Pageable pageable, String name, @RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name, generalManagerId));
     }
 
     @GetMapping("/{id}")
@@ -52,8 +52,11 @@ public class ClientControlller {
     }
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody ClientRequestDTO data) {
-        this.service.post(data);
+    public ResponseEntity<String> post(
+            @RequestBody ClientRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        this.service.post(data, generalManagerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 

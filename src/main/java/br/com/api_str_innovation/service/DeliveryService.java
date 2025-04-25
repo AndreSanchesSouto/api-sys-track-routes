@@ -50,7 +50,7 @@ public class DeliveryService {
     @Autowired
     private UserService userService;
 
-    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data) {
+    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId) {
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
         this.validateAddressToClient(client, address);
@@ -67,6 +67,7 @@ public class DeliveryService {
         delivery.setVehicle(vehicle);
         delivery.setDriver(driver);
         delivery.setDeliveryRequest(this.repository.getDeliveryQuantity() + 1);
+        delivery.setGeneralManagerId(generalManagerId);
 
         List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
@@ -87,15 +88,15 @@ public class DeliveryService {
         return new DeliveryResponseDTO(delivery);
     }
 
-    public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable) {
+    public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findDeliveries(pageable)
+                .findDeliveries(pageable, generalManagerId)
                 .map(DeliveryGenericResponseDTO::new);
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return repository
-                .findDeliveries()
+                .findDeliveries(generalManagerId)
                 .toArray()
                 .length;
     }

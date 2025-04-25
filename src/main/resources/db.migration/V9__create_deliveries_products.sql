@@ -8,6 +8,7 @@ CREATE TABLE deliveries_products(
     price NUMERIC(10, 2) NOT NULL,
     measure VARCHAR(100) NOT NULL,
     created_dt DATE NOT NULL,
+    general_manager_id VARCHAR(50) NULL,
     inactivated_dt DATE NULL;
     FOREIGN KEY (delivery_id) REFERENCES deliveries(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,

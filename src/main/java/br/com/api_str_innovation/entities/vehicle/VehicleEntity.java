@@ -43,6 +43,10 @@ public class VehicleEntity {
     private String yearDt;
 
     @Setter
+    @Column
+    private UUID generalManagerId;
+
+    @Setter
     @Column(nullable = false)
     private String status;
 
@@ -59,13 +63,14 @@ public class VehicleEntity {
     @OneToOne(mappedBy = "vehicle", fetch = FetchType.LAZY)
     private ChecklistEntity checklist;
 
-    public VehicleEntity(VehicleRequestDTO data) {
+    public VehicleEntity(VehicleRequestDTO data, UUID generalManagerId) {
         this.licensePlateNumber = data.licensePlateNumber();
         this.sideNumber = data.sideNumber();
         this.model = data.model();
         this.brand = data.brand();
         this.yearDt = data.yearDt();
         this.status = getStatus() == null ? VehicleStatus.WAITING.getStatus() : getStatus();
+        this.generalManagerId = generalManagerId;
     }
 
 }
