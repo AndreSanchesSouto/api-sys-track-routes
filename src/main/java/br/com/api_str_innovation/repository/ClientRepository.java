@@ -44,11 +44,12 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
                 c.cellphone,
                 c.document,
                 c.created_dt,
-                c.inactivated_dt
+                c.inactivated_dt,
+                c.general_manager_id
             FROM client c
                 INNER JOIN address ad ON ad.client_id = c.id
             WHERE c.inactivated_dt IS NULL
-            AND c.general_manager_id =:generalManagerId;
+            AND c.general_manager_id = :generalManagerId;
            """, nativeQuery = true)
     List<ClientEntity>findAvailable(@Param("generalManagerId") UUID generalManagerId);
 }

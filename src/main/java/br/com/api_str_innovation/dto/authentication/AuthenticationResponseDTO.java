@@ -23,6 +23,7 @@ public class AuthenticationResponseDTO {
                 employee.getEmail(),
                 employee.getLogin(),
                 UserStatus.valueOf(employee.getStatus().toUpperCase()),
+                employee.getGeneralManagerId(),
                 Role.valueOf(employee.getRole().toUpperCase())
         );
     }
