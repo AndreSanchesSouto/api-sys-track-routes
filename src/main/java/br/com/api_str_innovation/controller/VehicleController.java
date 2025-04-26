@@ -25,19 +25,31 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<VehicleResponseDTO>> getAvailableVehicles(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailableVehicles(generalManagerId));
+    }
+
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    public ResponseEntity<Integer> count(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count(generalManagerId));
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<VehicleResponseDTO>> getPaged(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    public ResponseEntity<Page<VehicleResponseDTO>> getPaged(
+            Pageable pageable,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
     @GetMapping(value = "/search/license-plate")
-    public ResponseEntity<Page<VehicleResponseDTO>> getSearched(Pageable pageable, String licensePlateNumber) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, licensePlateNumber));
+    public ResponseEntity<Page<VehicleResponseDTO>> getSearched(
+            Pageable pageable,
+            String licensePlateNumber,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, licensePlateNumber, generalManagerId));
     }
 
     @GetMapping("/{id}")
@@ -46,8 +58,11 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody VehicleRequestDTO data) {
-        this.service.post(data);
+    public ResponseEntity<String> post(
+            @RequestBody VehicleRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        this.service.post(data, generalManagerId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 

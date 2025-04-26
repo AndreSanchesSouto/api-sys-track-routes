@@ -1,11 +1,9 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.User;
@@ -20,23 +18,35 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
-    @Query("SELECT g FROM UserEntity g WHERE g.login = :login")
-    UserDetails findByLogin(@Param("login") String login);
+    @Query("SELECT u FROM UserEntity u WHERE u.login = :login")
+    Optional<UserEntity> findByLogin(@Param("login") String login);
 
-    @Query("SELECT g FROM UserEntity g WHERE g.login = :login AND g.password = :password")
+    @Query("SELECT u FROM UserEntity u WHERE u.login = :login")
+    Optional<UserDetails> findUserDetailsByLogin(@Param("login") String login);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.login = :login AND u.password = :password")
     UserEntity authIdentity(@Param("login") String login, @Param("password") String password);
 
-    @Query("SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL")
-    Page<UserEntity> findActiveUsers(Pageable pageable);
-
-    @Query("SELECT u FROM UserEntity u WHERE " +
-            "LOWER(FUNCTION('unaccent', u.name)) " +
-            "LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))")
-    Page<UserEntity> findSearchClients(Pageable pageable, String name);
+    @Query("SELECT u FROM UserEntity u WHERE u.inactivatedDt IS NULL AND u.generalManagerId = :generalManagerId")
+    Page<UserEntity> findActiveUsers(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
     @Query("""
-            SELECT d FROM UserEntity d WHERE d.inactivatedDt IS NULL""")
-    List<UserEntity> findActiveUsers();
+            SELECT u FROM UserEntity u WHERE
+            LOWER(FUNCTION('unaccent', u.name))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))
+            AND u.generalManagerId = :generalManagerId
+            """)
+    Page<UserEntity> findSearchClients(
+            Pageable pageable,
+            @Param("name") String name,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT u FROM UserEntity u WHERE u.inactivatedDt IS NULL
+            AND u.generalManagerId = :generalManagerId
+            """)
+    List<UserEntity> findActiveUsers(@Param("generalManagerId") UUID generalManagerId);
 
     @Query(""" 
             SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
@@ -49,5 +59,21 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findByEmail(String email);
 
+    @Query(value = """
+            SELECT
+                *
+            FROM users u
+                WHERE u.role = :role
+                AND u.inactivated_dt IS NULL
+                AND u.status = :status
+                AND u.general_manager_id = :generalManagerId
+            """, nativeQuery = true)
+    List<UserEntity> findUsersActivated(@Param("role") String role,
+                                        @Param("status") String status,
+                                        @Param("generalManagerId") UUID generalManagerId
+    );
+
     Optional<UserEntity> findByDocument(String document);
+
+
 }

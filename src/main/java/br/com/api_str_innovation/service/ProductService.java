@@ -28,7 +28,7 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    private ProductEntity findById(UUID id) {
+    public ProductEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado")
         );
@@ -42,25 +42,33 @@ public class ProductService {
                 .toList();
     }
 
-    public Integer count() {
+    public Integer count(UUID generalManagerId) {
         return repository
-                .findActiveProducts()
+                .findActiveProducts(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<ProductResponseDTO> getPaged(Pageable pageable) {
+    public Page<ProductResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findActiveProducts(pageable)
+                .findActiveProducts(pageable, generalManagerId)
                 .map(ProductResponseDTO::new);
     }
 
     @GetMapping(value = "/description")
-    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name) {
+    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
         return repository
-                .findSearchProducts(pageable, name)
+                .findSearchProducts(pageable, name, generalManagerId)
                 .map(ProductResponseDTO::new);
+    }
+
+    public List<ProductResponseDTO> getAvailable(UUID generalManagerId) {
+        return repository
+                .findActiveProducts(generalManagerId)
+                .stream()
+                .map(ProductResponseDTO::new)
+                .toList();
     }
 
     public ProductResponseDTO getById(UUID id) {
@@ -68,8 +76,12 @@ public class ProductService {
         return new ProductResponseDTO(product);
     }
 
-    public ProductResponseDTO post(@Valid ProductRequestDTO data) {
-        ProductEntity product = new ProductEntity(data);
+    public ProductEntity getProductEntityById(UUID id) {
+        return findById(id);
+    }
+
+    public ProductResponseDTO post(@Valid ProductRequestDTO data, UUID generalManagerId) {
+        ProductEntity product = new ProductEntity(data, generalManagerId);
         repository.save(product);
         return new ProductResponseDTO(product);
     }
@@ -116,6 +128,10 @@ public class ProductService {
 
         product.setInactivatedDt(LocalDate.now());
         repository.save(product);
+    }
+
+    public List<ProductEntity> findAllByIds(List<UUID> productIds) {
+        return this.repository.findAllById(productIds);
     }
 
 }

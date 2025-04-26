@@ -6,7 +6,7 @@ import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequest
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistFieldOptions;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
-import br.com.api_str_innovation.entities.vehicle.Status;
+import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.ChecklistLogRepository;
 import br.com.api_str_innovation.repository.ChecklistRepository;
@@ -14,8 +14,6 @@ import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +84,7 @@ public class ChecklistService {
     }
 
     private String changeStatusVehicle(ChecklistRequestDTO data) {
-        return containsCriticalStatus(data) ? Status.INACTIVE.getStatus() : Status.ACTIVE.getStatus();
+        return containsCriticalStatus(data) ? VehicleStatus.INACTIVE.getStatus() : VehicleStatus.ACTIVE.getStatus();
     }
 
     private boolean containsCriticalStatus(ChecklistRequestDTO data) {
@@ -174,7 +172,7 @@ public class ChecklistService {
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "aaaa")
         );
         checklistRepository.deleteById(vehicle.getId());
-        vehicleRepository.updateStatusVehicle(Status.WAITING.getStatus(), vehicle.getId());
+        vehicleRepository.updateStatusVehicle(VehicleStatus.WAITING.getStatus(), vehicle.getId());
     }
 
     public List<Object[]> countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {

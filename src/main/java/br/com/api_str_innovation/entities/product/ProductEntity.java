@@ -41,6 +41,10 @@ public class ProductEntity {
     @Setter
     private Double price;
 
+    @Setter
+    @Column
+    private UUID generalManagerId;
+
     @Column(nullable = false)
     @Setter
     private Double measure;
@@ -51,12 +55,13 @@ public class ProductEntity {
     @Setter
     private LocalDate inactivatedDt;
 
-    public ProductEntity(@Valid ProductRequestDTO data) {
+    public ProductEntity(@Valid ProductRequestDTO data, UUID generalManagerId) {
         this.name = data.name();
         this.description = data.description() != null ? data.description() : "";
         this.unitValue = data.unitValue();
         this.quantity = Integer.parseInt(data.quantity());
         this.measure = Double.parseDouble(data.measure());
         this.price = Double.parseDouble(data.price());
+        this.generalManagerId = generalManagerId;
     }
 }

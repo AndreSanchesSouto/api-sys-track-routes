@@ -1,9 +1,9 @@
 package br.com.api_str_innovation.dto.user;
 
 import br.com.api_str_innovation.entities.user.Role;
-import br.com.api_str_innovation.entities.user.Status;
 import br.com.api_str_innovation.infra.anotation.CnpjCpfAnotation;
 import jakarta.annotation.Nullable;
+import br.com.api_str_innovation.entities.user.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +22,7 @@ public record UserRequestDTO(
             @NotBlank
             String password,
             @NotNull
-            Status status,
+            UserStatus status,
             @NotNull
             Role role
 ) {

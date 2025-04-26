@@ -3,6 +3,7 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
@@ -53,30 +54,38 @@ public class VehicleService {
                 .toList();
     }
 
-    public Integer count() {
+    public List<VehicleResponseDTO> findAvailableVehicles(UUID generalManagerId) {
         return vehicleRepository
-                .findActiveVehicles()
+                .findAvailableVehicles(generalManagerId)
+                .stream()
+                .map(VehicleResponseDTO::new)
+                .toList();
+    }
+
+    public Integer count(UUID generalManagerId) {
+        return vehicleRepository
+                .findActiveVehicles(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<VehicleResponseDTO> getPaged(Pageable pageable) {
+    public Page<VehicleResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return vehicleRepository
-                .findActiveVehicles(pageable)
+                .findActiveVehicles(pageable, generalManagerId)
                 .map(VehicleResponseDTO::new);
     }
 
     @GetMapping(value = "/search/license-plate")
-    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber) {
+    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber, UUID generalManagerId) {
         return vehicleRepository
-                .findSearchedVehicles(pageable, licensePlateNumber)
+                .findSearchedVehicles(pageable, licensePlateNumber, generalManagerId)
                 .map(VehicleResponseDTO::new);
     }
 
-    public void post(@Valid VehicleRequestDTO data) {
+    public void post(@Valid VehicleRequestDTO data, UUID generalManagerId) {
         existsPlateNumber(data.licensePlateNumber());
-        vehicleRepository.save(new VehicleEntity(data));
+        vehicleRepository.save(new VehicleEntity(data, generalManagerId));
     }
 
     @Transactional
@@ -120,5 +129,11 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
     }
 
+    @Transactional
+    public void patchStatus(UUID id, VehicleStatus status) {
+        VehicleEntity vehicle = findById(id);
+        vehicle.setStatus(status.getStatus());
+        vehicleRepository.save(vehicle);
+    }
 }
 

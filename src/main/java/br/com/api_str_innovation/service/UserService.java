@@ -4,6 +4,8 @@ import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.entities.user.UserStatus;
+import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.UserException;
@@ -30,7 +32,7 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    private UserEntity findById(UUID id) {
+    public UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
         );
@@ -41,7 +43,7 @@ public class UserService {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
-        if(repository.findByLogin(data.login()) != null ){
+        if(repository.findByLogin(data.login()).isPresent() ){
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
 
@@ -67,24 +69,32 @@ public class UserService {
                 .toList();
     }
 
-    public Integer count() {
+    public List<UserResponseDTO> getDrivers(UUID generalManagerId) {
         return repository
-                .findActiveUsers()
+                .findUsersActivated(Role.DRIVER.getRole(), UserStatus.ACTIVE.getStatus(), generalManagerId)
+                .stream()
+                .map(UserResponseDTO::new)
+                .toList();
+    }
+
+    public Integer count(UUID generalManagerId) {
+        return repository
+                .findActiveUsers(generalManagerId)
                 .toArray()
                 .length;
     }
 
     @GetMapping(value = "/page")
-    public Page<UserResponseDTO> getPaged(Pageable pageable) {
+    public Page<UserResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findActiveUsers(pageable)
+                .findActiveUsers(pageable, generalManagerId)
                 .map(UserResponseDTO::new);
     }
 
     @GetMapping(value = "search/name")
-    public Page<UserResponseDTO> getSearched(Pageable pageable, String name) {
+    public Page<UserResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
         return repository
-                .findSearchClients(pageable, name)
+                .findSearchClients(pageable, name, generalManagerId)
                 .map(UserResponseDTO::new);
     }
 
@@ -93,7 +103,7 @@ public class UserService {
         return new UserResponseDTO(user);
     }
 
-    public void post(@Valid UserRequestDTO data) {
+    public void postGeneralManager(@Valid UserRequestDTO data) {
         existsMailOrLoginOrCnpj(data);
 
         assert data.document() != null;
@@ -114,6 +124,12 @@ public class UserService {
         repository.save(user);
     }
 
+    public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
+        existsMailOrLoginOrCnpj(data);
+        UserEntity user = new UserEntity(data, generalManagerId);
+        repository.save(user);
+    }
+
     public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO) {
         return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
     }
@@ -130,6 +146,13 @@ public class UserService {
         user.setLogin(data.login());
         user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
+        repository.save(user);
+    }
+
+    @Transactional
+    public void patchStatus(@PathVariable UUID id, @RequestBody UserStatus status) {
+        UserEntity user = findById(id);
+        user.setStatus(status.getStatus());
         repository.save(user);
     }
 

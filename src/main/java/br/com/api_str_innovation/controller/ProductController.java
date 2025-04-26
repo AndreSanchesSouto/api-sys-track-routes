@@ -27,13 +27,25 @@ public class ProductController {
     }
 
     @GetMapping(value = "/page")
-    public ResponseEntity<Page<ProductResponseDTO>> getPaged(Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable));
+    public ResponseEntity<Page<ProductResponseDTO>> getPaged(
+            Pageable pageable,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
     @GetMapping(value = "/search/name")
-    public ResponseEntity<Page<ProductResponseDTO>> getSearched(Pageable pageable, String name) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name));
+    public ResponseEntity<Page<ProductResponseDTO>> getSearched(
+            Pageable pageable,
+            String name,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name, generalManagerId));
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<ProductResponseDTO>> getAvailable(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAvailable(generalManagerId));
     }
 
     @GetMapping("/{id}")
@@ -42,8 +54,11 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> post(@Valid @RequestBody ProductRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.post(data));
+    public ResponseEntity<ProductResponseDTO> post(
+            @Valid @RequestBody ProductRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.post(data, generalManagerId));
     }
 
     @PatchMapping("{id}")
@@ -52,8 +67,8 @@ public class ProductController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> count() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.count());
+    public ResponseEntity<Integer> count(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.count(generalManagerId));
     }
 
     @DeleteMapping("/{id}")
