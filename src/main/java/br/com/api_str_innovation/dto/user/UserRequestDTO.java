@@ -1,6 +1,8 @@
 package br.com.api_str_innovation.dto.user;
 
 import br.com.api_str_innovation.entities.user.Role;
+import br.com.api_str_innovation.infra.anotation.CnpjCpfAnotation;
+import jakarta.annotation.Nullable;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +14,9 @@ public record UserRequestDTO(
             @NotBlank
             @Email
             String email,
+            @Nullable
+            @CnpjCpfAnotation
+            String document,
             @NotBlank
             String login,
             @NotBlank
@@ -26,6 +31,7 @@ public record UserRequestDTO(
         return "UserRequestDTO{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", document='" + document + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", status='" + status + '\'' +

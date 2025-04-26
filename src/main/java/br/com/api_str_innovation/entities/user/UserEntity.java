@@ -3,12 +3,17 @@ package br.com.api_str_innovation.entities.user;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.infra.security.Encrypter;
 import jakarta.persistence.*;
+import jakarta.validation.GroupSequence;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
+import org.hibernate.validator.group.GroupSequenceProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +43,10 @@ public class UserEntity implements UserDetails {
     @Email
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Setter
+    @Column(unique = true)
+    private String document;
 
     @Setter
     @Column(nullable = false, unique = true)
@@ -78,6 +87,7 @@ public class UserEntity implements UserDetails {
     public UserEntity(@Valid UserRequestDTO data) {
         this.setName(data.name());
         this.setEmail(data.email());
+        this.setDocument(data.document());
         this.setLogin(data.login());
         this.setPassword(Encrypter.encrypt(data.password()));
         this.setStatus(userStatus(data.status()));
@@ -113,6 +123,7 @@ public class UserEntity implements UserDetails {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", document='" + document + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +

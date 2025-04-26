@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +54,7 @@ public class ClientControlller {
 
     @PostMapping
     public ResponseEntity<String> post(
-            @RequestBody ClientRequestDTO data,
+            @Valid @RequestBody ClientRequestDTO data,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         this.service.post(data, generalManagerId);
@@ -61,12 +62,12 @@ public class ClientControlller {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientResponseDTO> put(@PathVariable UUID id, @RequestBody ClientRequestDTO data) {
+    public ResponseEntity<ClientResponseDTO> put(@PathVariable UUID id, @Valid @RequestBody ClientRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ClientResponseDTO> patch(@PathVariable UUID id, @RequestBody ClientRequestDTO data) {
+    public ResponseEntity<ClientResponseDTO> patch(@PathVariable UUID id, @Valid @RequestBody ClientRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
     }
 

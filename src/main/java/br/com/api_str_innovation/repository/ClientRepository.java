@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -52,4 +53,8 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
             AND c.general_manager_id = :generalManagerId;
            """, nativeQuery = true)
     List<ClientEntity>findAvailable(@Param("generalManagerId") UUID generalManagerId);
+
+    Optional<ClientEntity> findByEmail(String email);
+
+    Optional<ClientEntity> findByDocument(String document);
 }

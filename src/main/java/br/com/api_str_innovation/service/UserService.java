@@ -5,7 +5,9 @@ import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
+import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -36,13 +38,26 @@ public class UserService {
         );
     }
 
-    private void existsMailOrLogin(UserRequestDTO data) {
+    private void existsMailOrLoginOrCnpj(UserRequestDTO data) {
         if (repository.findByEmail(data.email()).isPresent() ) {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
         if(repository.findByLogin(data.login()).isPresent() ){
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
+        }
+
+        if(repository.findByDocument(data.document()).isPresent() ) {
+            throw new UserException(String.format("O CNPJ %s já está em uso.", data.document()));
+        }
+    }
+
+    private void validDocumentLength(String document) {
+        assert document != null;
+        String cnpj = document.replaceAll("\\D", "");
+
+        if (cnpj.length() != 14) {
+            throw new ClientException("Informe o CNPJ corretamente!");
         }
     }
 
@@ -89,13 +104,28 @@ public class UserService {
     }
 
     public void postGeneralManager(@Valid UserRequestDTO data) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
+
+        assert data.document() != null;
+        String document = data.document().replaceAll("\\D", "");
+
+        if ((data.role().equals(Role.DRIVER) ||
+                data.role().equals(Role.SHIPPING_MANAGER)) &&
+                document.length() != 11) {
+            throw new UserException("O CPF deve ser preenchido corretamente!");
+        }
+
+        if (data.role().equals(Role.GENERAL_MANAGER) &&
+                document.length() != 14) {
+            throw new UserException("O CNPJ deve ser preenchido corretamente!");
+        }
+
         UserEntity user = new UserEntity(data);
         repository.save(user);
     }
 
     public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
         UserEntity user = new UserEntity(data, generalManagerId);
         repository.save(user);
     }
@@ -106,12 +136,15 @@ public class UserService {
 
     @Transactional
     public void patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
         UserEntity user = findById(id);
+
+        validDocumentLength(data.document());
 
         user.setName(data.name());
         user.setEmail(data.email());
         user.setLogin(data.login());
+        user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
         repository.save(user);
     }
@@ -125,12 +158,15 @@ public class UserService {
 
     @Transactional
     public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLogin(data);
+        existsMailOrLoginOrCnpj(data);
         UserEntity user = findById(id);
+
+        validDocumentLength(data.document());
 
         user.setName(data.name());
         user.setEmail(data.email());
         user.setLogin(data.login());
+        user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
         repository.save(user);
 

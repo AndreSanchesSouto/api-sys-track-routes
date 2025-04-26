@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<String> post(
-            @RequestBody UserRequestDTO data,
+            @Valid @RequestBody UserRequestDTO data,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         this.service.post(data, generalManagerId);
@@ -68,18 +69,18 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
+    public ResponseEntity<String> put(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO data) {
         this.service.put(id, data);
         return ResponseEntity.status(HttpStatus.OK).body("Updated");
     }
 
     @PostMapping("/period-of-creation")
-    ResponseEntity<List<Object[]>> periodOfCreation(@RequestBody PeriodTimeRequestDTO data) {
+    ResponseEntity<List<Object[]>> periodOfCreation(@Valid @RequestBody PeriodTimeRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
+    public ResponseEntity<String> patch(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO data) {
         this.service.patch(id, data);
         return ResponseEntity.status(HttpStatus.OK).body("Atualizado");
     }

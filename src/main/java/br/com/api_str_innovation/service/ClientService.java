@@ -3,6 +3,7 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
+import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.repository.ClientRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,25 @@ public class ClientService {
     @Autowired
     private ClientRepository repository;
 
+    private void existsMailOrCnpj(ClientRequestDTO data) {
+        if (repository.findByEmail(data.email()).isPresent() ) {
+            throw new ClientException(String.format("O email %s já está em uso.", data.email()));
+        }
+
+        if (repository.findByDocument(data.document()).isPresent() ) {
+            throw new ClientException(String.format("O CNPJ %s já está em uso.", data.document()));
+        }
+    }
+
+    private void validDocumentLength(String document) {
+        assert document != null;
+        String cnpj = document.replaceAll("\\D", "");
+
+        if (cnpj.length() != 14) {
+            throw new ClientException("Informe o CNPJ corretamente!");
+        }
+    }
+
     public List<ClientResponseDTO> getAll() {
         List<ClientResponseDTO> client = repository
                 .findAll()
@@ -32,34 +52,26 @@ public class ClientService {
         return client;
     }
 
-    public List<ClientResponseDTO> findAvailable(UUID generalManagerId) {
-        return repository
-                .findAvailable(generalManagerId)
-                .stream()
-                .map(ClientResponseDTO::new)
-                .toList();
-    }
-
-    public Integer count(UUID generalManagerId) {
+    public Integer count() {
         Integer count = repository
-                .findActiveClients(generalManagerId)
+                .findActiveClients()
                 .toArray()
                 .length;
         return count;
     }
 
     @GetMapping(value = "/page")
-    public Page<ClientResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
+    public Page<ClientResponseDTO> getPaged(Pageable pageable) {
         Page<ClientResponseDTO> client = repository
-                .findActiveClients(pageable, generalManagerId)
+                .findActiveClients(pageable)
                 .map(ClientResponseDTO::new);
         return client;
     }
 
     @GetMapping(value = "/search")
-    public Page<ClientResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
+    public Page<ClientResponseDTO> getSearched(Pageable pageable, String name) {
         Page<ClientResponseDTO> client = repository
-                .findSearchClients(pageable, name, generalManagerId)
+                .findSearchClients(pageable, name)
                 .map(ClientResponseDTO::new);
         return client;
     }
@@ -71,12 +83,18 @@ public class ClientService {
         return client;
     }
 
-    public void post(@Valid ClientRequestDTO data, UUID generalManagerId) {
-        ClientEntity clientData = new ClientEntity(data, generalManagerId);
+    public void post(@Valid ClientRequestDTO data) {
+        existsMailOrCnpj(data);
+        validDocumentLength(data.document());
+
+        ClientEntity clientData = new ClientEntity(data);
         repository.save(clientData);
     }
 
-    public ClientResponseDTO put(UUID id, ClientRequestDTO data) {
+    public ClientResponseDTO put(UUID id, @Valid ClientRequestDTO data) {
+        existsMailOrCnpj(data);
+        validDocumentLength(data.document());
+
         ClientEntity client = this.getById(id);
         client.setName(data.name());
         client.setEmail(data.email());
@@ -85,7 +103,10 @@ public class ClientService {
         return new ClientResponseDTO(client);
     }
 
-    public ClientResponseDTO patch(UUID id, ClientRequestDTO data) {
+    public ClientResponseDTO patch(UUID id, @Valid ClientRequestDTO data) {
+        existsMailOrCnpj(data);
+        validDocumentLength(data.document());
+
         ClientEntity client = this.getById(id);
         client.setName(data.name());
         client.setEmail(data.email());

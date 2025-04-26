@@ -21,6 +21,7 @@ public class AuthenticationResponseDTO {
                 employee.getId(),
                 employee.getName(),
                 employee.getEmail(),
+                employee.getDocument(),
                 employee.getLogin(),
                 UserStatus.valueOf(employee.getStatus().toUpperCase()),
                 employee.getGeneralManagerId(),
