@@ -94,6 +94,12 @@ public class DeliveryService {
                 .map(DeliveryGenericResponseDTO::new);
     }
 
+    public Page<DeliveryGenericResponseDTO> getDeliveryByDriverId(UUID generalManagerId, UUID driverId, Pageable pageable) {
+        return repository
+                .getDeliveryByDriverId(generalManagerId, driverId, pageable)
+                .map(DeliveryGenericResponseDTO::new);
+    }
+
     public Integer count(UUID generalManagerId) {
         return repository
                 .findDeliveries(generalManagerId)

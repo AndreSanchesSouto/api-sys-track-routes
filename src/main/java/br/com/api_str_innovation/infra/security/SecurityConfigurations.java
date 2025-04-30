@@ -52,6 +52,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PUT, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PATCH, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.GET, "/delivery/page").hasAnyRole("ADMIN", "SHIPPING")
 
                         .requestMatchers(HttpMethod.GET, "/clients").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/clients/available").hasRole("ADMIN")
@@ -82,6 +83,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/products/*").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/vehicle").hasAnyRole("ADMIN","SHIPPING")
+                        .requestMatchers(HttpMethod.GET, "/vehicle/page").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/vehicle/available").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/vehicle").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/vehicle/*").hasRole("ADMIN")
@@ -106,7 +108,7 @@ public class SecurityConfigurations {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "general-manager-id"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "general-manager-id", "user-id"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

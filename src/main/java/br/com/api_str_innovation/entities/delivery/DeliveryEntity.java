@@ -62,11 +62,11 @@ public class DeliveryEntity {
     @Setter
     @ManyToOne
     @JoinColumn(name = "driver_id", nullable = true)
-    private UserEntity driver;
+        private UserEntity driver;
 
     @Setter
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();;
+    private List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();
 
     @Setter
     @ManyToOne

@@ -33,4 +33,16 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             """, nativeQuery = true)
     Integer getDeliveryQuantity();
 
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+                WHERE d.driver.id = :driverId
+                AND d.generalManagerId = :generalManagerId
+            """
+    )
+    Page<DeliveryEntity> getDeliveryByDriverId(
+            @Param("generalManagerId") UUID generalManagerId,
+            @Param("driverId") UUID driverId,
+            Pageable pageable
+    );
+
 }
