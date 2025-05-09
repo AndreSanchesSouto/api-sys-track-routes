@@ -90,7 +90,6 @@ public class ChecklistService {
     private boolean containsCriticalStatus(ChecklistRequestDTO data) {
         return isTireMissingOrDamaged(data)
                 || isBrakesDamaged(data)
-                || isLightsDamaged(data)
                 || isGlassesDamaged(data)
                 || isDocumentationInvalid(data)
                 || isFuelLevelTooLow(data)
@@ -105,10 +104,6 @@ public class ChecklistService {
 
     private boolean isBrakesDamaged(ChecklistRequestDTO data) {
         return data.brakes().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
-    }
-
-    private boolean isLightsDamaged(ChecklistRequestDTO data) {
-        return data.lights().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
     }
 
     private boolean isGlassesDamaged(ChecklistRequestDTO data) {
@@ -143,9 +138,16 @@ public class ChecklistService {
         checklist.setWaterLevel(data.waterLevel());
         checklist.setSuspension(data.suspension());
         checklist.setBrakes(data.brakes());
-        checklist.setLights(data.lights());
         checklist.setGlasses(data.glasses());
         checklist.setWindshieldWipers(data.windshieldWipers());
+        checklist.setRearview(data.rearview());
+        checklist.setHeadlight(data.headlight());
+        checklist.setTaillight(data.taillight());
+        checklist.setFrontIndicator(data.frontIndicator());
+        checklist.setIndicator(data.indicator());
+        checklist.setDomeLight(data.domeLight());
+        checklist.setLicensePlateLight(data.licensePlateLight());
+        checklist.setTirePressure(data.tirePressure());
         checklist.setToolbox(data.toolbox());
         checklist.setDocumentation(data.documentation());
         checklist.setDocumentation(data.documentation());

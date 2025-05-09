@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public record ChecklistRequestDTO(
         @NotBlank
-        String tire,
+        Boolean tire,
         @NotBlank
         String spareTire,
         @NotBlank
@@ -18,15 +18,29 @@ public record ChecklistRequestDTO(
         @NotBlank
         String waterLevel,
         @NotBlank
-        String suspension,
+        Boolean suspension,
         @NotBlank
         String brakes,
         @NotBlank
-        String lights,
+        Boolean glasses,
         @NotBlank
-        String glasses,
+        Boolean windshieldWipers,
         @NotBlank
-        String windshieldWipers,
+        Boolean rearview,
+        @NotBlank
+        Boolean headlight,
+        @NotBlank
+        Boolean taillight,
+        @NotBlank
+        Boolean frontIndicator,
+        @NotBlank
+        Boolean indicator,
+        @NotBlank
+        Boolean domeLight,
+        @NotBlank
+        Boolean licensePlateLight,
+        @NotBlank
+        String tirePressure,
         @NotBlank
         String jack,
         @NotBlank

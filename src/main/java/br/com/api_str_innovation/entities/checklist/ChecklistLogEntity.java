@@ -21,7 +21,7 @@ public class ChecklistLogEntity {
     private UUID id;
 
     @Column(nullable = false)
-    private String tire;
+    private Boolean tire;
 
     @Column(nullable = false)
     private String spareTire;
@@ -39,19 +39,48 @@ public class ChecklistLogEntity {
     private String waterLevel;
 
     @Column(nullable = false)
-    private String suspension;
+    private Boolean suspension;
 
     @Column(nullable = false)
     private String brakes;
 
     @Column(nullable = false)
-    private String lights;
+    private Boolean glasses;
 
     @Column(nullable = false)
-    private String glasses;
+    private Boolean windshieldWipers;
 
+    @Setter
     @Column(nullable = false)
-    private String windshieldWipers;
+    private Boolean rearview;
+
+    @Setter
+    @Column(nullable = false)
+    private Boolean headlight;
+
+    @Setter
+    @Column(nullable = false)
+    private Boolean taillight;
+
+    @Setter
+    @Column(nullable = false)
+    private Boolean frontIndicator;
+
+    @Setter
+    @Column(nullable = false)
+    private Boolean indicator;
+
+    @Setter
+    @Column(nullable = false)
+    private Boolean domeLight;
+
+    @Setter
+    @Column(nullable = false)
+    private Boolean licensePlateLight;
+
+    @Setter
+    @Column(nullable = false)
+    private String tirePressure;
 
     @Column(nullable = false)
     private String jack;
@@ -89,9 +118,16 @@ public class ChecklistLogEntity {
         this.waterLevel = data.waterLevel();
         this.suspension = data.suspension();
         this.brakes = data.brakes();
-        this.lights = data.lights();
         this.glasses = data.glasses();
         this.windshieldWipers = data.windshieldWipers();
+        this.rearview = data.rearview();
+        this.headlight = data.headlight();
+        this.taillight = data.taillight();
+        this.frontIndicator = data.frontIndicator();
+        this.indicator = data.indicator();
+        this.domeLight = data.domeLight();
+        this.licensePlateLight = data.licensePlateLight();
+        this.tirePressure = data.tirePressure();
         this.jack = data.jack();
         this.toolbox = data.toolbox();
         this.documentation = data.documentation();
