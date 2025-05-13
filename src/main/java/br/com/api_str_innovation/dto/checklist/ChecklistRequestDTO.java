@@ -40,6 +40,8 @@ public record ChecklistRequestDTO(
         @NotBlank
         Boolean licensePlateLight,
         @NotBlank
+        Boolean licensePlate,
+        @NotBlank
         String tirePressure,
         @NotBlank
         String jack,

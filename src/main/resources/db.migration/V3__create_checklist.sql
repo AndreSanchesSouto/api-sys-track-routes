@@ -18,6 +18,7 @@ CREATE TABLE checklist (
     indicator BOOLEAN NOT NULL,
     domeLight BOOLEAN NOT NULL,
     licensePlateLight BOOLEAN NOT NULL,
+    licensePlate BOOLEAN NOT NULL,
     tirePressure VARCHAR(100) NOT NULL,
     jack VARCHAR(100) NOT NULL,
     toolbox VARCHAR(100) NOT NULL,

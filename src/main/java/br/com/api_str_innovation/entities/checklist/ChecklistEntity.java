@@ -93,6 +93,10 @@ public class ChecklistEntity {
 
     @Setter
     @Column(nullable = false)
+    private Boolean licensePlate;
+
+    @Setter
+    @Column(nullable = false)
     private String tirePressure;
 
     @Setter
@@ -148,6 +152,7 @@ public class ChecklistEntity {
         this.indicator = data.indicator();
         this.domeLight = data.domeLight();
         this.licensePlateLight = data.licensePlateLight();
+        this.licensePlate = data.licensePlate();
         this.tirePressure = data.tirePressure();
         this.jack = data.jack();
         this.toolbox = data.toolbox();
