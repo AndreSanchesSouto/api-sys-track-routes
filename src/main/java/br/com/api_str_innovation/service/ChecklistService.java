@@ -173,7 +173,7 @@ public class ChecklistService {
         VehicleEntity vehicle = vehicleRepository.findVehicleFromChecklistId(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "aaaa")
         );
-        checklistRepository.deleteById(vehicle.getId());
+        checklistRepository.deleteById(id);
         vehicleRepository.updateStatusVehicle(VehicleStatus.WAITING.getStatus(), vehicle.getId());
     }
 
