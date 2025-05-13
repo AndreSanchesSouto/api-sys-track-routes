@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -151,7 +152,7 @@ public class ChecklistService {
         checklist.setToolbox(data.toolbox());
         checklist.setDocumentation(data.documentation());
         checklist.setDocumentation(data.documentation());
-        checklist.setEditedDt(LocalDate.now());
+        checklist.setEditedDt(LocalDateTime.now());
         checklistRepository.save(checklist);
 
         return new ChecklistResponseDTO(checklist);

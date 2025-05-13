@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table(name = "checklist")
@@ -115,10 +116,10 @@ public class ChecklistEntity {
     private String observationNotes;
 
     @Column(nullable = false, updatable = false)
-    private final LocalDate creationDt = LocalDate.now();
+    private final LocalDateTime creationDt = LocalDateTime.now();
 
     @Setter
-    private LocalDate editedDt;
+    private LocalDateTime editedDt;
 
     @JsonIgnore
     @Setter

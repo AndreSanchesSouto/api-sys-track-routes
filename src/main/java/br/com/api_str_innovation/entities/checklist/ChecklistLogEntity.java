@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -102,7 +103,7 @@ public class ChecklistLogEntity {
     private String vehicleStatus;
 
     @Column(nullable = false, updatable = false)
-    private LocalDate createdDt = LocalDate.now();
+    private LocalDateTime createdDt = LocalDateTime.now();
 
     @Column(nullable = false)
     private UUID vehicleId;

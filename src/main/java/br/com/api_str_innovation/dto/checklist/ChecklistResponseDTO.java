@@ -3,6 +3,7 @@ package br.com.api_str_innovation.dto.checklist;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ChecklistResponseDTO(UUID id,
@@ -29,8 +30,8 @@ public record ChecklistResponseDTO(UUID id,
                                    String toolbox,
                                    String documentation,
                                    String observationNotes,
-                                   LocalDate creationDt,
-                                   LocalDate editedDt) {
+                                   LocalDateTime creationDt,
+                                   LocalDateTime editedDt) {
 
     public ChecklistResponseDTO(ChecklistEntity data) {
         this(
