@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.service.DeliveryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,16 @@ public class DeliveryController {
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data, generalManagerId));
+    }
+
+
+    @GetMapping("/my-deliveries/page")
+    public ResponseEntity<Page<DeliveryGenericResponseDTO>> getDeliveryByDriverId(
+            @RequestHeader("general-manager-id") UUID generalManagerId,
+            @RequestHeader("user-id") UUID driverId,
+            Pageable pageable
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getDeliveryByDriverId(generalManagerId, driverId, pageable));
     }
 
     @GetMapping("/count")
