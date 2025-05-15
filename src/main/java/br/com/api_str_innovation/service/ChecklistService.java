@@ -89,30 +89,100 @@ public class ChecklistService {
     }
 
     private boolean containsCriticalStatus(ChecklistRequestDTO data) {
-        return isTireMissingOrDamaged(data)
-                || isBrakesDamaged(data)
-                || isGlassesDamaged(data)
+        return isHeadlightTrue(data)
+                || isTaillightTrue(data)
+                || isFrontIndicatorTrue(data)
+                || isIndicatorTrue(data)
+                || isDomeLightTrue(data)
+                || isLicensePlateLightTrue(data)
+                || isTireTrue(data)
+                || isGlassesTrue(data)
+                || isRearviewTrue(data)
+                || islicensePlateTrue(data)
+                || isWindshieldWipersTrue(data)
+                || isSuspensionTrue(data)
+                || isJackMissingOrDamaged(data)
+                || isBrakesMissingOrDamaged(data)
+                || isSpareTireMissingOrDamaged(data)
+                || isTirePressureMissingOrDamaged(data)
                 || isDocumentationInvalid(data)
+
                 || isFuelLevelTooLow(data)
                 || isOilLevelTooLow(data)
                 || isWaterLevelTooLow(data);
     }
 
-    private boolean isTireMissingOrDamaged(ChecklistRequestDTO data) {
-        return data.tire().equals(ChecklistFieldOptions.STATUS_MISSING.getField()) ||
-                data.tire().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
+    private boolean isHeadlightTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.headlight()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
     }
 
-    private boolean isBrakesDamaged(ChecklistRequestDTO data) {
-        return data.brakes().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
+    private boolean isTaillightTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.taillight()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
     }
 
-    private boolean isGlassesDamaged(ChecklistRequestDTO data) {
-        return data.glasses().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
+    private boolean isFrontIndicatorTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.frontIndicator()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isIndicatorTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.indicator()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isDomeLightTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.domeLight()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isLicensePlateLightTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.licensePlateLight()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isTireTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.tire()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isGlassesTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.glasses()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isRearviewTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.rearview()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean islicensePlateTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.licensePlate()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isWindshieldWipersTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.windshieldWipers()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isSuspensionTrue(ChecklistRequestDTO data) {
+        return Boolean.toString(data.suspension()).equals(ChecklistFieldOptions.STATUS_TRUE.getField());
+    }
+
+    private boolean isJackMissingOrDamaged(ChecklistRequestDTO data) {
+        return data.jack().equals(ChecklistFieldOptions.STATUS_MISSING.getField())
+            || data.jack().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
+    }
+
+    private boolean isBrakesMissingOrDamaged(ChecklistRequestDTO data) {
+        return data.brakes().equals(ChecklistFieldOptions.STATUS_MISSING.getField())
+            || data.brakes().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
+    }
+
+    private boolean isSpareTireMissingOrDamaged(ChecklistRequestDTO data) {
+        return data.spareTire().equals(ChecklistFieldOptions.STATUS_MISSING.getField())
+            || data.spareTire().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
+    }
+
+    private boolean isTirePressureMissingOrDamaged(ChecklistRequestDTO data) {
+        return data.tirePressure().equals(ChecklistFieldOptions.STATUS_MISSING.getField())
+            || data.tirePressure().equals(ChecklistFieldOptions.STATUS_DAMAGED.getField());
     }
 
     private boolean isDocumentationInvalid(ChecklistRequestDTO data) {
-        return data.documentation().equals(ChecklistFieldOptions.STATUS_FALSE.getField());
+        return data.documentation().equals(ChecklistFieldOptions.STATUS_MISSING.getField())
+            || data.documentation().equals(ChecklistFieldOptions.STATUS_INVALID.getField());
     }
 
     private boolean isFuelLevelTooLow(ChecklistRequestDTO data) {
@@ -126,7 +196,6 @@ public class ChecklistService {
     private boolean isWaterLevelTooLow(ChecklistRequestDTO data) {
         return Double.parseDouble(data.waterLevel()) <= Double.parseDouble(ChecklistFieldOptions.MINIMUM_WATER_LEVEL.getField());
     }
-
 
     public ChecklistResponseDTO put(@PathVariable UUID id, ChecklistRequestDTO data) {
         ChecklistEntity checklist = this.getById(id);
