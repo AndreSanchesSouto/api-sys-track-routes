@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.delivery.*;
+import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
@@ -20,6 +21,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,6 +89,20 @@ public class DeliveryService {
 
         this.repository.save(delivery);
         return new DeliveryResponseDTO(delivery);
+    }
+
+    public ResponseEntity<DeliveryLocationDTO> getDriverLocation(UUID id) {
+        DeliveryEntity delivery = this.repository.findLocationFromDriver(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new DeliveryLocationDTO(delivery.getLatitude(), delivery.getLongitude()));
+    }
+
+    @Transactional
+    public ResponseEntity sendCurrentLocation(@Valid DeliveryLocationDTO data, UUID id) {
+        DeliveryEntity delivery = this.repository.getReferenceById(id);
+        delivery.setLatitude(data.latitude());
+        delivery.setLongitude(data.longitude());
+        this.repository.save(delivery);
+        return ResponseEntity.status(HttpStatus.OK).body("Sincronizado");
     }
 
     public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {

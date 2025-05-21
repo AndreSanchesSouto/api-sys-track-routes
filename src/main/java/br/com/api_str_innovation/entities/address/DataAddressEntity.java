@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Table(name = "address")
@@ -52,6 +53,14 @@ public class DataAddressEntity {
     private String state;
 
     @Setter
+    @Column(nullable = false, precision = 8, scale = 6)
+    private BigDecimal latitude;
+
+    @Setter
+    @Column(nullable = false, precision = 9, scale = 6)
+    private BigDecimal longitude;
+
+    @Setter
     @Column(nullable = false)
     private String complement;
 
@@ -75,6 +84,8 @@ public class DataAddressEntity {
         this.state = data.state();
         this.complement = data.complement();
         this.referencePoint = data.referencePoint();
+        this.latitude = new BigDecimal(data.latitude());
+        this.longitude = new BigDecimal(data.longitude());
         this.client = client;
     }
 }

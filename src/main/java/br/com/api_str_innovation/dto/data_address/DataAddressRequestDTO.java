@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 public record DataAddressRequestDTO(
 
         @NotBlank(message = "O campo CEP não pode estar vazio")
@@ -27,6 +29,12 @@ public record DataAddressRequestDTO(
 
         @NotBlank(message = "O campo estado não pode estar vazio")
         String state,
+
+        @NotBlank(message = "O campo latitude não pode estar vazio")
+        String latitude,
+
+        @NotBlank(message = "O campo longitude não pode estar vazio")
+        String longitude,
 
         String complement,
 

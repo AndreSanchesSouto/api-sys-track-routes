@@ -4,8 +4,10 @@ import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.service.DeliveryService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,19 @@ public class DeliveryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data, generalManagerId));
     }
 
+    @GetMapping("/{id}/current-driver-location")
+    public ResponseEntity<DeliveryLocationDTO> getDriverLocation(@PathVariable UUID id) {
+        return this.service.getDriverLocation(id);
+    }
+
+    @Transactional
+    @PatchMapping("/{id}/send-current-location")
+    public ResponseEntity sendCurrentLocation(
+            @PathVariable UUID id,
+            @Valid @RequestBody DeliveryLocationDTO data
+    ) {
+        return this.service.sendCurrentLocation(data, id);
+    }
 
     @GetMapping("/my-deliveries/page")
     public ResponseEntity<Page<DeliveryGenericResponseDTO>> getDeliveryByDriverId(
