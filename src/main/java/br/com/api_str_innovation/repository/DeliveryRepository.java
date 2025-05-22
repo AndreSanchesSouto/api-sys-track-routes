@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.repository;
 
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
+import br.com.api_str_innovation.projections.LocationProjection;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,11 +52,12 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
 
     @Query(value = """
             SELECT
-                *
+                latitude,
+                longitude
             FROM deliveries
             WHERE id = :id
             """, nativeQuery = true)
-    DeliveryEntity findLocationFromDriver(@Param("id") UUID id);
+    LocationProjection findLocationFromDriver(@Param("id") UUID id);
 
     @Query("""
             SELECT d FROM DeliveryEntity d

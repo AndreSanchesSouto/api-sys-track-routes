@@ -15,6 +15,7 @@ import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.DeliveryException;
 import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.projections.LocationProjection;
 import br.com.api_str_innovation.repository.DeliveryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -92,8 +93,8 @@ public class DeliveryService {
     }
 
     public ResponseEntity<DeliveryLocationDTO> getDriverLocation(UUID id) {
-        DeliveryEntity delivery = this.repository.findLocationFromDriver(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new DeliveryLocationDTO(delivery.getLatitude(), delivery.getLongitude()));
+        LocationProjection location = this.repository.findLocationFromDriver(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new DeliveryLocationDTO(location.getLatitude(), location.getLongitude()));
     }
 
     @Transactional
