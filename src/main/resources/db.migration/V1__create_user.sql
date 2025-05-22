@@ -6,7 +6,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     login VARCHAR(100) NOT NULL UNIQUE,
-    document VARCHAR(100) NOT NULL UNIQUE,
+    document VARCHAR(100) NULL UNIQUE,
     password TEXT NOT NULL,
     status VARCHAR(100) NOT NULL,
     role VARCHAR(100) NOT NULL,

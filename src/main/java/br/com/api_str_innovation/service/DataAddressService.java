@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -80,6 +81,8 @@ public class DataAddressService {
         dataAddress.setState(data.state());
         dataAddress.setComplement(data.complement());
         dataAddress.setReferencePoint(data.referencePoint());
+        dataAddress.setLatitude(new BigDecimal(data.latitude()));
+        dataAddress.setLongitude(new BigDecimal(data.longitude()));
 
         this.repository.save(dataAddress);
 

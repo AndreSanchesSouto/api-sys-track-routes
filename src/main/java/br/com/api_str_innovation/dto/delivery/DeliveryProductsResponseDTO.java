@@ -7,6 +7,7 @@ import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.service.ProductService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,8 @@ public record DeliveryProductsResponseDTO(
          List<DeliveryProductResponseDTO> deliveryProducts,
          VehicleEntity vehicle,
          DataAddressEntity address,
+         BigDecimal latitude,
+         BigDecimal longitude,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
@@ -39,6 +42,8 @@ public record DeliveryProductsResponseDTO(
                         .toList(),
                 data.getVehicle(),
                 data.getAddress(),
+                data.getLongitude(),
+                data.getLongitude(),
                 data.getCreatedDt(),
                 data.getInactivatedDt()
         );

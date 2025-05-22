@@ -1,12 +1,15 @@
 package br.com.api_str_innovation.repository;
 
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
+import br.com.api_str_innovation.projections.LocationProjection;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +21,20 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
                 AND d.generalManagerId = :generalManagerId
             """)
     Page<DeliveryEntity> findDeliveries(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
+
+
+    @Transactional
+    @Query(value = """
+            UPDATE deliveries
+                SET latitude = :latitude,
+                longitude = :longitude
+            WHERE id = :id
+            """, nativeQuery = true)
+    DeliveryEntity updateLocation(
+            @Param("id") UUID id,
+            @Param("latitude")BigDecimal latitude,
+            @Param("longitude")BigDecimal longitude
+    );
 
     @Query("""
             SELECT d FROM DeliveryEntity d
@@ -32,6 +49,15 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
              FROM deliveries d
             """, nativeQuery = true)
     Integer getDeliveryQuantity();
+
+    @Query(value = """
+            SELECT
+                latitude,
+                longitude
+            FROM deliveries
+            WHERE id = :id
+            """, nativeQuery = true)
+    LocationProjection findLocationFromDriver(@Param("id") UUID id);
 
     @Query("""
             SELECT d FROM DeliveryEntity d

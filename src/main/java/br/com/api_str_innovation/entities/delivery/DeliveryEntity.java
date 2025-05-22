@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,14 @@ public class DeliveryEntity {
     @Setter
     @Column(name = "delivery_request", nullable = false, updatable = true)
     private Integer deliveryRequest;
+
+    @Setter
+    @Column(nullable = true, precision = 8, scale = 6)
+    private BigDecimal latitude;
+
+    @Setter
+    @Column(nullable = true, precision = 9, scale = 6)
+    private BigDecimal longitude;
 
     @Setter
     @Column(nullable = false, updatable = false)
