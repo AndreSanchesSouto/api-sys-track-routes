@@ -4,10 +4,10 @@ import br.com.api_str_innovation.infra.anotation.CnpjCpfAnotation;
 import jakarta.validation.constraints.Email;
 
 public record ClientRequestDTO(
-        @Email
         String name,
+        @Email
         String email,
-        @CnpjCpfAnotation
         String cellphone,
+        @CnpjCpfAnotation
         String document
 ) { }
