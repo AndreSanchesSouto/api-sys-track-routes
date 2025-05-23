@@ -15,14 +15,13 @@ public record UserRequestDTO(
             @NotBlank
             @Email
             String email,
-            @Null
+            @Nullable
             @CnpjCpfAnotation
             String document,
             @NotBlank
             String login,
             @NotBlank
             String password,
-            @NotNull
             UserStatus status,
             @NotNull
             Role role

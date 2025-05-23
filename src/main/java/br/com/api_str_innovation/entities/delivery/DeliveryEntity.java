@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,14 @@ public class DeliveryEntity {
     private Integer deliveryRequest;
 
     @Setter
+    @Column(nullable = true, precision = 8, scale = 6)
+    private BigDecimal latitude;
+
+    @Setter
+    @Column(nullable = true, precision = 9, scale = 6)
+    private BigDecimal longitude;
+
+    @Setter
     @Column(nullable = false, updatable = false)
     private LocalDate createdDt = LocalDate.now();
 
@@ -62,11 +71,11 @@ public class DeliveryEntity {
     @Setter
     @ManyToOne
     @JoinColumn(name = "driver_id", nullable = true)
-    private UserEntity driver;
+        private UserEntity driver;
 
     @Setter
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();;
+    private List<DeliveryProductEntity> deliveryProducts = new ArrayList<>();
 
     @Setter
     @ManyToOne

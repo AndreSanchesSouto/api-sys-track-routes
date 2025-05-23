@@ -47,7 +47,7 @@ public class UserService {
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
 
-        if(repository.findByDocument(data.document()).isPresent() ) {
+        if(data.document() != null && repository.findByDocument(data.document()).isPresent() ) {
             throw new UserException(String.format("O CNPJ %s já está em uso.", data.document()));
         }
     }
