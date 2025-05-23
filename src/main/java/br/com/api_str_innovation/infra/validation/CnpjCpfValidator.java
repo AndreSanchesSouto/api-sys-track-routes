@@ -11,7 +11,7 @@ public class CnpjCpfValidator implements ConstraintValidator<CnpjCpfAnotation, S
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        if (value == null || value.isEmpty()) return false;
+        if (value == null || value.isEmpty()) return true;
 
         String document = value.replaceAll("\\D", "");
         System.out.println(document);
