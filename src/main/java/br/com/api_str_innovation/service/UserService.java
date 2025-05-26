@@ -38,7 +38,7 @@ public class UserService {
         );
     }
 
-    private void existsMailOrLoginOrCnpj(UserRequestDTO data) {
+    private void existsMailOrLoginOrDocument(UserRequestDTO data) {
         if (repository.findByEmail(data.email()).isPresent() ) {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
@@ -47,8 +47,8 @@ public class UserService {
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
 
-        if(repository.findByDocument(data.document()).isPresent() ) {
-            throw new UserException(String.format("O CNPJ %s já está em uso.", data.document()));
+        if(data.document() != null && repository.findByDocument(data.document()).isPresent() ) {
+            throw new UserException(String.format("O documento %s já está em uso.", data.document()));
         }
     }
 
@@ -104,16 +104,10 @@ public class UserService {
     }
 
     public void postGeneralManager(@Valid UserRequestDTO data) {
-        existsMailOrLoginOrCnpj(data);
+        existsMailOrLoginOrDocument(data);
 
         assert data.document() != null;
         String document = data.document().replaceAll("\\D", "");
-
-        if ((data.role().equals(Role.DRIVER) ||
-                data.role().equals(Role.SHIPPING_MANAGER)) &&
-                document.length() != 11) {
-            throw new UserException("O CPF deve ser preenchido corretamente!");
-        }
 
         if (data.role().equals(Role.GENERAL_MANAGER) &&
                 document.length() != 14) {
@@ -125,7 +119,23 @@ public class UserService {
     }
 
     public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
-        existsMailOrLoginOrCnpj(data);
+        existsMailOrLoginOrDocument(data);
+
+        if (data.document() == null) {
+            UserEntity user = new UserEntity(data, generalManagerId);
+            repository.save(user);
+            return;
+        }
+
+        assert data.document() != null;
+        String document = data.document().replaceAll("\\D", "");
+
+        if ((data.role().equals(Role.DRIVER) ||
+                data.role().equals(Role.SHIPPING_MANAGER)) &&
+                document.length() != 11) {
+            throw new UserException("O CPF deve ser preenchido corretamente!");
+        }
+
         UserEntity user = new UserEntity(data, generalManagerId);
         repository.save(user);
     }
@@ -136,7 +146,7 @@ public class UserService {
 
     @Transactional
     public void patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLoginOrCnpj(data);
+        existsMailOrLoginOrDocument(data);
         UserEntity user = findById(id);
 
         validDocumentLength(data.document());
@@ -158,7 +168,7 @@ public class UserService {
 
     @Transactional
     public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLoginOrCnpj(data);
+        existsMailOrLoginOrDocument(data);
         UserEntity user = findById(id);
 
         validDocumentLength(data.document());

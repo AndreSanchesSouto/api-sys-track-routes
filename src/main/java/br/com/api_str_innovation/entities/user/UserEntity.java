@@ -45,7 +45,7 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @Setter
-    @Column(unique = true)
+    @Column(unique = true, nullable = true)
     private String document;
 
     @Setter
@@ -98,20 +98,20 @@ public class UserEntity implements UserDetails {
         return status == null ? UserStatus.ACTIVE.getStatus() : status.getStatus();
     }
 
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return switch (this.role.toUpperCase()) {
-                case "GENERAL_MANAGER" -> List.of(
-                        new SimpleGrantedAuthority("ROLE_ADMIN"),
-                        new SimpleGrantedAuthority("ROLE_SHIPPING"),
-                        new SimpleGrantedAuthority("ROLE_USER")
-                );
-                case "SHIPPING_MANAGER" -> List.of(
-                        new SimpleGrantedAuthority("ROLE_SHIPPING"),
-                        new SimpleGrantedAuthority("ROLE_USER")
-                );
-                default -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
-            };
-        }
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return switch (this.role.toUpperCase()) {
+            case "GENERAL_MANAGER" -> List.of(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_SHIPPING"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+            case "SHIPPING_MANAGER" -> List.of(
+                    new SimpleGrantedAuthority("ROLE_SHIPPING"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+            default -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        };
+    }
 
     public String getUsername() {
         return this.getLogin();
