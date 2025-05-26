@@ -3,6 +3,7 @@ package br.com.api_str_innovation.controller;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
+import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -80,7 +81,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> patch(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO data) {
+    public ResponseEntity<String> patch(@PathVariable UUID id, @Valid @RequestBody UserUpdateRequestDTO data) {
         this.service.patch(id, data);
         return ResponseEntity.status(HttpStatus.OK).body("Atualizado");
     }

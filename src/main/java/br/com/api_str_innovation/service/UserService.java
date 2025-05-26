@@ -3,9 +3,9 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
+import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
-import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.UserException;
@@ -145,16 +145,22 @@ public class UserService {
     }
 
     @Transactional
-    public void patch(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLoginOrDocument(data);
+    public void patch(@PathVariable UUID id, @RequestBody UserUpdateRequestDTO data) {
         UserEntity user = findById(id);
 
-        validDocumentLength(data.document());
+        if (!user.getEmail().equals(data.email()) &&
+                repository.findByEmail(data.email()).isPresent()) {
+            throw new UserException(String.format("O email %s já está em uso.", data.email()));
+        }
+
+        if (!user.getLogin().equals(data.login()) &&
+                repository.findByLogin(data.login()).isPresent()) {
+            throw new UserException(String.format("O login %s já está em uso.", data.login()));
+        }
 
         user.setName(data.name());
         user.setEmail(data.email());
         user.setLogin(data.login());
-        user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
         repository.save(user);
     }

@@ -23,7 +23,7 @@ public record UserRequestDTO(
             @NotBlank
             String password,
             UserStatus status,
-            @NotNull
+            @NotBlank
             Role role
 ) {
     @Override
