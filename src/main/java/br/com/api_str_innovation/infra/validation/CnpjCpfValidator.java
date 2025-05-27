@@ -14,7 +14,6 @@ public class CnpjCpfValidator implements ConstraintValidator<CnpjCpfAnotation, S
         if (value == null || value.isEmpty()) return true;
 
         String document = value.replaceAll("\\D", "");
-        System.out.println(document);
 
         try {
             if (document.length() == 11) {

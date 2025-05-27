@@ -59,11 +59,8 @@ public class UserService {
     }
 
     private void validateDocumentByRole(UserRequestDTO data) {
-        if (data.document() == null) {
-            if (data.role().equals(Role.GENERAL_MANAGER)) {
-                throw new UserException("O CNPJ é obrigatório para Gerente Geral!");
-            }
-            return;
+        if (data.document() == null && data.role().equals(Role.GENERAL_MANAGER)) {
+            throw new UserException("O CNPJ é obrigatório para Gerente Geral!");
         }
 
         String document = data.document().replaceAll("\\D", "");
