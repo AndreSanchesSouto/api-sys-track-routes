@@ -2,7 +2,6 @@ package br.com.api_str_innovation.entities.client;
 
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
-import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -69,5 +68,4 @@ public class ClientEntity {
         this.document = data.document();
         this.generalManagerId = generalManagerId;
     }
-
 }

@@ -9,7 +9,6 @@ public record UserUpdateRequestDTO(
         @NotBlank
         String name,
         @NotBlank
-        @NotBlank
         @Email
         String email,
         @NotBlank

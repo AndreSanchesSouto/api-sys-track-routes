@@ -7,9 +7,9 @@ import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
-import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
+import io.micrometer.common.lang.Nullable;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -38,26 +39,42 @@ public class UserService {
         );
     }
 
-    private void existsMailOrLoginOrDocument(UserRequestDTO data) {
-        if (repository.findByEmail(data.email()).isPresent() ) {
+    private void existsMailOrLoginOrDocument(UserRequestDTO data, @Nullable UserEntity existUser) {
+        Optional<UserEntity> emailExists = repository.findByEmail(data.email());
+        if (emailExists.isPresent() && (existUser == null || !emailExists.get().getId().equals(existUser.getId()))) {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
-        if(repository.findByLogin(data.login()).isPresent() ){
+        Optional<UserEntity> loginExists = repository.findByLogin(data.login());
+        if (loginExists.isPresent() && (existUser == null || !loginExists.get().getId().equals(existUser.getId()))) {
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
 
-        if(data.document() != null && repository.findByDocument(data.document()).isPresent() ) {
-            throw new UserException(String.format("O documento %s já está em uso.", data.document()));
+        if (data.document() != null) {
+            Optional<UserEntity> documentExists = repository.findByDocument(data.document());
+            if (documentExists.isPresent() && (existUser == null || !documentExists.get().getId().equals(existUser.getId()))) {
+                throw new UserException(String.format("O documento %s já está em uso.", data.document()));
+            }
         }
     }
 
-    private void validDocumentLength(String document) {
-        assert document != null;
-        String cnpj = document.replaceAll("\\D", "");
+    private void validateDocumentByRole(UserRequestDTO data) {
+        if (data.document() == null) {
+            if (data.role().equals(Role.GENERAL_MANAGER)) {
+                throw new UserException("O CNPJ é obrigatório para Gerente Geral!");
+            }
+            return;
+        }
 
-        if (cnpj.length() != 14) {
-            throw new ClientException("Informe o CNPJ corretamente!");
+        String document = data.document().replaceAll("\\D", "");
+        
+        if (data.role().equals(Role.GENERAL_MANAGER) && document.length() != 14) {
+            throw new UserException("O CNPJ deve ser preenchido corretamente!");
+        }
+
+        if ((data.role().equals(Role.DRIVER) || data.role().equals(Role.SHIPPING_MANAGER)) 
+            && document.length() != 11) {
+            throw new UserException("O CPF deve ser preenchido corretamente!");
         }
     }
 
@@ -104,37 +121,16 @@ public class UserService {
     }
 
     public void postGeneralManager(@Valid UserRequestDTO data) {
-        existsMailOrLoginOrDocument(data);
-
-        assert data.document() != null;
-        String document = data.document().replaceAll("\\D", "");
-
-        if (data.role().equals(Role.GENERAL_MANAGER) &&
-                document.length() != 14) {
-            throw new UserException("O CNPJ deve ser preenchido corretamente!");
-        }
+        existsMailOrLoginOrDocument(data, null);
+        validateDocumentByRole(data);
 
         UserEntity user = new UserEntity(data);
         repository.save(user);
     }
 
     public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
-        existsMailOrLoginOrDocument(data);
-
-        if (data.document() == null) {
-            UserEntity user = new UserEntity(data, generalManagerId);
-            repository.save(user);
-            return;
-        }
-
-        assert data.document() != null;
-        String document = data.document().replaceAll("\\D", "");
-
-        if ((data.role().equals(Role.DRIVER) ||
-                data.role().equals(Role.SHIPPING_MANAGER)) &&
-                document.length() != 11) {
-            throw new UserException("O CPF deve ser preenchido corretamente!");
-        }
+        existsMailOrLoginOrDocument(data, null);
+        validateDocumentByRole(data);
 
         UserEntity user = new UserEntity(data, generalManagerId);
         repository.save(user);
@@ -148,13 +144,13 @@ public class UserService {
     public void patch(@PathVariable UUID id, @RequestBody UserUpdateRequestDTO data) {
         UserEntity user = findById(id);
 
-        if (!user.getEmail().equals(data.email()) &&
-                repository.findByEmail(data.email()).isPresent()) {
+        Optional<UserEntity> emailExists = repository.findByEmail(data.email());
+        if (emailExists.isPresent() && !emailExists.get().getId().equals(user.getId())) {
             throw new UserException(String.format("O email %s já está em uso.", data.email()));
         }
 
-        if (!user.getLogin().equals(data.login()) &&
-                repository.findByLogin(data.login()).isPresent()) {
+        Optional<UserEntity> loginExists = repository.findByLogin(data.login());
+        if (loginExists.isPresent() && !loginExists.get().getId().equals(user.getId())) {
             throw new UserException(String.format("O login %s já está em uso.", data.login()));
         }
 
@@ -174,10 +170,9 @@ public class UserService {
 
     @Transactional
     public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        existsMailOrLoginOrDocument(data);
         UserEntity user = findById(id);
-
-        validDocumentLength(data.document());
+        existsMailOrLoginOrDocument(data, user);
+        validateDocumentByRole(data);
 
         user.setName(data.name());
         user.setEmail(data.email());
@@ -185,7 +180,6 @@ public class UserService {
         user.setDocument(data.document());
         user.setStatus(data.status().getStatus());
         repository.save(user);
-
     }
 
     @Transactional
