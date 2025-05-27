@@ -7,6 +7,7 @@ import br.com.api_str_innovation.entities.user.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 
 public record UserRequestDTO(
             @NotBlank
@@ -15,6 +16,7 @@ public record UserRequestDTO(
             @Email
             String email,
             @Nullable
+            @CnpjCpfAnotation
             String document,
             @NotBlank
             String login,

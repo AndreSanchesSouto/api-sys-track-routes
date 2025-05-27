@@ -5,10 +5,10 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 
 public record ClientRequestDTO(
+        String name,
         @Email
         String email,
-        String name,
-        @Nullable
-        String document,
-        String cellphone
+        String cellphone,
+        @CnpjCpfAnotation
+        String document
 ) { }
