@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.repository.ClientRepository;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,22 +26,20 @@ public class ClientService {
     @Autowired
     private ClientRepository repository;
 
-    private void existsMailOrCnpj(ClientRequestDTO data) {
-        if (repository.findByEmail(data.email()).isPresent() ) {
+    private void validAndExistsMailOrCnpj(ClientRequestDTO data, @Nullable ClientEntity existClient) {
+        String cnpj = data.document().replaceAll("\\D", "");
+        if (cnpj.length() != 14) {
+            throw new ClientException("Informe o CNPJ corretamente!");
+        }
+
+        Optional<ClientEntity> clientEmail = repository.findByEmail(data.email());
+        if (clientEmail.isPresent() && (existClient == null || !clientEmail.get().getId().equals(existClient.getId()))) {
             throw new ClientException(String.format("O email %s já está em uso.", data.email()));
         }
 
-        if (repository.findByDocument(data.document()).isPresent() ) {
-            throw new ClientException(String.format("O CNPJ %s já está em uso.", data.document()));
-        }
-    }
-
-    private void validDocumentLength(String document) {
-        assert document != null;
-        String cnpj = document.replaceAll("\\D", "");
-
-        if (cnpj.length() != 14) {
-            throw new ClientException("Informe o CNPJ corretamente!");
+        Optional<ClientEntity> clientCNPJ = repository.findByDocument(data.document());
+        if (clientCNPJ.isPresent() && (existClient == null || !clientCNPJ.get().getId().equals(existClient.getId()))) {
+            throw new ClientException(String.format("O CNPJ %s já está em uso.",  data.document()));
         }
     }
 
@@ -93,18 +93,16 @@ public class ClientService {
     }
 
     public void post(@Valid ClientRequestDTO data, UUID generalManager) {
-        existsMailOrCnpj(data);
-        validDocumentLength(data.document());
+        validAndExistsMailOrCnpj(data, null);
 
         ClientEntity clientData = new ClientEntity(data, generalManager);
         repository.save(clientData);
     }
 
     public ClientResponseDTO put(UUID id, @Valid ClientRequestDTO data) {
-        existsMailOrCnpj(data);
-        validDocumentLength(data.document());
-
         ClientEntity client = this.getById(id);
+        validAndExistsMailOrCnpj(data, client);
+
         client.setName(data.name());
         client.setEmail(data.email());
         client.setDocument(data.document());
@@ -113,10 +111,9 @@ public class ClientService {
     }
 
     public ClientResponseDTO patch(UUID id, @Valid ClientRequestDTO data) {
-        existsMailOrCnpj(data);
-        validDocumentLength(data.document());
-
         ClientEntity client = this.getById(id);
+        validAndExistsMailOrCnpj(data, client);
+
         client.setName(data.name());
         client.setEmail(data.email());
         client.setDocument(data.document());
