@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.infra.exception;
 
+import br.com.api_str_innovation.exceptions.TokenException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,18 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
         ExceptionMessage response = new ExceptionMessage(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND,
+                exception.getMessage()
+        );
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(response);
+    }
+
+    @ExceptionHandler(TokenException.class)
+    private ResponseEntity<ExceptionMessage> tokenExpiredExeption(TokenException exception) {
+        ExceptionMessage response = new ExceptionMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED,
                 exception.getMessage()
         );
         return ResponseEntity

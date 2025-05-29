@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.infra.security;
 
+import br.com.api_str_innovation.exceptions.TokenException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
 import br.com.api_str_innovation.service.TokenService;
@@ -49,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private UserDetails findByLogin(String username) {
         return repository.findUserDetailsByLogin(username).orElseThrow(
-                () -> new UserException("NotFund")
+                () -> new TokenException("Access expired")
         );
     }
 
