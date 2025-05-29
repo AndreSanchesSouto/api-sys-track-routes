@@ -126,10 +126,11 @@ public class DeliveryService {
     }
 
     @Transactional
-    public DeliveryProductsResponseDTO put(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
+    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
         DeliveryEntity deliveryEntity = findById(id);
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
+
         this.validateAddressToClient(client, address);
 
         UserEntity driver = this.userService.findById(data.driverId());

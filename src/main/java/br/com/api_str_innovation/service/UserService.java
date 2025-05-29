@@ -127,7 +127,7 @@ public class UserService {
 
     public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
         existsMailOrLoginOrDocument(data, null);
-        validateDocumentByRole(data);
+        if (data.document() != null) validateDocumentByRole(data);
 
         UserEntity user = new UserEntity(data, generalManagerId);
         repository.save(user);
