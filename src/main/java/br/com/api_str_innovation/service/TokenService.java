@@ -49,7 +49,7 @@ public class TokenService {
     }
 
     private Instant generateTimer() {
-        return LocalDateTime.now().plusSeconds(5).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.of("-03:00"));
     }
 
 }
