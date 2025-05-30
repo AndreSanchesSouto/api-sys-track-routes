@@ -6,6 +6,7 @@ import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.repository.ClientRepository;
 import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -110,6 +111,7 @@ public class ClientService {
         return new ClientResponseDTO(client);
     }
 
+    @Transactional
     public ClientResponseDTO patch(UUID id, @Valid ClientRequestDTO data) {
         ClientEntity client = this.getById(id);
         validAndExistsMailOrCnpj(data, client);
@@ -117,10 +119,12 @@ public class ClientService {
         client.setName(data.name());
         client.setEmail(data.email());
         client.setDocument(data.document());
+        client.setCellphone(data.cellphone());
         repository.save(client);
         return new ClientResponseDTO(client);
     }
 
+    @Transactional
     public void inactivate(UUID id) {
         ClientEntity client = getById(id);
         client.setInactivatedDt(LocalDateTime.now());
