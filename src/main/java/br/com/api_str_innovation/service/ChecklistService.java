@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +52,7 @@ public class ChecklistService {
 //    }
 
     public ChecklistResponseDTO getByVehicleId(UUID vehicleId) {
-        ChecklistEntity checklist =  this.checklistRepository
+        ChecklistEntity checklist = this.checklistRepository
                 .findChecklistsByVehicleId(vehicleId)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Checklist not found")
@@ -71,7 +70,17 @@ public class ChecklistService {
     @Transactional
     public void post(UUID vehicleId, @Valid ChecklistRequestDTO data) {
         VehicleEntity vehicle = vehicleRepository.getReferenceById(vehicleId);
-        vehicle.setStatus(changeStatusVehicle(data));
+
+        if (!containsCriticalStatus(data)) {
+            vehicle.setStatus(
+                vehicle.getStatus().equals(VehicleStatus.ON_USE.getStatus())
+                    ? VehicleStatus.ON_USE.getStatus()
+                    : VehicleStatus.ACTIVE.getStatus()
+            );
+        } else {
+            vehicle.setStatus(VehicleStatus.INACTIVE.getStatus());
+        }
+        
         vehicleRepository.updateStatusVehicle(vehicle.getStatus(), vehicleId);
 
         ChecklistEntity checklist = new ChecklistEntity(data);
@@ -82,10 +91,6 @@ public class ChecklistService {
         checklistLog.setVehicleId(vehicleId);
         checklistLog.setVehicleStatus(vehicle.getStatus());
         checklistLogRepository.save(checklistLog);
-    }
-
-    private String changeStatusVehicle(ChecklistRequestDTO data) {
-        return containsCriticalStatus(data) ? VehicleStatus.INACTIVE.getStatus() : VehicleStatus.ACTIVE.getStatus();
     }
 
     private boolean containsCriticalStatus(ChecklistRequestDTO data) {
@@ -241,10 +246,14 @@ public class ChecklistService {
     @Transactional
     public void deleteById(UUID id) {
         VehicleEntity vehicle = vehicleRepository.findVehicleFromChecklistId(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "aaaa")
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível deletar o checklist")
         );
+
+        if (!vehicle.getStatus().equals(VehicleStatus.ON_USE.getStatus())) {
+            vehicleRepository.updateStatusVehicle(VehicleStatus.WAITING.getStatus(), vehicle.getId());
+        }
+        
         checklistRepository.deleteById(id);
-        vehicleRepository.updateStatusVehicle(VehicleStatus.WAITING.getStatus(), vehicle.getId());
     }
 
     public List<Object[]> countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {
