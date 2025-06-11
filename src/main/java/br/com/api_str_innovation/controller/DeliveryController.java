@@ -39,6 +39,11 @@ public class DeliveryController {
         return this.service.getDriverLocation(id);
     }
 
+    @PatchMapping("/{id}/send-current-location")
+    public ResponseEntity<Void> sendCurrentLocation(@PathVariable UUID id, @Valid @RequestBody DeliveryLocationDTO location) {
+        return this.service.sendCurrentLocation(id, location);
+    }
+
     @GetMapping("/my-deliveries/page")
     public ResponseEntity<Page<DeliveryGenericResponseDTO>> getDeliveryByDriverId(
             @RequestHeader("general-manager-id") UUID generalManagerId,
@@ -68,5 +73,10 @@ public class DeliveryController {
     @PatchMapping("/{id}")
     public ResponseEntity<DeliveryProductsResponseDTO> patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
+    }
+
+    @PatchMapping("/start-delivery/{id}")
+    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
+        return this.service.patchStartDelivery(id);
     }
 }

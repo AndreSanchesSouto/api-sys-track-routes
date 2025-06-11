@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -60,6 +61,10 @@ public class ChecklistService {
                 );
 
         return new ChecklistResponseDTO(checklist);
+    }
+
+    public Optional<ChecklistEntity> findByVehicleId(UUID vehicleId) {
+        return this.checklistRepository.findChecklistsByVehicleId(vehicleId);
     }
 
     public ChecklistEntity getById(@PathVariable UUID id) {

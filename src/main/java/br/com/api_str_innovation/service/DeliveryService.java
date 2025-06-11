@@ -1,10 +1,13 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
+import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
+import br.com.api_str_innovation.entities.delivery.DeliveryStatus;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.user.Role;
@@ -29,8 +32,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,6 +49,9 @@ public class DeliveryService {
 
     @Autowired
     private VehicleService vehicleService;
+
+    @Autowired
+    private ChecklistService checklistService;
 
     @Autowired
     private ProductService productService;
@@ -67,7 +75,7 @@ public class DeliveryService {
 
         delivery.setClient(client);
         delivery.setAddress(address);
-        delivery.setStatus(VehicleStatus.ACTIVE.getStatus());
+        delivery.setStatus(DeliveryStatus.WAITING.getStatus());
         delivery.setVehicle(vehicle);
         delivery.setDriver(driver);
         delivery.setDeliveryRequest(this.repository.getDeliveryQuantity() + 1);
@@ -86,7 +94,6 @@ public class DeliveryService {
         delivery.setDeliveryProducts(deliveryProducts);
 
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
-        vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 
         this.repository.save(delivery);
         return new DeliveryResponseDTO(delivery);
@@ -98,12 +105,12 @@ public class DeliveryService {
     }
 
     @Transactional
-    public ResponseEntity sendCurrentLocation(@Valid DeliveryLocationDTO data, UUID id) {
+    public ResponseEntity<Void> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
         DeliveryEntity delivery = this.repository.getReferenceById(id);
         delivery.setLatitude(data.latitude());
         delivery.setLongitude(data.longitude());
         this.repository.save(delivery);
-        return ResponseEntity.status(HttpStatus.OK).body("Sincronizado");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
@@ -155,15 +162,31 @@ public class DeliveryService {
             deliveryEntity.getDeliveryProducts().add(deliveryProduct);
         }
 
-
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
         vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 
         this.repository.save(deliveryEntity);
 
-        return new DeliveryProductsResponseDTO(deliveryEntity, productService);
+        List<DeliveryProductResponseDTO> deliveryProductsResponse =  deliveryEntity
+                .getDeliveryProducts()
+                .stream()
+                .map(deliveryProduct -> {
+                    return new DeliveryProductResponseDTO(deliveryProduct, Integer.parseInt(productService.getById(deliveryProduct.getProductId()).quantity()));
+                })
+                .toList();
+
+        return new DeliveryProductsResponseDTO(deliveryEntity, deliveryProductsResponse);
     }
 
+    @Transactional
+    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
+        DeliveryEntity delivery = this.findById(id);
+
+        delivery.setStatus(DeliveryStatus.ACTIVE.getStatus());
+
+        this.repository.save(delivery);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     private void validateUserType(UserEntity driver) {
         boolean isADriver = driver.getRole().equalsIgnoreCase(Role.DRIVER.getRole());
@@ -188,7 +211,29 @@ public class DeliveryService {
 
     public DeliveryProductsResponseDTO getById(UUID id) {
         DeliveryEntity delivery = findById(id);
-        return new DeliveryProductsResponseDTO(delivery, productService);
+
+        List<DeliveryProductResponseDTO> deliveryProductsResponse =  delivery
+                .getDeliveryProducts()
+                .stream()
+                .map(deliveryProduct -> {
+                    return new DeliveryProductResponseDTO(deliveryProduct, Integer.parseInt(productService.getById(deliveryProduct.getProductId()).quantity()));
+                })
+                .toList();
+        VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
+
+        Optional<ChecklistEntity> checklist = this.checklistService.findByVehicleId(vehicle.getId());
+
+        return checklist.map(checklistEntity ->
+                new DeliveryProductsResponseDTO(
+                        delivery,
+                        deliveryProductsResponse,
+                        checklistEntity.getCreationDt().toString(),
+                        checklistEntity.getEmployeeId()
+                )
+        ).orElseGet(() ->
+                new DeliveryProductsResponseDTO(delivery, deliveryProductsResponse)
+        );
+
     }
 
     private DeliveryEntity findById(UUID id) {

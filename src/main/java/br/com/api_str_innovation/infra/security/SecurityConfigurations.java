@@ -90,7 +90,6 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PATCH, "/vehicle/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/checklist/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasAnyRole("ADMIN", "SHIPPING")
                         .anyRequest().authenticated()
                 )
