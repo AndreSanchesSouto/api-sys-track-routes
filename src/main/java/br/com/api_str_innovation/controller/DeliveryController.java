@@ -79,4 +79,9 @@ public class DeliveryController {
     public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
         return this.service.patchStartDelivery(id);
     }
+
+    @PatchMapping("/inactive/{id}")
+    public ResponseEntity<Void> inactiveDelivery(@PathVariable UUID id) {
+        return this.service.inactiveDelivery(id);
+    }
 }

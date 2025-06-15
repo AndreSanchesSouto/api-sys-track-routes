@@ -135,6 +135,8 @@ public class DeliveryService {
     @Transactional
     public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
         DeliveryEntity deliveryEntity = findById(id);
+        if(deliveryEntity.getStatus().equals(DeliveryStatus.INACTIVE.getStatus()))
+            throw new DeliveryException("Entrega inativa");
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
 
@@ -186,6 +188,32 @@ public class DeliveryService {
 
         this.repository.save(delivery);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> inactiveDelivery(UUID id) {
+        DeliveryEntity delivery = this.findById(id);
+
+        VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
+        this.vehicleService.patchStatus(vehicle.getId(), VehicleStatus.WAITING);
+
+        UserEntity driver = this.userService.findById(delivery.getDriver().getId());
+        this.userService.patchStatus(driver.getId(), UserStatus.ACTIVE);
+
+        List<DeliveryProductEntity> deliveryProducts = delivery.getDeliveryProducts();
+        deliveryProducts.forEach(
+                (deliveryProduct) ->
+                        this.productService.receiveReturnedProducts(
+                                deliveryProduct.getProductId(),
+                                deliveryProduct.getQuantity()
+                        )
+        );
+
+        delivery.setStatus(DeliveryStatus.INACTIVE.getStatus());
+
+        this.repository.save(delivery);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     private void validateUserType(UserEntity driver) {

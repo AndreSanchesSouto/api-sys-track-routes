@@ -4,6 +4,7 @@ public enum DeliveryStatus {
     WAITING("waiting"),
     ACTIVE("active"),
     ON_ROAD("on_road"),
+    INACTIVE("inactive"),
     COMING_BACK("coming_back");
 
     private String status;
