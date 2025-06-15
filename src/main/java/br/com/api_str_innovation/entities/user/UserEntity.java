@@ -109,6 +109,10 @@ public class UserEntity implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_SHIPPING"),
                     new SimpleGrantedAuthority("ROLE_USER")
             );
+            case "DRIVER" -> List.of(
+                    new SimpleGrantedAuthority("ROLE_DRIVER"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
             default -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
         };
     }
