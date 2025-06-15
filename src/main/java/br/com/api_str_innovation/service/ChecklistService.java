@@ -52,13 +52,10 @@ public class ChecklistService {
 //    }
 
     public ChecklistResponseDTO getByVehicleId(UUID vehicleId) {
-        ChecklistEntity checklist = this.checklistRepository
+        return this.checklistRepository
                 .findChecklistsByVehicleId(vehicleId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Checklist not found")
-                );
-
-        return new ChecklistResponseDTO(checklist);
+                .map(ChecklistResponseDTO::new)
+                .orElse(null);
     }
 
     public ChecklistEntity getById(@PathVariable UUID id) {

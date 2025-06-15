@@ -24,7 +24,8 @@ public class ChecklistController {
 
     @GetMapping("/get-by-vehicle-id/{vehicleId}")
     public ResponseEntity<ChecklistResponseDTO> getByVehicleId(@PathVariable UUID vehicleId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.getByVehicleId(vehicleId));
+        ChecklistResponseDTO checklist = this.service.getByVehicleId(vehicleId);
+        return ResponseEntity.ok(checklist);
     }
 
     @DeleteMapping("/{id}")
