@@ -14,8 +14,7 @@ public record VehicleResponseDTO(UUID id,
                                  String yearDt,
                                  VehicleStatus status,
                                  LocalDateTime createdDt,
-                                 LocalDateTime inactivatedDt
-) {
+                                 LocalDateTime inactivatedDt) {
     public VehicleResponseDTO(VehicleEntity vehicle) {
         this(vehicle.getId(),
                 vehicle.getLicensePlateNumber(),
@@ -25,7 +24,6 @@ public record VehicleResponseDTO(UUID id,
                 vehicle.getYearDt(),
                 VehicleStatus.valueOf(vehicle.getStatus().toUpperCase()),
                 vehicle.getCreatedDt(),
-                vehicle.getInactivatedDt()
-        );
+                vehicle.getInactivatedDt());
     }
 }
