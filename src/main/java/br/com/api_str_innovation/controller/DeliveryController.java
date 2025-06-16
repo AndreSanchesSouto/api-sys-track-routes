@@ -24,7 +24,7 @@ import java.util.UUID;
 public class DeliveryController {
 
     @Autowired
-    DeliveryService service;
+    private DeliveryService service;
 
     @PostMapping
     public ResponseEntity<DeliveryResponseDTO> post(

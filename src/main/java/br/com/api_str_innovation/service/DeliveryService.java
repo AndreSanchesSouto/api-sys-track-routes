@@ -1,6 +1,5 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
@@ -26,13 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +59,9 @@ public class DeliveryService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private DeliveryProductService deliveryProductService;
+
     public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId) {
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
@@ -90,6 +90,9 @@ public class DeliveryService {
             deliveryProduct.setDelivery(delivery);
 
             deliveryProducts.add(deliveryProduct);
+
+            Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
+            this.productService.updateProductQuantity(product.getId(), actualQuantity);
         }
         delivery.setDeliveryProducts(deliveryProducts);
 
@@ -135,11 +138,11 @@ public class DeliveryService {
     @Transactional
     public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
         DeliveryEntity deliveryEntity = findById(id);
-        if(deliveryEntity.getStatus().equals(DeliveryStatus.INACTIVE.getStatus()))
+        if(deliveryEntity.getStatus().equals(DeliveryStatus.INACTIVE.getStatus())) {
             throw new DeliveryException("Entrega inativa");
+        }
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
-
         this.validateAddressToClient(client, address);
 
         UserEntity driver = this.userService.findById(data.driverId());
@@ -149,27 +152,40 @@ public class DeliveryService {
 
         deliveryEntity.setClient(client);
         deliveryEntity.setAddress(address);
-        deliveryEntity.setStatus(VehicleStatus.ACTIVE.getStatus());
         deliveryEntity.setVehicle(vehicle);
         deliveryEntity.setDriver(driver);
-        deliveryEntity.getDeliveryProducts().clear();
 
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
-            DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
+            Optional<DeliveryProductEntity> deliveryProductEntity = this.deliveryProductService.getByDeliveryIdAndProductId(
+                    deliveryEntity.getId(),
+                    product.getId()
+            );
 
-            deliveryProduct.setDelivery(deliveryEntity);
+            if(deliveryProductEntity.isPresent()) {
+                Integer actualQuantity = this.recalculateProductsQuantity(
+                        product.getQuantity(),
+                        productDTO.quantity(),
+                        deliveryProductEntity.get().getQuantity()
+                );
+                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+                this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.get().getId(), productDTO.quantity());
+            } else {
+                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
+                deliveryProduct.setDelivery(deliveryEntity);
+                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
+                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
+                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+            }
 
-            deliveryEntity.getDeliveryProducts().add(deliveryProduct);
         }
-
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
         vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 
         this.repository.save(deliveryEntity);
 
-        List<DeliveryProductResponseDTO> deliveryProductsResponse =  deliveryEntity
+        List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
                 .getDeliveryProducts()
                 .stream()
                 .map(deliveryProduct -> {
@@ -179,6 +195,19 @@ public class DeliveryService {
 
         return new DeliveryProductsResponseDTO(deliveryEntity, deliveryProductsResponse);
     }
+
+    public Integer recalculateProductsQuantity(Integer productActualQuantity, Integer productNewQuantity, Integer productOldQuantity) {
+        if(productActualQuantity < productNewQuantity) {
+            throw new DeliveryException("Quantidade de produtos cadastrados inferior a desejada");
+        }
+        int difference = productOldQuantity - productNewQuantity;
+        if(difference > 0) {
+            return productActualQuantity + Math.abs(difference);
+        } else {
+            return productActualQuantity - Math.abs(difference);
+        }
+    }
+
 
     @Transactional
     public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {

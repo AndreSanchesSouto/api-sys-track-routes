@@ -2,6 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.product.ProductRequestDTO;
 import br.com.api_str_innovation.dto.product.ProductResponseDTO;
+import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.exceptions.ProductException;
 import br.com.api_str_innovation.repository.ProductRepository;
@@ -92,6 +93,13 @@ public class ProductService {
 //    }
 
     @Transactional
+    public void updateProductQuantity(UUID id, Integer actualQuantity) {
+        ProductEntity product = this.findById(id);
+        product.setQuantity(actualQuantity);
+        this.repository.save(product);
+    }
+
+    @Transactional
     public ProductResponseDTO patch(@PathVariable UUID id, @RequestBody ProductRequestDTO data) {
         ProductEntity product = findById(id);
 
@@ -125,7 +133,6 @@ public class ProductService {
         product.setQuantity(product.getQuantity() + quantity);
         this.repository.save(product);
     }
-
 
     @Transactional
     public void inactivate(UUID id) {
