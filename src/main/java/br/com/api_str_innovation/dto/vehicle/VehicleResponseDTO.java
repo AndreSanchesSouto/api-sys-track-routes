@@ -1,7 +1,5 @@
 package br.com.api_str_innovation.dto.vehicle;
 
-
-import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 
@@ -15,19 +13,16 @@ public record VehicleResponseDTO(UUID id,
                                  String brand,
                                  String yearDt,
                                  VehicleStatus status,
-                                 ChecklistEntity checklist,
                                  LocalDateTime createdDt,
                                  LocalDateTime inactivatedDt) {
-
     public VehicleResponseDTO(VehicleEntity vehicle) {
-        this (vehicle.getId(),
+        this(vehicle.getId(),
                 vehicle.getLicensePlateNumber(),
                 vehicle.getSideNumber(),
                 vehicle.getModel(),
                 vehicle.getBrand(),
                 vehicle.getYearDt(),
                 VehicleStatus.valueOf(vehicle.getStatus().toUpperCase()),
-                vehicle.getChecklist(),
                 vehicle.getCreatedDt(),
                 vehicle.getInactivatedDt());
     }
