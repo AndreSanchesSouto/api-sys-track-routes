@@ -4,7 +4,7 @@ public enum DeliveryStatus {
     WAITING("waiting"),
     ACTIVE("active"),
     ON_ROAD("on_road"),
-    INACTIVE("inactive"),
+    CANCELED("CANCELED"),
     CONFIRMED("confirmed"),
     COMING_BACK("coming_back");
 

@@ -173,7 +173,7 @@ public class DeliveryService {
     @Transactional
     public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
         DeliveryEntity deliveryEntity = findById(id);
-        if(deliveryEntity.getStatus().equals(DeliveryStatus.INACTIVE.getStatus())) {
+        if(deliveryEntity.getStatus().equals(DeliveryStatus.CANCELED.getStatus())) {
             throw new DeliveryException("Entrega inativa");
         }
         ClientEntity client = this.clientService.getById(data.clientId());
@@ -234,9 +234,18 @@ public class DeliveryService {
     @Transactional
     public ResponseEntity<Void> registerConfirm(UUID id) {
         DeliveryEntity delivery = this.findById(id);
+
+        VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
+        this.vehicleService.patchStatus(vehicle.getId(), VehicleStatus.WAITING);
+
+        UserEntity driver = this.userService.findById(delivery.getDriver().getId());
+        this.userService.patchStatus(driver.getId(), UserStatus.ACTIVE);
+
         delivery.setStatus(DeliveryStatus.CONFIRMED.getStatus());
-        repository.save(delivery);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        this.repository.save(delivery);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 
@@ -282,7 +291,7 @@ public class DeliveryService {
                         )
         );
 
-        delivery.setStatus(DeliveryStatus.INACTIVE.getStatus());
+        delivery.setStatus(DeliveryStatus.CANCELED.getStatus());
 
         this.repository.save(delivery);
 

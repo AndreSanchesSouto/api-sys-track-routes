@@ -52,7 +52,6 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PUT, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PATCH, "/delivery", "/delivery/inactive/*").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/delivery/page").hasAnyRole("ADMIN", "SHIPPING")
 
                         .requestMatchers(HttpMethod.GET, "/clients").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/clients/available").hasRole("ADMIN")

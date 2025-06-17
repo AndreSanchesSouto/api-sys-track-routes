@@ -77,7 +77,7 @@ public class DeliveryController {
 
     @PatchMapping("/{id}/register-confirm")
     public ResponseEntity<Void> registerConfirm(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.registerConfirm(id));
+        return this.service.registerConfirm(id);
     }
 
     @PatchMapping("/start-delivery/{id}")
@@ -85,7 +85,7 @@ public class DeliveryController {
         return this.service.patchStartDelivery(id);
     }
 
-    @PatchMapping("/inactive/{id}")
+    @PatchMapping("{id}/inactive")
     public ResponseEntity<Void> inactiveDelivery(@PathVariable UUID id) {
         return this.service.inactiveDelivery(id);
     }
