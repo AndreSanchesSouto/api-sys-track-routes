@@ -232,10 +232,11 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void registerConfirm(UUID id) {
+    public ResponseEntity<Void> registerConfirm(UUID id) {
         DeliveryEntity delivery = this.findById(id);
         delivery.setStatus(DeliveryStatus.CONFIRMED.getStatus());
         repository.save(delivery);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
