@@ -2,6 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.product.ProductRequestDTO;
 import br.com.api_str_innovation.dto.product.ProductResponseDTO;
+import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.exceptions.ProductException;
 import br.com.api_str_innovation.repository.ProductRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,6 +93,13 @@ public class ProductService {
 //    }
 
     @Transactional
+    public void updateProductQuantity(UUID id, Integer actualQuantity) {
+        ProductEntity product = this.findById(id);
+        product.setQuantity(actualQuantity);
+        this.repository.save(product);
+    }
+
+    @Transactional
     public ProductResponseDTO patch(@PathVariable UUID id, @RequestBody ProductRequestDTO data) {
         ProductEntity product = findById(id);
 
@@ -117,6 +126,13 @@ public class ProductService {
 //        repository.save(user);
 //
 //    }
+
+    @Transactional
+    public void receiveReturnedProducts(UUID id, Integer quantity) {
+        ProductEntity product = this.findById(id);
+        product.setQuantity(product.getQuantity() + quantity);
+        this.repository.save(product);
+    }
 
     @Transactional
     public void inactivate(UUID id) {

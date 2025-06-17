@@ -2,6 +2,7 @@ package br.com.api_str_innovation.dto.delivery;
 
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
+import br.com.api_str_innovation.entities.delivery.DeliveryStatus;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 public record DeliveryGenericResponseDTO(
          UUID id,
-         VehicleStatus status,
+         DeliveryStatus status,
          Integer deliveryRequest,
          ClientEntity client,
          VehicleEntity vehicle,
@@ -26,7 +27,7 @@ public record DeliveryGenericResponseDTO(
     public DeliveryGenericResponseDTO(DeliveryEntity data) {
         this(
                 data.getId(),
-                VehicleStatus.valueOf(data.getStatus().toUpperCase()),
+                DeliveryStatus.valueOf(data.getStatus().toUpperCase()),
                 data.getDeliveryRequest(),
                 data.getClient(),
                 data.getVehicle(),
