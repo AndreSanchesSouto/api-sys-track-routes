@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthorizationService implements UserDetailsService {
 
@@ -28,9 +30,15 @@ public class AuthorizationService implements UserDetailsService {
         return findByLogin(username);
     }
 
+    public Optional<UserEntity> verifyUserAndPassword(String login, String password) {
+        String hashPassword = Encrypter.encrypt(password);
+        return repository.authIdentity(login, hashPassword);
+    }
+
     public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
-        String hashPassword = Encrypter.encrypt(credentials.password());
-        UserEntity employee = repository.authIdentity(credentials.login(), hashPassword);
+        UserEntity employee = this
+                .verifyUserAndPassword(credentials.login(), credentials.password())
+                .orElseThrow( () -> new UserException("Usuário não encontrado"));
 
         if(employee == null) {
             verifyUserRegistered(credentials.login());
@@ -42,7 +50,7 @@ public class AuthorizationService implements UserDetailsService {
     }
 
     private void verifyUserRegistered(String login) {
-        String error = repository.findByLogin(login) != null ?
+        String error = repository.findByLogin(login).isPresent() ?
                 "Senha incorreta" :
                 "Usuário não cadastrado";
         throw new UserException(error);
