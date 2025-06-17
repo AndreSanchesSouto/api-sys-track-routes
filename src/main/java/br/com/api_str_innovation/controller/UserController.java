@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.controller;
 
+import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
@@ -76,8 +77,13 @@ public class UserController {
     }
 
     @PostMapping("/period-of-creation")
-    ResponseEntity<List<Object[]>> periodOfCreation(@Valid @RequestBody PeriodTimeRequestDTO data) {
+    public ResponseEntity<List<Object[]>> periodOfCreation(@Valid @RequestBody PeriodTimeRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
+    }
+
+    @PatchMapping("/{id}/change-employee-password")
+    public ResponseEntity<Void> changeEmployeePassword(@PathVariable UUID id, @Valid @RequestBody UserChangePasswordDTO data) {
+        return this.service.changeEmployeePassword(id, data);
     }
 
     @PatchMapping("/{id}")

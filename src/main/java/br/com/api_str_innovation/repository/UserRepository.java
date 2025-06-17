@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserDetails> findUserDetailsByLogin(@Param("login") String login);
 
     @Query("SELECT u FROM UserEntity u WHERE u.login = :login AND u.password = :password")
-    UserEntity authIdentity(@Param("login") String login, @Param("password") String password);
+    Optional<UserEntity> authIdentity(@Param("login") String login, @Param("password") String password);
 
     @Query("SELECT u FROM UserEntity u WHERE u.inactivatedDt IS NULL AND u.generalManagerId = :generalManagerId")
     Page<UserEntity> findActiveUsers(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
@@ -74,6 +74,5 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     );
 
     Optional<UserEntity> findByDocument(String document);
-
 
 }

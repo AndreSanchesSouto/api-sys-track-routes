@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
@@ -8,6 +9,7 @@ import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.infra.security.Encrypter;
 import br.com.api_str_innovation.repository.UserRepository;
 import io.micrometer.common.lang.Nullable;
 import jakarta.transaction.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +35,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private AuthorizationService authorizationService;
 
     public UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
@@ -135,6 +141,26 @@ public class UserService {
 
     public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO) {
         return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
+    }
+
+    public ResponseEntity<Void> changeEmployeePassword(UUID id, UserChangePasswordDTO data) {
+        if(!data.newEmployeePassword().equals(data.newEmployeePasswordConfirmation())) throw new UserException("As senhas não são correspondentes");
+        UserEntity employee = this.findById(id);
+        UserEntity generalManager = this.findById(employee.getGeneralManagerId());
+
+        String hashPassword = Encrypter.encrypt(data.generalManagerPassword());
+        if(repository.authIdentity(generalManager.getLogin(), hashPassword).isEmpty()){
+            throw new UserException("Senha do administrador incorreta");
+        }
+
+        this.patchPassword(employee, Encrypter.encrypt(data.newEmployeePassword()));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public void patchPassword(UserEntity user, String password) {
+        user.setPassword(password);
+        this.repository.save(user);
     }
 
     @Transactional
