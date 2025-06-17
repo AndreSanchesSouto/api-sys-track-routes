@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -104,7 +105,41 @@ public class DeliveryService {
 
     public ResponseEntity<DeliveryLocationDTO> getDriverLocation(UUID id) {
         LocationProjection location = this.repository.findLocationFromDriver(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new DeliveryLocationDTO(location.getLatitude(), location.getLongitude()));
+        return ResponseEntity.status(HttpStatus.OK).body(new DeliveryLocationDTO(
+                location.getLatitude(),
+                location.getLongitude(),
+                this.haversineDistance(
+                            location.getLatitude().doubleValue(),
+                            location.getLongitude().doubleValue(),
+                            this.getLatitudeDeliveryDestination(id).doubleValue(),
+                            this.getLongitudeDeliveryDestination(id).doubleValue()
+                        )
+                ));
+    }
+
+    public BigDecimal getLatitudeDeliveryDestination(UUID id) {
+        DeliveryEntity delivery = this.findById(id);
+        return delivery.getAddress().getLatitude();
+    }
+
+    public BigDecimal getLongitudeDeliveryDestination(UUID id) {
+        DeliveryEntity delivery = this.findById(id);
+        return delivery.getAddress().getLongitude();
+    }
+
+    private boolean haversineDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371;
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return (R * c) < 1;
     }
 
     @Transactional
@@ -195,6 +230,14 @@ public class DeliveryService {
 
         return new DeliveryProductsResponseDTO(deliveryEntity, deliveryProductsResponse);
     }
+
+    @Transactional
+    public void registerConfirm(UUID id) {
+        DeliveryEntity delivery = this.findById(id);
+        delivery.setStatus(DeliveryStatus.CONFIRMED.getStatus());
+        repository.save(delivery);
+    }
+
 
     public Integer recalculateProductsQuantity(Integer productActualQuantity, Integer productNewQuantity, Integer productOldQuantity) {
         if(productActualQuantity < productNewQuantity) {

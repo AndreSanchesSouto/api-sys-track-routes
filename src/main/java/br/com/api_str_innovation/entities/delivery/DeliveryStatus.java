@@ -5,6 +5,7 @@ public enum DeliveryStatus {
     ACTIVE("active"),
     ON_ROAD("on_road"),
     INACTIVE("inactive"),
+    CONFIRMED("confirmed"),
     COMING_BACK("coming_back");
 
     private String status;

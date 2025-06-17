@@ -75,6 +75,11 @@ public class DeliveryController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
     }
 
+    @PatchMapping("/{id}/register-confirm")
+    public ResponseEntity<DeliveryProductsResponseDTO> registerConfirm(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.registerConfirm(id));
+    }
+
     @PatchMapping("/start-delivery/{id}")
     public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
         return this.service.patchStartDelivery(id);
