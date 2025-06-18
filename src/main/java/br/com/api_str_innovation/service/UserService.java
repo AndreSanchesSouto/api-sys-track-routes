@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -146,7 +147,7 @@ public class UserService {
     public ResponseEntity<Void> changeEmployeePassword(UUID id, UserChangePasswordDTO data) {
         if(!data.newEmployeePassword().equals(data.newEmployeePasswordConfirmation())) throw new UserException("As senhas não são correspondentes");
         UserEntity employee = this.findById(id);
-        UserEntity generalManager = this.findById(employee.getGeneralManagerId());
+        UserEntity generalManager = employee.getGeneralManagerId() == null ? employee : this.findById(employee.getGeneralManagerId());
 
         String hashPassword = Encrypter.encrypt(data.generalManagerPassword());
         if(repository.authIdentity(generalManager.getLogin(), hashPassword).isEmpty()){
@@ -164,7 +165,7 @@ public class UserService {
     }
 
     @Transactional
-    public void patch(@PathVariable UUID id, @RequestBody UserUpdateRequestDTO data) {
+    public ResponseEntity<Void> patch(@PathVariable UUID id, @RequestBody UserUpdateRequestDTO data) {
         UserEntity user = findById(id);
 
         Optional<UserEntity> emailExists = repository.findByEmail(data.email());
@@ -182,6 +183,7 @@ public class UserService {
         user.setLogin(data.login());
         user.setStatus(data.status().getStatus());
         repository.save(user);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @Transactional
