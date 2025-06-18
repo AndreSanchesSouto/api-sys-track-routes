@@ -40,6 +40,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/user/page").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/user/search/name").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/user/count").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.GET, "/user/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/period-of-creation").hasRole("ADMIN")
@@ -87,7 +88,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/vehicle").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/vehicle/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/vehicle/*").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasAnyRole("ADMIN", "SHIPPING")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -102,10 +105,7 @@ public class SecurityConfigurations {
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "http://vc00w04w8wggoccw840k8o00.178.156.184.107.sslip.io",
-                "http://localhost:5173")
-        );
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "general-manager-id", "user-id"));
         configuration.setAllowCredentials(true);

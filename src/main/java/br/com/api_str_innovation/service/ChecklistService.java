@@ -3,6 +3,7 @@ package br.com.api_str_innovation.service;
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequestDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistFieldOptions;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
@@ -269,8 +270,12 @@ public class ChecklistService {
         checklistRepository.deleteById(id);
     }
 
-    public List<Object[]> countKmDriven(UUID vehicleId, ChecklistLogRequestDTO data) {
-        return checklistLogRepository.countKmDriven(vehicleId, data.startDate(), data.endDate());
+    public List<Object[]> countKmDriven(UUID vehicleId, PeriodTimeRequestDTO data) {
+        return checklistLogRepository.countKmDriven(vehicleId, data.from(), data.to());
+    }
+
+    public List<Object[]> getDetailedKmSegments(UUID vehicleId, PeriodTimeRequestDTO data) {
+        return checklistLogRepository.getDetailedKmSegments(vehicleId, data.from(), data.to());
     }
 
     public List<Object[]> countChecklistStatusVehicleActive(ChecklistLogRequestDTO data) {

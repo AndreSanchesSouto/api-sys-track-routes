@@ -12,52 +12,48 @@ import java.util.UUID;
 
 @Repository
 public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity, UUID> {
-    @Query(value = "WITH vehicle_km_log AS ( " +
+    @Query(value = "WITH km_differences AS ( " +
             "    SELECT " +
-            "        c.vehicle_id, " +
-            "        c.kilometers_number, " +
-            "        LAG(c.kilometers_number) OVER (PARTITION BY c.vehicle_id ORDER BY c.created_dt) AS previous_kilometers, " +
-            "        c.created_dt " +
+            "        EXTRACT(YEAR FROM c.created_dt) AS year, " +
+            "        EXTRACT(MONTH FROM c.created_dt) AS month, " +
+            "        COALESCE(CAST(c.kilometers_number AS NUMERIC) - LAG(CAST(c.kilometers_number AS NUMERIC)) OVER (ORDER BY c.created_dt), 0) AS km_diff " +
             "    FROM " +
             "        checklist_log c " +
             "    WHERE " +
             "        c.vehicle_id = :vehicleId " +
-            "        AND c.created_dt BETWEEN :startDate AND :endDate " +
-            ") " +
-            ", filtered_km_log AS ( " +
-            "    SELECT " +
-            "        EXTRACT(YEAR FROM created_dt) AS year, " +
-            "        EXTRACT(MONTH FROM created_dt) AS month, " +
-            "        ROW_NUMBER() OVER (PARTITION BY EXTRACT(YEAR FROM created_dt), EXTRACT(MONTH FROM created_dt) ORDER BY created_dt) AS rn, " +
-            "        kilometers_number, " +
-            "        previous_kilometers " +
-            "    FROM " +
-            "        vehicle_km_log " +
-            ") " +
-            ", monthly_km_log AS ( " +
-            "    SELECT " +
-            "        year, " +
-            "        month, " +
-            "        SUM(CASE WHEN rn > 1 THEN COALESCE(kilometers_number - previous_kilometers, 0) ELSE 0 END) AS kilometers_diff " +
-            "    FROM " +
-            "        filtered_km_log " +
-            "    WHERE " +
-            "        previous_kilometers IS NOT NULL " +
-            "    GROUP BY " +
-            "        year, " +
-            "        month " +
+            "        AND c.created_dt BETWEEN :from AND :to " +
             ") " +
             "SELECT " +
             "    year, " +
             "    month, " +
-            "    kilometers_diff AS total_kilometers " +
+            "    SUM(km_diff) AS total_kilometers " +
             "FROM " +
-            "    monthly_km_log " +
+            "    km_differences " +
+            "GROUP BY " +
+            "    year, month " +
             "ORDER BY " +
             "    year, month", nativeQuery = true)
     List<Object[]> countKmDriven(@Param("vehicleId") UUID vehicleId,
-                                 @Param("startDate") LocalDate startDate,
-                                 @Param("endDate") LocalDate endDate);
+                                 @Param("from") LocalDate from,
+                                 @Param("to") LocalDate to);
+
+    @Query(value = "SELECT " +
+            "    c.id, " +
+            "    c.created_dt, " +
+            "    CAST(c.kilometers_number AS NUMERIC) AS current_km, " +
+            "    LAG(CAST(c.kilometers_number AS NUMERIC)) OVER (ORDER BY c.created_dt) AS previous_km, " +
+            "    COALESCE(CAST(c.kilometers_number AS NUMERIC) - LAG(CAST(c.kilometers_number AS NUMERIC)) OVER (ORDER BY c.created_dt), 0) AS km_traveled, " +
+            "    EXTRACT(EPOCH FROM (c.created_dt - LAG(c.created_dt) OVER (ORDER BY c.created_dt))) / 86400 AS days_between_checklists " +
+            "FROM " +
+            "    checklist_log c " +
+            "WHERE " +
+            "    c.vehicle_id = :vehicleId " +
+            "    AND c.created_dt BETWEEN :from AND :to " +
+            "ORDER BY " +
+            "    c.created_dt", nativeQuery = true)
+    List<Object[]> getDetailedKmSegments(@Param("vehicleId") UUID vehicleId,
+                                         @Param("from") LocalDate from,
+                                         @Param("to") LocalDate to);
 
     @Query("SELECT EXTRACT(YEAR FROM c.createdDt) AS year, EXTRACT(MONTH FROM c.createdDt) AS month, COUNT(c) AS checklistCount " +
             "FROM ChecklistLogEntity c " +

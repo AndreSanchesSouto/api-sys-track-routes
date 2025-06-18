@@ -98,6 +98,14 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             @Param("to") LocalDate to,
             @Param("generalManagerId") UUID generalManagerId);
 
+    @Query(""" 
+            SELECT d.name, d.login, d.role, EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month
+            FROM UserEntity d
+            WHERE d.createdDt BETWEEN :from AND :to
+            ORDER BY d.createdDt
+            """)
+    List<Object[]> periodTimeUsers(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
     Optional<UserEntity> findByEmail(String email);
 
     @Query(value = """
