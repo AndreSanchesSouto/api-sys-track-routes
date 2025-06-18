@@ -14,6 +14,5 @@ public record UserUpdateRequestDTO(
         @NotBlank
         String login,
         String password,
-        @NotNull
         UserStatus status
 ) {}

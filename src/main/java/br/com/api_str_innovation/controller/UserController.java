@@ -81,15 +81,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
     }
 
-    @PatchMapping("/{id}/change-employee-password")
+    @PatchMapping("/{id}/change-password")
     public ResponseEntity<Void> changeEmployeePassword(@PathVariable UUID id, @Valid @RequestBody UserChangePasswordDTO data) {
         return this.service.changeEmployeePassword(id, data);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> patch(@PathVariable UUID id, @Valid @RequestBody UserUpdateRequestDTO data) {
+    public ResponseEntity<Void> patch(@PathVariable UUID id, @Valid @RequestBody UserUpdateRequestDTO data) {
         this.service.patch(id, data);
-        return ResponseEntity.status(HttpStatus.OK).body("Atualizado");
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
