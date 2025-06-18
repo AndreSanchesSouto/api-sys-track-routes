@@ -40,7 +40,6 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/user/page").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/user/search/name").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/user/count").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/user/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/period-of-creation").hasRole("ADMIN")

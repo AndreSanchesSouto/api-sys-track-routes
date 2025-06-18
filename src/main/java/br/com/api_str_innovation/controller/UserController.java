@@ -62,12 +62,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> post(
+    public ResponseEntity<Void> post(
             @Valid @RequestBody UserRequestDTO data,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         this.service.post(data, generalManagerId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Criado");
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -82,14 +82,14 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/change-password")
-    public ResponseEntity<Void> changeEmployeePassword(@PathVariable UUID id, @Valid @RequestBody UserChangePasswordDTO data) {
-        return this.service.changeEmployeePassword(id, data);
+    public ResponseEntity<Void> changeUserPassword(@PathVariable UUID id, @Valid @RequestBody UserChangePasswordDTO data) {
+        return this.service.changeUserPassword(id, data);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> patch(@PathVariable UUID id, @Valid @RequestBody UserUpdateRequestDTO data) {
         this.service.patch(id, data);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

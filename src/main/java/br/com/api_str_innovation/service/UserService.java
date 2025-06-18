@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -144,18 +146,47 @@ public class UserService {
         return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
     }
 
-    public ResponseEntity<Void> changeEmployeePassword(UUID id, UserChangePasswordDTO data) {
+    public ResponseEntity<Void> changeUserPassword(UUID id, UserChangePasswordDTO data) {
         if(!data.newEmployeePassword().equals(data.newEmployeePasswordConfirmation())) throw new UserException("As senhas não são correspondentes");
-        UserEntity employee = this.findById(id);
-        UserEntity generalManager = employee.getGeneralManagerId() == null ? employee : this.findById(employee.getGeneralManagerId());
 
-        String hashPassword = Encrypter.encrypt(data.generalManagerPassword());
-        if(repository.authIdentity(generalManager.getLogin(), hashPassword).isEmpty()){
-            throw new UserException("Senha do administrador incorreta");
+        UserEntity targetUser = this.findById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedUsername = authentication.getName();
+        UserEntity actualUser = this.getByLogin(authenticatedUsername);
+
+        return actualUser.getRole().equals(Role.GENERAL_MANAGER.getRole()) ?
+                generalManagerChangePassword(data, targetUser, actualUser) :
+                employeeChangePassword(data, targetUser, actualUser);
+
+
+    }
+
+    private ResponseEntity<Void> generalManagerChangePassword(UserChangePasswordDTO data, UserEntity target, UserEntity actualUser) {
+        String hashPassword = Encrypter.encrypt(data.userPassword());
+        if(repository.authIdentity(actualUser.getLogin(), hashPassword).isEmpty()){
+            throw new UserException("Sua senha está incorreta");
         }
 
-        this.patchPassword(employee, Encrypter.encrypt(data.newEmployeePassword()));
+        this.patchPassword(target, Encrypter.encrypt(data.newEmployeePassword()));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private ResponseEntity<Void> employeeChangePassword(UserChangePasswordDTO data, UserEntity target, UserEntity actualUser) {
+        if (!actualUser.getRole().equals(Role.GENERAL_MANAGER.toString()) && !actualUser.getId().equals(target.getId())) {
+            throw new UserException("Você não tem permissão para alterar a senha de outro usuário");
+        }
+
+        String hashPassword = Encrypter.encrypt(data.userPassword());
+        if(repository.authIdentity(actualUser.getLogin(), hashPassword).isEmpty()){
+            throw new UserException("Sua senha está incorreta");
+        }
+
+        this.patchPassword(target, Encrypter.encrypt(data.newEmployeePassword()));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public UserEntity getByLogin(String login) {
+        return this.repository.findByLogin(login).orElseThrow(() -> new UserException("Login não encontrado"));
     }
 
     @Transactional

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -30,9 +31,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, NullPointerException {
         var token = this.recoverToken(request);
         if(token != null) {
-            var login = tokenService.validateToken(token);
+            var id = tokenService.validateToken(token);
             try {
-                UserDetails user = findByLogin(login);
+                UserDetails user = findById(id);
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (NullPointerException exception) {
@@ -48,8 +49,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ", "");
     }
 
-    private UserDetails findByLogin(String username) {
-        return repository.findUserDetailsByLogin(username).orElseThrow(
+    private UserDetails findById(String id) {
+        UUID uuid = UUID.fromString(id);
+        return repository.findUserDetailsById(uuid).orElseThrow(
                 () -> new TokenException("Access expired")
         );
     }

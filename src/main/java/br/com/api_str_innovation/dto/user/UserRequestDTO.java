@@ -21,6 +21,7 @@ public record UserRequestDTO(
             String login,
             @NotBlank
             String password,
+            String confirmPassword,
             UserStatus status,
             @NotNull
             Role role
