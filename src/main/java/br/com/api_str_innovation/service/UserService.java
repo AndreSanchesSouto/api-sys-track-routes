@@ -250,4 +250,7 @@ public class UserService {
         repository.save(user);
     }
 
+    public List<UserEntity> getAllDriversByGeneralManagerId(UUID generalManagerId) {
+        return this.repository.getAllDriversByGeneralManagerId(generalManagerId);
+    }
 }

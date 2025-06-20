@@ -353,4 +353,8 @@ public class DeliveryService {
                     new DeliveryException("Entrega não encontrada")
         );
     }
+
+    public List<DeliveryEntity> getAllByGeneralManagerId(UUID generalManagerId) {
+        return this.repository.getAllByGeneralManagerId(generalManagerId);
+    }
 }

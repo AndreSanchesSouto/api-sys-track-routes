@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -71,4 +72,17 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             """, nativeQuery = true)
     List<VehicleEntity> findAvailableVehicles(@Param("generalManagerId") UUID generalManagerId);
 
+    @Query(value = """
+            SELECT * FROM vehicle WHERE general_manager_id = :generalManagerId AND inactivated_dt IS NULL
+            """, nativeQuery = true)
+    List<VehicleEntity> getAllByGeneralManagerId(@Param("generalManagerId")UUID generalManagerId);
+
+    @Query(value = """
+            SELECT * FROM vehicle WHERE general_manager_id = :generalManagerId AND status = :status
+            """, nativeQuery = true)
+    Page<VehicleEntity> findByStatusAndGeneralManagerId(
+            @Param("status") String status,
+            @Param("generalManagerId")UUID generalManagerId,
+            Pageable pageable
+    );
 }

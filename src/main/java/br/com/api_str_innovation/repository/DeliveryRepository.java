@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.repository;
 
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.projections.LocationProjection;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -70,5 +71,8 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             @Param("driverId") UUID driverId,
             Pageable pageable
     );
-
+    @Query(value = """
+            SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId
+            """, nativeQuery = true)
+    List<DeliveryEntity> getAllByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
 }

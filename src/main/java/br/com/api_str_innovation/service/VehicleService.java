@@ -25,29 +25,29 @@ import java.util.UUID;
 public class VehicleService {
 
     @Autowired
-    private VehicleRepository vehicleRepository;
+    private VehicleRepository repository;
 
     public VehicleResponseDTO getById(UUID id) {
-        return vehicleRepository
+        return repository
                 .findById(id)
                 .map(VehicleResponseDTO::new)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
     }
 
     public VehicleEntity findById(UUID id) {
-        return vehicleRepository
+        return repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
     }
 
     private void existsPlateNumber(String licensePlateNumber) {
-        if (vehicleRepository.findByLicensePlateNumber(licensePlateNumber).isPresent() ) {
+        if (repository.findByLicensePlateNumber(licensePlateNumber).isPresent() ) {
             throw new VehicleException(String.format("A placa '%s' já está em uso.", licensePlateNumber));
         }
     }
 
     public List<VehicleResponseDTO> getAll() {
-        return vehicleRepository
+        return repository
                 .findAll()
                 .stream()
                 .map(VehicleResponseDTO::new)
@@ -55,7 +55,7 @@ public class VehicleService {
     }
 
     public List<VehicleResponseDTO> findAvailableVehicles(UUID generalManagerId) {
-        return vehicleRepository
+        return repository
                 .findAvailableVehicles(generalManagerId)
                 .stream()
                 .map(VehicleResponseDTO::new)
@@ -63,7 +63,7 @@ public class VehicleService {
     }
 
     public Integer count(UUID generalManagerId) {
-        return vehicleRepository
+        return repository
                 .findActiveVehicles(generalManagerId)
                 .toArray()
                 .length;
@@ -71,21 +71,28 @@ public class VehicleService {
 
     @GetMapping(value = "/page")
     public Page<VehicleResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
-        return vehicleRepository
+        return repository
                 .findActiveVehicles(pageable, generalManagerId)
                 .map(VehicleResponseDTO::new);
     }
 
+    public Page<VehicleResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
+
+            return repository
+                    .findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
+                    .map(VehicleResponseDTO::new);
+    }
+
     @GetMapping(value = "/search/license-plate")
     public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber, UUID generalManagerId) {
-        return vehicleRepository
+        return repository
                 .findSearchedVehicles(pageable, licensePlateNumber, generalManagerId)
                 .map(VehicleResponseDTO::new);
     }
 
     public void post(@Valid VehicleRequestDTO data, UUID generalManagerId) {
         existsPlateNumber(data.licensePlateNumber());
-        vehicleRepository.save(new VehicleEntity(data, generalManagerId));
+        repository.save(new VehicleEntity(data, generalManagerId));
     }
 
     @Transactional
@@ -98,7 +105,7 @@ public class VehicleService {
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicleRepository.save(vehicle);
+        repository.save(vehicle);
 
         return new VehicleResponseDTO(vehicle);
     }
@@ -112,7 +119,7 @@ public class VehicleService {
         vehicle.setModel(data.model());
         vehicle.setBrand(data.brand());
         vehicle.setYearDt(data.yearDt());
-        vehicleRepository.save(vehicle);
+        repository.save(vehicle);
 
         return new VehicleResponseDTO(vehicle);
     }
@@ -126,14 +133,18 @@ public class VehicleService {
         }
 
         vehicle.setInactivatedDt(LocalDateTime.now());
-        vehicleRepository.save(vehicle);
+        repository.save(vehicle);
     }
 
     @Transactional
     public void patchStatus(UUID id, VehicleStatus status) {
         VehicleEntity vehicle = findById(id);
         vehicle.setStatus(status.getStatus());
-        vehicleRepository.save(vehicle);
+        repository.save(vehicle);
+    }
+
+    public List<VehicleEntity> getAllByGeneralManagerId(UUID generalManagerId) {
+        return this.repository.getAllByGeneralManagerId(generalManagerId);
     }
 }
 

@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.repository;
 
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -75,4 +76,11 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     Optional<UserEntity> findByDocument(String document);
 
+    @Query(value = """
+            SELECT * FROM users
+            WHERE general_manager_id = :generalManagerId
+            AND inactivated_dt IS NULL AND
+            role = 'driver'
+            """, nativeQuery = true)
+    List<UserEntity> getAllDriversByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
 }
