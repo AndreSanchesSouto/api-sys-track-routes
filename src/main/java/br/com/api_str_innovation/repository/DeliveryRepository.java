@@ -71,6 +71,16 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             @Param("driverId") UUID driverId,
             Pageable pageable
     );
+
+    @Query(value = """
+            SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId AND status = :status
+            """, nativeQuery = true)
+    Page<DeliveryEntity> findByStatusAndGeneralManagerId(
+            @Param("status") String status,
+            @Param("generalManagerId")UUID generalManagerId,
+            Pageable pageable
+    );
+
     @Query(value = """
             SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId
             """, nativeQuery = true)

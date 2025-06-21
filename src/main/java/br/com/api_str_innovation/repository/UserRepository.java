@@ -31,6 +31,15 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     @Query("SELECT u FROM UserEntity u WHERE u.inactivatedDt IS NULL AND u.generalManagerId = :generalManagerId")
     Page<UserEntity> findActiveUsers(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
+    @Query(value = """
+            SELECT * FROM users WHERE general_manager_id = :generalManagerId AND status = :status
+            """, nativeQuery = true)
+    Page<UserEntity> findByStatusAndGeneralManagerId(
+            @Param("status") String status,
+            @Param("generalManagerId")UUID generalManagerId,
+            Pageable pageable
+    );
+
     @Query("""
             SELECT u FROM UserEntity u WHERE
             LOWER(FUNCTION('unaccent', u.name))

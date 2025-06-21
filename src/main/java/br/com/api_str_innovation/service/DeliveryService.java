@@ -2,6 +2,7 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
+import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
@@ -161,6 +162,12 @@ public class DeliveryService {
         return repository
                 .getDeliveryByDriverId(generalManagerId, driverId, pageable)
                 .map(DeliveryGenericResponseDTO::new);
+    }
+
+    public Page<DeliveryResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
+        return repository
+                .findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
+                .map(DeliveryResponseDTO::new);
     }
 
     public Integer count(UUID generalManagerId) {

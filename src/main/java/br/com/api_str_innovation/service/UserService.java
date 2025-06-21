@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
+import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
@@ -111,6 +112,12 @@ public class UserService {
     public Page<UserResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
                 .findActiveUsers(pageable, generalManagerId)
+                .map(UserResponseDTO::new);
+    }
+
+    public Page<UserResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
+        return repository
+                .findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
                 .map(UserResponseDTO::new);
     }
 

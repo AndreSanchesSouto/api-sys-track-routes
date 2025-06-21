@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
+import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.service.DeliveryService;
 import jakarta.transaction.Transactional;
@@ -51,6 +52,15 @@ public class DeliveryController {
             Pageable pageable
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getDeliveryByDriverId(generalManagerId, driverId, pageable));
+    }
+
+    @GetMapping(value = "/status")
+    public ResponseEntity<Page<DeliveryResponseDTO>> getDriversByStatus(
+            @RequestParam String status,
+            Pageable pageable,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getByStatus(status, pageable, generalManagerId));
     }
 
     @GetMapping("/count")

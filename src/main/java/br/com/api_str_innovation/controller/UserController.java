@@ -5,6 +5,7 @@ import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
+import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,15 @@ public class UserController {
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
+    }
+
+    @GetMapping(value = "/status")
+    public ResponseEntity<Page<UserResponseDTO>> getDriversByStatus(
+            @RequestParam String status,
+            Pageable pageable,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getByStatus(status, pageable, generalManagerId));
     }
 
     @GetMapping(value = "/search/name")
