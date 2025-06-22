@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
+import br.com.api_str_innovation.dto.checklist.ChecklistReportDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.service.ChecklistService;
@@ -40,6 +41,18 @@ public class ChecklistController {
     public ResponseEntity<List<Object[]>> getDetailedKmSegments(@PathVariable UUID vehicleId, @RequestBody PeriodTimeRequestDTO data) {
         List<Object[]> segments = this.service.getDetailedKmSegments(vehicleId, data);
         return ResponseEntity.ok(segments);
+    }
+
+    @PostMapping("/report-failed/{vehicleId}")
+    public ResponseEntity<List<ChecklistReportDTO>> getChecklistReport(@PathVariable UUID vehicleId, @RequestBody PeriodTimeRequestDTO data) {
+        List<ChecklistReportDTO> reportFailedData = this.service.getChecklistReport(vehicleId, data);
+        return ResponseEntity.ok(reportFailedData);
+    }
+
+    @PostMapping("/{vehicleId}")
+    public ResponseEntity<String> post(@PathVariable UUID vehicleId, @RequestBody ChecklistRequestDTO data) {
+        this.service.post(vehicleId, data);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
     @DeleteMapping("/{id}")

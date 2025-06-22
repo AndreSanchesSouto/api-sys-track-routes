@@ -89,8 +89,16 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/vehicle/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/vehicle/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasRole("ADMIN")
-
                         .requestMatchers(HttpMethod.DELETE, "/vehicle/*").hasAnyRole("ADMIN", "SHIPPING")
+
+                        .requestMatchers(HttpMethod.GET, "/checklist").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.GET, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.POST, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.POST, "/checklist/count-km/*").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.POST, "/checklist/km-segments/*").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.PUT, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.DELETE, "/checklist/*").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

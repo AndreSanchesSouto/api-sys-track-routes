@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.checklist.ChecklistRequestDTO;
+import br.com.api_str_innovation.dto.checklist.ChecklistReportDTO;
 import br.com.api_str_innovation.dto.checklist.ChecklistResponseDTO;
 import br.com.api_str_innovation.dto.checklist.checklist_log.ChecklistLogRequestDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
@@ -23,12 +24,38 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ChecklistService {
+
+    private static final int CREATED_DT_INDEX = 0;
+    private static final int OBSERVATION_NOTES_INDEX = 1;
+    private static final int HEADLIGHT_INDEX = 2;
+    private static final int TAILLIGHT_INDEX = 3;
+    private static final int FRONT_INDICATOR_INDEX = 4;
+    private static final int INDICATOR_INDEX = 5;
+    private static final int DOME_LIGHT_INDEX = 6;
+    private static final int LICENSE_PLATE_LIGHT_INDEX = 7;
+    private static final int TIRE_INDEX = 8;
+    private static final int GLASSES_INDEX = 9;
+    private static final int REARVIEW_INDEX = 10;
+    private static final int LICENSE_PLATE_INDEX = 11;
+    private static final int WINDSHIELD_WIPERS_INDEX = 12;
+    private static final int SUSPENSION_INDEX = 13;
+    private static final int JACK_INDEX = 14;
+    private static final int BRAKES_INDEX = 15;
+    private static final int SPARE_TIRE_INDEX = 16;
+    private static final int TIRE_PRESSURE_INDEX = 17;
+    private static final int DOCUMENTATION_INDEX = 18;
+    private static final int FUEL_LEVEL_INDEX = 19;
+    private static final int OIL_LEVEL_INDEX = 20;
+    private static final int WATER_LEVEL_INDEX = 21;
+    private static final int LICENSE_PLATE_NUMBER_INDEX = 22;
+    private static final int DRIVER_NAME_INDEX = 23;
 
     @Autowired
     private ChecklistRepository checklistRepository;
@@ -284,5 +311,156 @@ public class ChecklistService {
 
     public List<Object[]> countChecklistStatusVehicleInactive(ChecklistLogRequestDTO data) {
         return checklistLogRepository.countChecklistStatusVehicleInactive(data.startDate(), data.endDate());
+    }
+
+    public List<ChecklistReportDTO> getChecklistReport(UUID vehicleId, PeriodTimeRequestDTO data) {
+        List<Object[]> results = checklistLogRepository.findReportData(vehicleId, data.from(), data.to());
+        List<ChecklistReportDTO> report = new ArrayList<>();
+
+        for (Object[] row : results) {
+            String licensePlate = (String) row[LICENSE_PLATE_NUMBER_INDEX];
+            String driverName = (String) row[DRIVER_NAME_INDEX];
+            LocalDateTime createdDt = parseLocalDateTime(row[CREATED_DT_INDEX]);
+            String observationNotes = (String) row[OBSERVATION_NOTES_INDEX];
+
+            List<String> problems = new ArrayList<>();
+
+            if (parseBoolean(row[HEADLIGHT_INDEX])) problems.add("Farol com problema");
+            if (parseBoolean(row[TAILLIGHT_INDEX])) problems.add("Lanterna com problema");
+            if (parseBoolean(row[FRONT_INDICATOR_INDEX])) problems.add("Indicador dianteiro com problema");
+            if (parseBoolean(row[INDICATOR_INDEX])) problems.add("Indicador traseiro com problema");
+            if (parseBoolean(row[DOME_LIGHT_INDEX])) problems.add("Luz de teto com problema");
+            if (parseBoolean(row[LICENSE_PLATE_LIGHT_INDEX])) problems.add("Luz da placa com problema");
+            if (parseBoolean(row[TIRE_INDEX])) problems.add("Pneu com problema");
+            if (parseBoolean(row[GLASSES_INDEX])) problems.add("Vidros com problema");
+            if (parseBoolean(row[REARVIEW_INDEX])) problems.add("Retrovisor com problema");
+            if (parseBoolean(row[LICENSE_PLATE_INDEX])) problems.add("Placa com problema");
+            if (parseBoolean(row[WINDSHIELD_WIPERS_INDEX])) problems.add("Limpador de para-brisa com problema");
+            if (parseBoolean(row[SUSPENSION_INDEX])) problems.add("Suspensão com problema");
+
+            String jackValue = parseString(row[JACK_INDEX]);
+            String brakesValue = parseString(row[BRAKES_INDEX]);
+            String spareTireValue = parseString(row[SPARE_TIRE_INDEX]);
+            String tirePressureValue = parseString(row[TIRE_PRESSURE_INDEX]);
+            String documentationValue = parseString(row[DOCUMENTATION_INDEX]);
+            
+            if (isProblem(jackValue)) problems.add("Macaco " + getProblemDescription(jackValue));
+            if (isProblem(brakesValue)) problems.add("Freios " + getProblemDescription(brakesValue));
+            if (isProblem(spareTireValue)) problems.add("Estepe " + getProblemDescription(spareTireValue));
+            if (isProblem(tirePressureValue)) problems.add("Pressão dos pneus " + getProblemDescription(tirePressureValue));
+            if (isProblem(documentationValue)) problems.add("Documentação " + getProblemDescription(documentationValue));
+
+            String fuelLevelValue = parseString(row[FUEL_LEVEL_INDEX]);
+            String oilLevelValue = parseString(row[OIL_LEVEL_INDEX]);
+            String waterLevelValue = parseString(row[WATER_LEVEL_INDEX]);
+            
+            if (isLevelTooLow(fuelLevelValue, ChecklistFieldOptions.MINIMUM_FUEL_LEVEL.getField())) {
+                problems.add("Combustível baixo: " + fuelLevelValue + "L");
+            }
+            if (isLevelTooLow(oilLevelValue, ChecklistFieldOptions.MINIMUM_OIL_LEVEL.getField())) {
+                problems.add("Óleo baixo: " + oilLevelValue + "L");
+            }
+            if (isLevelTooLow(waterLevelValue, ChecklistFieldOptions.MINIMUM_WATER_LEVEL.getField())) {
+                problems.add("Água baixa: " + waterLevelValue + "L");
+            }
+
+            if (!problems.isEmpty()) {
+                report.add(new ChecklistReportDTO(
+                    createdDt,
+                    licensePlate,
+                    driverName,
+                    problems,
+                    observationNotes
+                ));
+            }
+        }
+        return report;
+    }
+
+    private boolean parseBoolean(Object value) {
+        if (value == null) return false;
+        if (value instanceof Boolean) return (Boolean) value;
+        if (value instanceof String) return Boolean.parseBoolean((String) value);
+        if (value instanceof Number) return ((Number) value).intValue() != 0;
+        return false;
+    }
+
+    private String parseString(Object value) {
+        if (value == null) return null;
+        if (value instanceof String) return (String) value;
+        return value.toString();
+    }
+
+    private LocalDateTime parseLocalDateTime(Object value) {
+        if (value == null) {
+            return null;
+        }
+        
+        try {
+            if (value instanceof java.sql.Timestamp) {
+                return ((java.sql.Timestamp) value).toLocalDateTime();
+            }
+            
+            if (value instanceof java.sql.Date) {
+                return ((java.sql.Date) value).toLocalDate().atStartOfDay();
+            }
+            
+            if (value instanceof java.util.Date) {
+                return ((java.util.Date) value).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+            }
+            
+            if (value instanceof LocalDateTime) {
+                return (LocalDateTime) value;
+            }
+            
+            if (value instanceof String) {
+                String strValue = (String) value;
+                if (strValue.trim().isEmpty()) {
+                    return null;
+                }
+                return LocalDateTime.parse(strValue);
+            }
+            
+            if (value instanceof Number) {
+                Number numValue = (Number) value;
+                long timestamp = numValue.longValue();
+                if (timestamp > 0) {
+                    return java.time.Instant.ofEpochMilli(timestamp)
+                        .atZone(java.time.ZoneId.systemDefault())
+                        .toLocalDateTime();
+                }
+            }
+            
+            return null;
+            
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private boolean isProblem(String value) {
+        if (value == null) return false;
+        String v = value.toLowerCase();
+        return v.equals("missing") || v.equals("damaged") || v.equals("invalid");
+    }
+
+    private String getProblemDescription(String value) {
+        if (value == null) return null;
+        String v = value.toLowerCase();
+        if (v.equals("missing")) return "faltando";
+        if (v.equals("damaged")) return "com problema";
+        if (v.equals("invalid")) return "vencida";
+        return value;
+    }
+
+    private boolean isLevelTooLow(String value, String minimumLevel) {
+        if (value == null || minimumLevel == null) return false;
+        try {
+            double level = Double.parseDouble(value);
+            double minLevel = Double.parseDouble(minimumLevel);
+            return level <= minLevel;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
