@@ -45,10 +45,37 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             LOWER(FUNCTION('unaccent', u.name))
             LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))
             AND u.generalManagerId = :generalManagerId
+            AND u.inactivatedDt IS NULL
             """)
-    Page<UserEntity> findSearchClients(
+    Page<UserEntity> findSearchClientsByName(
             Pageable pageable,
             @Param("name") String name,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT u FROM UserEntity u WHERE
+            LOWER(FUNCTION('unaccent', u.email))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :email, '%')))
+            AND u.generalManagerId = :generalManagerId
+            AND u.inactivatedDt IS NULL
+            """)
+    Page<UserEntity> findSearchClientsByEmail(
+            Pageable pageable,
+            @Param("email") String email,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT u FROM UserEntity u WHERE
+            LOWER(FUNCTION('unaccent', u.login))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :login, '%')))
+            AND u.generalManagerId = :generalManagerId
+            AND u.inactivatedDt IS NULL
+            """)
+    Page<UserEntity> findSearchClientsByLogin(
+            Pageable pageable,
+            @Param("login") String login,
             @Param("generalManagerId") UUID generalManagerId
     );
 

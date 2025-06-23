@@ -2,6 +2,7 @@ package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.service.ClientService;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/clients")
-public class ClientControlller {
+public class ClientController {
 
     @Autowired
     private ClientService service;
@@ -42,9 +43,14 @@ public class ClientControlller {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
-    @GetMapping(value = "/search")
-    public ResponseEntity<Page<ClientResponseDTO>> getSearched(Pageable pageable, String name, @RequestHeader("general-manager-id") UUID generalManagerId) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name, generalManagerId));
+    @GetMapping(value = "/search/{attribute}")
+    public ResponseEntity<Page<ClientResponseDTO>> searchByAttribute(
+            Pageable pageable,
+            @PathVariable String attribute,
+            @RequestParam String value,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, attribute, value, generalManagerId));
     }
 
     @GetMapping("/{id}")

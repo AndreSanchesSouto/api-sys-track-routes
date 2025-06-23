@@ -24,8 +24,78 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
             LOWER(FUNCTION('unaccent', p.name))
             LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))
             AND p.generalManagerId = :generalManagerId
+            AND p.inactivatedDt IS NULL
             """)
-    Page<ProductEntity> findSearchProducts(Pageable pageable, String name, @Param("generalManagerId") UUID generalManagerId);
+    Page<ProductEntity> findSearchProductsByName(
+            Pageable pageable,
+            @Param("name") String name,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT p FROM ProductEntity p WHERE
+            LOWER(FUNCTION('unaccent', p.price))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :price, '%')))
+            AND p.generalManagerId = :generalManagerId
+            AND p.inactivatedDt IS NULL
+            """)
+    Page<ProductEntity> findSearchProductsByPrice(
+            Pageable pageable,
+            @Param("price") Double price,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT p FROM ProductEntity p WHERE
+            LOWER(FUNCTION('unaccent', p.measure))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :measure, '%')))
+            AND p.generalManagerId = :generalManagerId
+            AND p.inactivatedDt IS NULL
+            """)
+    Page<ProductEntity> findSearchProductsByMeasure(
+            Pageable pageable,
+            @Param("measure") Double measure,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT p FROM ProductEntity p WHERE
+            LOWER(FUNCTION('unaccent', p.price))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :price, '%')))
+            AND p.generalManagerId = :generalManagerId
+            AND p.inactivatedDt IS NULL
+            """)
+    Page<ProductEntity> findSearchProductsByQuantity(
+            Pageable pageable,
+            @Param("price") Integer price,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT p FROM ProductEntity p WHERE
+            LOWER(FUNCTION('unaccent', p.description))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :description, '%')))
+            AND p.generalManagerId = :generalManagerId
+            AND p.inactivatedDt IS NULL
+            """)
+    Page<ProductEntity> findSearchProductsByDescription(
+            Pageable pageable,
+            @Param("description") String description,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT p FROM ProductEntity p WHERE
+            LOWER(FUNCTION('unaccent', p.unitValue))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :unitValue, '%')))
+            AND p.generalManagerId = :generalManagerId
+            AND p.inactivatedDt IS NULL
+            """)
+    Page<ProductEntity> findSearchProductsByUnitValue(
+            Pageable pageable,
+            @Param("unitValue") String unitValue,
+            @Param("generalManagerId") UUID generalManagerId
+    );
 
     @Query("""
         SELECT p FROM ProductEntity p

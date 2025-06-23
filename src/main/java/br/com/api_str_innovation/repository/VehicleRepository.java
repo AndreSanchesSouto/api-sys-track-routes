@@ -29,10 +29,63 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
             WHERE LOWER(FUNCTION('unaccent', v.licensePlateNumber))
             LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :licensePlateNumber, '%')))
             AND v.generalManagerId = :generalManagerId
+            AND v.inactivatedDt IS NULL
             """)
-    Page<VehicleEntity> findSearchedVehicles(
+    Page<VehicleEntity> findSearchedVehiclesByPlate(
             Pageable pageable,
             @Param("licensePlateNumber") String licensePlateNumber,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT v FROM VehicleEntity v
+            WHERE LOWER(FUNCTION('unaccent', v.sideNumber))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :sideNumber, '%')))
+            AND v.generalManagerId = :generalManagerId
+            AND v.inactivatedDt IS NULL
+            """)
+    Page<VehicleEntity> findSearchedVehiclesBySideNumber(
+            Pageable pageable,
+            @Param("sideNumber") String sideNumber,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT v FROM VehicleEntity v
+            WHERE LOWER(FUNCTION('unaccent', v.model))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :model, '%')))
+            AND v.generalManagerId = :generalManagerId
+            AND v.inactivatedDt IS NULL
+            """)
+    Page<VehicleEntity> findSearchedVehiclesByModel(
+            Pageable pageable,
+            @Param("model") String model,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT v FROM VehicleEntity v
+            WHERE LOWER(FUNCTION('unaccent', v.brand))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :brand, '%')))
+            AND v.generalManagerId = :generalManagerId
+            AND v.inactivatedDt IS NULL
+            """)
+    Page<VehicleEntity> findSearchedVehiclesByBrand(
+            Pageable pageable,
+            @Param("brand") String brand,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT v FROM VehicleEntity v
+            WHERE LOWER(FUNCTION('unaccent', v.yearDt))
+            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :year, '%')))
+            AND v.generalManagerId = :generalManagerId
+            AND v.inactivatedDt IS NULL
+            """)
+    Page<VehicleEntity> findSearchedVehiclesByYear(
+            Pageable pageable,
+            @Param("year") String year,
             @Param("generalManagerId") UUID generalManagerId
     );
 

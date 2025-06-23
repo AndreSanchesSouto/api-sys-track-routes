@@ -2,8 +2,10 @@ package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
+import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.ClientRepository;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
@@ -78,12 +80,23 @@ public class ClientService {
         return client;
     }
 
-    @GetMapping(value = "/search")
-    public Page<ClientResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
-        Page<ClientResponseDTO> client = repository
-                .findSearchClients(pageable, name, generalManagerId)
-                .map(ClientResponseDTO::new);
-        return client;
+    public Page<ClientResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
+        return switch (attribute) {
+            case "name" -> repository
+                    .findSearchClientsByName(pageable, search, generalManagerId)
+                    .map(ClientResponseDTO::new);
+            case "email" -> repository
+                    .findSearchClientsByEmail(pageable, search, generalManagerId)
+                    .map(ClientResponseDTO::new);
+            case "cellphone" -> repository
+                    .findSearchClientsByCellphone(pageable, search, generalManagerId)
+                    .map(ClientResponseDTO::new);
+            case "document" -> repository
+                    .findSearchClientsByDocument(pageable, search, generalManagerId)
+                    .map(ClientResponseDTO::new);
+            default -> throw new ClientException("Parâmetro não aceito para a pesquisa");
+        };
+
     }
 
     public ClientEntity getById(UUID id) {

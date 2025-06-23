@@ -52,13 +52,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getByStatus(status, pageable, generalManagerId));
     }
 
-    @GetMapping(value = "/search/name")
-    public ResponseEntity<Page<UserResponseDTO>> getSearched(
+    @GetMapping(value = "/search/{attribute}")
+    public ResponseEntity<Page<UserResponseDTO>> searchByAttribute(
             Pageable pageable,
-            String name,
+            @PathVariable String attribute,
+            @RequestParam String value,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name, generalManagerId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, attribute, value, generalManagerId));
     }
 
     @GetMapping("/count")

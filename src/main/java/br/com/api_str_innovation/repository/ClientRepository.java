@@ -23,12 +23,56 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
     Page<ClientEntity> findActiveClients(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
     @Query("""
-            SELECT c FROM ClientEntity c 
+            SELECT c FROM ClientEntity c
             WHERE LOWER(FUNCTION('unaccent', c.name))
                 LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :name, '%')))
             AND c.generalManagerId = :generalManagerId
+            AND c.inactivatedDt IS NULL
             """)
-    Page<ClientEntity> findSearchClients(Pageable pageable, String name, @Param("generalManagerId") UUID generalManagerId);
+    Page<ClientEntity> findSearchClientsByName(
+            Pageable pageable,
+            @Param("name") String name,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT c FROM ClientEntity c
+            WHERE LOWER(FUNCTION('unaccent', c.email))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :email, '%')))
+            AND c.generalManagerId = :generalManagerId
+            AND c.inactivatedDt IS NULL
+            """)
+    Page<ClientEntity> findSearchClientsByEmail(
+            Pageable pageable,
+            @Param("email") String email,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT c FROM ClientEntity c
+            WHERE LOWER(FUNCTION('unaccent', c.cellphone))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :cellphone, '%')))
+            AND c.generalManagerId = :generalManagerId
+            AND c.inactivatedDt IS NULL
+            """)
+    Page<ClientEntity> findSearchClientsByCellphone(
+            Pageable pageable,
+            @Param("cellphone") String cellphone,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT c FROM ClientEntity c
+            WHERE LOWER(FUNCTION('unaccent', c.document))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :document, '%')))
+            AND c.generalManagerId = :generalManagerId
+            AND c.inactivatedDt IS NULL
+            """)
+    Page<ClientEntity> findSearchClientsByDocument(
+            Pageable pageable,
+            @Param("document") String document,
+            @Param("generalManagerId") UUID generalManagerId
+    );
 
     @Query("""
             SELECT c FROM ClientEntity c

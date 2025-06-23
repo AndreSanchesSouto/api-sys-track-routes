@@ -121,11 +121,20 @@ public class UserService {
                 .map(UserResponseDTO::new);
     }
 
-    @GetMapping(value = "search/name")
-    public Page<UserResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
-        return repository
-                .findSearchClients(pageable, name, generalManagerId)
-                .map(UserResponseDTO::new);
+    public Page<UserResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
+        return switch (attribute) {
+            case "name" -> repository
+                    .findSearchClientsByName(pageable, search, generalManagerId)
+                    .map(UserResponseDTO::new);
+            case "email" -> repository
+                    .findSearchClientsByEmail(pageable, search, generalManagerId)
+                    .map(UserResponseDTO::new);
+            case "login" -> repository
+                    .findSearchClientsByLogin(pageable, search, generalManagerId)
+                    .map(UserResponseDTO::new);
+            default -> throw new UserException("Parâmetro não aceito para a pesquisa");
+        };
+
     }
 
     public UserResponseDTO getById(UUID id) {

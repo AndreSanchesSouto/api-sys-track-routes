@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.controller;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
@@ -52,13 +53,14 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getByStatus(status, pageable, generalManagerId));
     }
 
-    @GetMapping(value = "/search/license-plate")
-    public ResponseEntity<Page<VehicleResponseDTO>> getSearched(
+    @GetMapping(value = "/search/{attribute}")
+    public ResponseEntity<Page<VehicleResponseDTO>> searchByAttribute(
             Pageable pageable,
-            String licensePlateNumber,
+            @PathVariable String attribute,
+            @RequestParam String value,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, licensePlateNumber, generalManagerId));
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, attribute, value, generalManagerId));
     }
 
     @GetMapping("/{id}")

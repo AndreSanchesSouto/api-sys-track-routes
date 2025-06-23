@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.controller;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.product.ProductRequestDTO;
 import br.com.api_str_innovation.dto.product.ProductResponseDTO;
 import br.com.api_str_innovation.service.ProductService;
@@ -34,13 +35,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
     }
 
-    @GetMapping(value = "/search/name")
-    public ResponseEntity<Page<ProductResponseDTO>> getSearched(
+    @GetMapping(value = "/search/{attribute}")
+    public ResponseEntity<Page<ProductResponseDTO>> searchByAttribute(
             Pageable pageable,
-            String name,
+            @PathVariable String attribute,
+            @RequestParam String value,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, name, generalManagerId));
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, attribute, value, generalManagerId));
     }
 
     @GetMapping("/available")

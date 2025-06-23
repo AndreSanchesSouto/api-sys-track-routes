@@ -1,9 +1,11 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
+import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
@@ -83,11 +85,25 @@ public class VehicleService {
                     .map(VehicleResponseDTO::new);
     }
 
-    @GetMapping(value = "/search/license-plate")
-    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String licensePlateNumber, UUID generalManagerId) {
-        return repository
-                .findSearchedVehicles(pageable, licensePlateNumber, generalManagerId)
-                .map(VehicleResponseDTO::new);
+    public Page<VehicleResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
+        return switch (attribute) {
+            case "licensePlateNumber" -> repository
+                    .findSearchedVehiclesByPlate(pageable, search, generalManagerId)
+                    .map(VehicleResponseDTO::new);
+            case "sideNumber" -> repository
+                    .findSearchedVehiclesBySideNumber(pageable, search, generalManagerId)
+                    .map(VehicleResponseDTO::new);
+            case "model" -> repository
+                    .findSearchedVehiclesByModel(pageable, search, generalManagerId)
+                    .map(VehicleResponseDTO::new);
+            case "brand" -> repository
+                    .findSearchedVehiclesByBrand(pageable, search, generalManagerId)
+                    .map(VehicleResponseDTO::new);
+            case "yearDt" -> repository
+                    .findSearchedVehiclesByYear(pageable, search, generalManagerId)
+                    .map(VehicleResponseDTO::new);
+            default -> throw new VehicleException("Parâmetro não aceito para a pesquisa");
+        };
     }
 
     public void post(@Valid VehicleRequestDTO data, UUID generalManagerId) {

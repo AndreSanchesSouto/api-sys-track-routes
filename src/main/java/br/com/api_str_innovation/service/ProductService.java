@@ -1,9 +1,11 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.product.ProductRequestDTO;
 import br.com.api_str_innovation.dto.product.ProductResponseDTO;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
+import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.ProductException;
 import br.com.api_str_innovation.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -58,11 +62,56 @@ public class ProductService {
                 .map(ProductResponseDTO::new);
     }
 
-    @GetMapping(value = "/description")
-    public Page<ProductResponseDTO> getSearched(Pageable pageable, String name, UUID generalManagerId) {
-        return repository
-                .findSearchProducts(pageable, name, generalManagerId)
-                .map(ProductResponseDTO::new);
+    public Page<ProductResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
+        return switch (attribute) {
+            case "name" -> repository
+                    .findSearchProductsByName(pageable, search, generalManagerId)
+                    .map(ProductResponseDTO::new);
+            case "price" -> parseNumberDouble(search)
+                    .map(value -> repository.findSearchProductsByPrice(pageable, value, generalManagerId))
+                    .orElse(Page.empty(pageable))
+                    .map(ProductResponseDTO::new);
+            case "measure" -> parseNumberDouble(search)
+                    .map(value -> repository.findSearchProductsByMeasure(pageable, value, generalManagerId))
+                    .orElse(Page.empty(pageable))
+                    .map(ProductResponseDTO::new);
+            case "quantity" -> parseNumberInt(search)
+                    .map(value -> repository.findSearchProductsByQuantity(pageable, value, generalManagerId))
+                    .orElse(Page.empty())
+                    .map(ProductResponseDTO::new);
+            case "description" -> repository
+                    .findSearchProductsByDescription(pageable, search, generalManagerId)
+                    .map(ProductResponseDTO::new);
+            case "unitValue" -> repository
+                    .findSearchProductsByUnitValue(pageable, search, generalManagerId)
+                    .map(ProductResponseDTO::new);
+            default -> throw new ProductException("Parâmetro não aceito para a pesquisa");
+        };
+    }
+
+    private Optional<Double> parseNumberDouble(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Double.parseDouble(value.trim().replace(',', '.')));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
+    }
+
+
+    private Optional<Integer> parseNumberInt(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Integer.parseInt(value.trim().replace(',', '.')));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
     }
 
     public List<ProductResponseDTO> getAvailable(UUID generalManagerId) {
