@@ -33,9 +33,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     );
 
     @Query("""
-            SELECT p FROM ProductEntity p WHERE
-            LOWER(FUNCTION('unaccent', p.price))
-            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :price, '%')))
+            SELECT p FROM ProductEntity p
+            WHERE CAST(p.price AS string) LIKE CONCAT('%', :price, '%')
             AND p.generalManagerId = :generalManagerId
             AND p.inactivatedDt IS NULL
             """)
@@ -46,9 +45,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     );
 
     @Query("""
-            SELECT p FROM ProductEntity p WHERE
-            LOWER(FUNCTION('unaccent', p.measure))
-            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :measure, '%')))
+            SELECT p FROM ProductEntity p
+            WHERE CAST(p.measure AS string) LIKE CONCAT('%', :measure, '%')
             AND p.generalManagerId = :generalManagerId
             AND p.inactivatedDt IS NULL
             """)
@@ -59,9 +57,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     );
 
     @Query("""
-            SELECT p FROM ProductEntity p WHERE
-            LOWER(FUNCTION('unaccent', p.price))
-            LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :price, '%')))
+            SELECT p FROM ProductEntity p
+            WHERE CAST(p.price AS string) LIKE CONCAT('%', :price, '%')
             AND p.generalManagerId = :generalManagerId
             AND p.inactivatedDt IS NULL
             """)
