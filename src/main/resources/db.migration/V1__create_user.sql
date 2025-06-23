@@ -1,5 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS unaccent;
+CREATE INDEX idx_deliveries_created_dt_char
+ON deliveries (TO_CHAR(created_dt, 'YYYY-MM-DD'));
 
 CREATE TABLE users (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,

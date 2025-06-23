@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.projections.LocationProjection;
@@ -23,6 +24,83 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             """)
     Page<DeliveryEntity> findDeliveries(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
 
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+            WHERE CAST(d.deliveryRequest AS string) LIKE CONCAT('%', :deliveryRequest, '%')
+            AND d.generalManagerId = :generalManagerId
+            AND d.inactivatedDt IS NULL
+            """)
+    Page<DeliveryEntity> findSearchDeliveryByDeliveryRequest(
+            Pageable pageable,
+            @Param("deliveryRequest") String deliveryRequest,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+            JOIN d.vehicle vehicle
+            WHERE LOWER(FUNCTION('unaccent', vehicle.licensePlateNumber))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :licensePlateNumber, '%')))
+            AND d.generalManagerId = :generalManagerId
+            AND d.inactivatedDt IS NULL
+            """)
+    Page<DeliveryEntity> findSearchDeliveryByVehicle(
+            Pageable pageable,
+            @Param("licensePlateNumber") String licensePlateNumber,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+            JOIN d.driver driver
+            WHERE LOWER(FUNCTION('unaccent', driver.name))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :driver, '%')))
+            AND d.generalManagerId = :generalManagerId
+            AND d.inactivatedDt IS NULL
+            """)
+    Page<DeliveryEntity> findSearchDeliveryByDriver(
+            Pageable pageable,
+            @Param("driver") String driver,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+            WHERE CAST(d.items AS string) LIKE CONCAT('%', :items, '%')
+            AND d.generalManagerId = :generalManagerId
+            AND d.inactivatedDt IS NULL
+            """)
+    Page<DeliveryEntity> findSearchDeliveryByItems(
+            Pageable pageable,
+            @Param("items") String items,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+    @Query("""
+            SELECT d FROM DeliveryEntity d
+            WHERE LOWER(FUNCTION('unaccent', d.status))
+                LIKE LOWER(FUNCTION('unaccent', CONCAT('%', :status, '%')))
+            AND d.generalManagerId = :generalManagerId
+            AND d.inactivatedDt IS NULL
+            """)
+    Page<DeliveryEntity> findSearchDeliveryByStatus(
+            Pageable pageable,
+            @Param("status") String status,
+            @Param("generalManagerId") UUID generalManagerId
+    );
+
+//    @Query("""
+//    SELECT d FROM DeliveryEntity d
+//    WHERE
+//        FUNCTION('TO_CHAR', d.createdDt, 'YYYY-MM-DD') LIKE CONCAT('%', :searchTerm, '%')
+//    AND d.generalManagerId = :generalManagerId
+//    AND d.inactivatedDt IS NULL
+//    """)
+//    Page<DeliveryEntity> findSearchDeliveryByCreatedDt(
+//            Pageable pageable,
+//            @Param("searchTerm") String searchTerm,
+//            @Param("generalManagerId") UUID generalManagerId
+//    );
 
     @Transactional
     @Query(value = """

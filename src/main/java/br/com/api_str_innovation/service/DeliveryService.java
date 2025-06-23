@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
@@ -15,6 +16,7 @@ import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.DeliveryException;
 import br.com.api_str_innovation.exceptions.UserException;
@@ -97,7 +99,7 @@ public class DeliveryService {
             this.productService.updateProductQuantity(product.getId(), actualQuantity);
         }
         delivery.setDeliveryProducts(deliveryProducts);
-
+        delivery.setItems(deliveryProducts.size());
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
 
         this.repository.save(delivery);
@@ -156,6 +158,31 @@ public class DeliveryService {
         return repository
                 .findDeliveries(pageable, generalManagerId)
                 .map(DeliveryGenericResponseDTO::new);
+    }
+
+
+    public Page<DeliveryGenericResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
+        return switch (attribute) {
+            case "deliveryRequest" -> repository
+                    .findSearchDeliveryByDeliveryRequest(pageable, search, generalManagerId)
+                    .map(DeliveryGenericResponseDTO::new);
+            case "vehicle" -> repository
+                    .findSearchDeliveryByVehicle(pageable, search, generalManagerId)
+                    .map(DeliveryGenericResponseDTO::new);
+            case "driver" -> repository
+                    .findSearchDeliveryByDriver(pageable, search, generalManagerId)
+                    .map(DeliveryGenericResponseDTO::new);
+            case "items" -> repository
+                    .findSearchDeliveryByItems(pageable, search, generalManagerId)
+                    .map(DeliveryGenericResponseDTO::new);
+            case "status" -> repository
+                    .findSearchDeliveryByStatus(pageable, search, generalManagerId)
+                    .map(DeliveryGenericResponseDTO::new);
+//            case "createdDt" -> repository
+//                    .findSearchDeliveryByCreatedDt(pageable, search, generalManagerId)
+//                    .map(DeliveryGenericResponseDTO::new);
+            default -> throw new ClientException("Parâmetro não aceito para a pesquisa");
+        };
     }
 
     public Page<DeliveryGenericResponseDTO> getDeliveryByDriverId(UUID generalManagerId, UUID driverId, Pageable pageable) {
@@ -220,6 +247,7 @@ public class DeliveryService {
                 Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
                 this.productService.updateProductQuantity(product.getId(), actualQuantity);
             }
+            deliveryEntity.setItems(deliveryEntity.getDeliveryProducts().size());
 
         }
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);

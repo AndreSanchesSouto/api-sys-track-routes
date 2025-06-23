@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.controller;
 
+import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
@@ -78,6 +79,16 @@ public class DeliveryController {
             Pageable pageable,
             @RequestHeader("general-manager-id") UUID generalManagerId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
+    }
+
+    @GetMapping(value = "/search/{attribute}")
+    public ResponseEntity<Page<DeliveryGenericResponseDTO>> searchByAttribute(
+            Pageable pageable,
+            @PathVariable String attribute,
+            @RequestParam String value,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getSearched(pageable, attribute, value, generalManagerId));
     }
 
     @PatchMapping("/{id}")

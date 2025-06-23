@@ -96,7 +96,6 @@ public class ClientService {
                     .map(ClientResponseDTO::new);
             default -> throw new ClientException("Parâmetro não aceito para a pesquisa");
         };
-
     }
 
     public ClientEntity getById(UUID id) {

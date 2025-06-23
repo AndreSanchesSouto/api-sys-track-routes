@@ -32,7 +32,7 @@ public record DeliveryGenericResponseDTO(
                 data.getClient(),
                 data.getVehicle(),
                 data.getDriver(),
-                data.getDeliveryProducts().toArray().length,
+                data.getItems(),
                 data.getCreatedDt(),
                 data.getInactivatedDt()
         );

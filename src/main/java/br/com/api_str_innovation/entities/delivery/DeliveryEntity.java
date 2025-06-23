@@ -63,6 +63,10 @@ public class DeliveryEntity {
     @JoinColumn(name = "client_id", nullable = true)
     private ClientEntity client;
 
+    @Column(nullable = true)
+    @Setter
+    private Integer items;
+
     @Setter
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = true)
