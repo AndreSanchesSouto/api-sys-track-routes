@@ -3,6 +3,7 @@ package br.com.api_str_innovation.repository;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -165,7 +166,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
     @Query(value = """
             SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId AND status = :status
             """, nativeQuery = true)
-    Page<DeliveryEntity> findByStatusAndGeneralManagerId(
+    Page<DeliveryTableProjection> findByStatusAndGeneralManagerId(
             @Param("status") String status,
             @Param("generalManagerId")UUID generalManagerId,
             Pageable pageable

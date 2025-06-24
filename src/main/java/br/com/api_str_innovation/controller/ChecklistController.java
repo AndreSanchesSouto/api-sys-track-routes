@@ -17,9 +17,9 @@ public class ChecklistController {
     private ChecklistService service;
 
     @PostMapping("/{vehicleId}")
-    public ResponseEntity<String> post(@PathVariable UUID vehicleId, @RequestBody ChecklistRequestDTO data) {
+    public ResponseEntity<Void> post(@PathVariable UUID vehicleId, @RequestBody ChecklistRequestDTO data) {
         this.service.post(vehicleId, data);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
     @GetMapping("/get-by-vehicle-id/{vehicleId}")

@@ -53,7 +53,7 @@ public class DataAddressController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.delete(id));
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        return this.service.delete(id);
     }
 }

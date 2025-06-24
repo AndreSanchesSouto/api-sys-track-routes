@@ -20,6 +20,7 @@ import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.DeliveryException;
 import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import br.com.api_str_innovation.repository.DeliveryRepository;
 import jakarta.transaction.Transactional;
@@ -34,6 +35,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,6 +78,7 @@ public class DeliveryService {
         this.validateUserType(driver);
 
         VehicleEntity vehicle = this.vehicleService.findById(data.vehicleId());
+        vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
         DeliveryEntity delivery = new DeliveryEntity();
 
         delivery.setClient(client);
@@ -192,8 +196,7 @@ public class DeliveryService {
     }
 
     public Page<DeliveryResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
-        return repository
-                .findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
+        return repository.findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
                 .map(DeliveryResponseDTO::new);
     }
 
@@ -373,12 +376,20 @@ public class DeliveryService {
                         delivery,
                         deliveryProductsResponse,
                         checklistEntity.getCreationDt().toString(),
-                        checklistEntity.getEmployeeId()
+                        this.deliveryIsReadyToGo(
+                                checklistEntity.getEmployeeId(),
+                                delivery.getDriver().getId(),
+                                LocalDate.parse(checklistEntity.getCreationDt().toString())
+                        )
                 )
         ).orElseGet(() ->
                 new DeliveryProductsResponseDTO(delivery, deliveryProductsResponse)
         );
 
+    }
+
+    private Boolean deliveryIsReadyToGo(UUID checklistAuthor, UUID driverId, LocalDate creationData) {
+        return checklistAuthor.equals(driverId) && creationData.equals(LocalDate.now());
     }
 
     private DeliveryEntity findById(UUID id) {

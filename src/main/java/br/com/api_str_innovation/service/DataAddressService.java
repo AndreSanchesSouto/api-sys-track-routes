@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,9 +46,8 @@ public class DataAddressService {
     }
 
     public DataAddressResponseDTO getById(UUID id) {
-        DataAddressEntity data =  repository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle not found"));
+        DataAddressEntity data =  this
+                .findById(id);
         return new DataAddressResponseDTO(data);
     }
 
@@ -89,9 +89,11 @@ public class DataAddressService {
         return new DataAddressResponseDTO(dataAddress);
     }
 
-    public String delete(UUID id) {
-        this.repository.deleteById(id);
-        return "Deleted";
+    public ResponseEntity<Void> delete(UUID id) {
+        DataAddressEntity address = this.findById(id);
+        address.setInactivatedDt(LocalDate.now());
+        repository.save(address);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

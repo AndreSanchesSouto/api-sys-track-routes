@@ -12,10 +12,12 @@ import java.util.UUID;
 @Repository
 public interface DataAddressRepository extends JpaRepository<DataAddressEntity, UUID> {
 
-    @Query("""
-            SELECT d FROM DataAddressEntity d
-                WHERE d.client.id = :clientId
-            """)
+    @Query(value = """
+            SELECT a.* FROM address a
+            JOIN client c ON c.id = a.client_id
+                WHERE a.inactivated_dt IS NULL
+                AND c.id = :clientId
+            """, nativeQuery = true)
     List<DataAddressEntity> getAllDataAddressByClientId(@Param("clientId") UUID clientId);
 
 }
