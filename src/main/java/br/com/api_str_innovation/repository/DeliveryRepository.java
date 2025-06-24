@@ -1,5 +1,7 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
+import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;
@@ -164,7 +166,18 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
     );
 
     @Query(value = """
-            SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId AND status = :status
+            SELECT
+                d.delivery_request as deliveryRequest,
+                v.license_plate_number as vehiclePlate,
+                u.login AS driverLogin,
+                d.items,
+                d.status,
+                d.created_dt AS date
+            FROM deliveries d
+            JOIN vehicle v ON v.id = d.vehicle_id
+            JOIN users u ON u.id = d.driver_id
+            WHERE d.general_manager_id = :generalManagerId
+            AND d.status = :status
             """, nativeQuery = true)
     Page<DeliveryTableProjection> findByStatusAndGeneralManagerId(
             @Param("status") String status,

@@ -195,9 +195,8 @@ public class DeliveryService {
                 .map(DeliveryGenericResponseDTO::new);
     }
 
-    public Page<DeliveryResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
-        return repository.findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
-                .map(DeliveryResponseDTO::new);
+    public Page<DeliveryTableProjection> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
+        return repository.findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable);
     }
 
     public Integer count(UUID generalManagerId) {

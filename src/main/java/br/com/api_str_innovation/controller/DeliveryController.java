@@ -8,6 +8,7 @@ import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
+import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.service.DeliveryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -56,7 +57,7 @@ public class DeliveryController {
     }
 
     @GetMapping(value = "/status")
-    public ResponseEntity<Page<DeliveryResponseDTO>> getDriversByStatus(
+    public ResponseEntity<Page<DeliveryTableProjection>> getDriversByStatus(
             @RequestParam String status,
             Pageable pageable,
             @RequestHeader("general-manager-id") UUID generalManagerId
