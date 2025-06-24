@@ -156,7 +156,7 @@ public class DeliveryService {
 
     public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {
         return repository
-                .findDeliveries(pageable, generalManagerId)
+                .findDeliveries(generalManagerId, pageable)
                 .map(DeliveryGenericResponseDTO::new);
     }
 

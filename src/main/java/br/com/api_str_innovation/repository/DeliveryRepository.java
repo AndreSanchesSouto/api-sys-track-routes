@@ -17,12 +17,24 @@ import java.util.UUID;
 
 public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> {
 
-    @Query("""
-            SELECT d FROM DeliveryEntity d
-                WHERE d.inactivatedDt IS NULL
-                AND d.generalManagerId = :generalManagerId
-            """)
-    Page<DeliveryEntity> findDeliveries(Pageable pageable, @Param("generalManagerId") UUID generalManagerId);
+    @Query(value = """
+            SELECT d
+            FROM DeliveryEntity d
+            LEFT JOIN FETCH d.client client
+            LEFT JOIN FETCH d.address address
+            LEFT JOIN FETCH d.driver driver
+            LEFT JOIN FETCH d.vehicle vehicle
+            LEFT JOIN FETCH d.deliveryProducts deliveryProducts
+            WHERE d.inactivatedDt IS NULL
+            AND d.generalManagerId = :generalManagerId
+        """,
+        countQuery = """
+            SELECT COUNT(d)
+            FROM DeliveryEntity d
+            WHERE d.inactivatedDt IS NULL
+            AND d.generalManagerId = :generalManagerId
+        """)
+    Page<DeliveryEntity> findDeliveries(@Param("generalManagerId") UUID generalManagerId, Pageable pageable);
 
     @Query("""
             SELECT d FROM DeliveryEntity d
