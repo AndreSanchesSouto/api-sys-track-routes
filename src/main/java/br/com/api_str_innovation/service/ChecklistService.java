@@ -70,12 +70,13 @@ public class ChecklistService {
     @Autowired
     private DeliveryService deliveryService;
 
-    public List<ChecklistResponseDTO> getAll() {
+    public List<ChecklistResponseDTO> getAll(UUID generalManagerId) {
         return checklistRepository
-                .findAll()
-                .stream()
-                .map(ChecklistResponseDTO::new)
-                .toList();
+            .findAll()
+            .stream()
+            .filter(checklist -> checklist.getVehicle() != null && checklist.getVehicle().getGeneralManagerId() != null && checklist.getVehicle().getGeneralManagerId().equals(generalManagerId))
+            .map(ChecklistResponseDTO::new)
+            .toList();
     }
 
 //    public Page<ChecklistResponseDTO> getPaged(Pageable pageable, @PathVariable UUID id) {
@@ -313,8 +314,8 @@ public class ChecklistService {
         return checklistLogRepository.countChecklistStatusVehicleInactive(data.startDate(), data.endDate());
     }
 
-    public List<ChecklistReportDTO> getChecklistReport(UUID vehicleId, PeriodTimeRequestDTO data) {
-        List<Object[]> results = checklistLogRepository.findReportData(vehicleId, data.from(), data.to());
+    public List<ChecklistReportDTO> getChecklistReport(UUID vehicleId, UUID generalManagerId, PeriodTimeRequestDTO data) {
+        List<Object[]> results = checklistLogRepository.findReportData(vehicleId, generalManagerId, data.from(), data.to());
         List<ChecklistReportDTO> report = new ArrayList<>();
 
         for (Object[] row : results) {

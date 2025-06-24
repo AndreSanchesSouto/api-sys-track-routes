@@ -102,9 +102,11 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
            "JOIN vehicle v ON cl.vehicle_id = v.id " +
            "JOIN users u ON cl.employee_id = u.id " +
            "WHERE cl.vehicle_id = :vehicleId " +
+           "AND v.general_manager_id = :generalManagerId " +
            "AND DATE(cl.created_dt) BETWEEN :from AND :to " +
            "ORDER BY cl.created_dt DESC", nativeQuery = true)
     List<Object[]> findReportData(@Param("vehicleId") UUID vehicleId,
+                                  @Param("generalManagerId") UUID generalManagerId,
                                   @Param("from") LocalDate from,
                                   @Param("to") LocalDate to);
 

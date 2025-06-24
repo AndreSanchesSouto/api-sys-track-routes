@@ -44,8 +44,8 @@ public class ChecklistController {
     }
 
     @PostMapping("/report-failed/{vehicleId}")
-    public ResponseEntity<List<ChecklistReportDTO>> getChecklistReport(@PathVariable UUID vehicleId, @RequestBody PeriodTimeRequestDTO data) {
-        List<ChecklistReportDTO> reportFailedData = this.service.getChecklistReport(vehicleId, data);
+    public ResponseEntity<List<ChecklistReportDTO>> getChecklistReport(@PathVariable UUID vehicleId, @RequestHeader("general-manager-id") UUID generalManagerId, @RequestBody PeriodTimeRequestDTO data) {
+        List<ChecklistReportDTO> reportFailedData = this.service.getChecklistReport(vehicleId, generalManagerId, data);
         return ResponseEntity.ok(reportFailedData);
     }
 
@@ -59,5 +59,10 @@ public class ChecklistController {
     public ResponseEntity<String> delete(@PathVariable UUID id) {
         this.service.deleteById(id);
         return ResponseEntity.status(HttpStatus.CREATED).body("Deletado");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ChecklistResponseDTO>> getAll(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll(generalManagerId));
     }
 }

@@ -85,7 +85,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             """)
     List<UserEntity> findActiveUsers(@Param("generalManagerId") UUID generalManagerId);
 
-    @Query(""" 
+    @Query("""
             SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
             FROM UserEntity d
             WHERE d.createdDt BETWEEN :from AND :to
@@ -98,13 +98,14 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             @Param("to") LocalDate to,
             @Param("generalManagerId") UUID generalManagerId);
 
-    @Query(""" 
+    @Query("""
             SELECT d.name, d.login, d.role, EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month
             FROM UserEntity d
             WHERE d.createdDt BETWEEN :from AND :to
+            AND d.generalManagerId = :generalManagerId
             ORDER BY d.createdDt
             """)
-    List<Object[]> periodTimeUsers(@Param("from") LocalDate from, @Param("to") LocalDate to);
+    List<Object[]> periodTimeUsers(@Param("from") LocalDate from, @Param("to") LocalDate to, @Param("generalManagerId") UUID generalManagerId);
 
     Optional<UserEntity> findByEmail(String email);
 
