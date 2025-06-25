@@ -57,9 +57,19 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             JOIN address a
                 ON a.id = d.address_id
             WHERE a.id = :addressId
-            AND d.status IN ('canceled', 'confirmed')
+            AND d.status NOT IN ('canceled', 'confirmed')
             """, nativeQuery = true)
     DeliveryEntity findActiveByAddressId(@Param("addressId") UUID addressId);
+
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN users u
+                ON u.id = d.driver_id
+            WHERE u.id = :userId
+            AND d.status NOT IN ('canceled', 'confirmed')
+            AND u.status = 'unavailable'
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByUserId(@Param("userId") UUID userId);
 
     @Query("""
             SELECT d FROM DeliveryEntity d

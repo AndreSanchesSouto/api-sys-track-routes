@@ -96,7 +96,7 @@ public class DataAddressService {
 
     public ResponseEntity<Void> delete(UUID id) {
         DataAddressEntity address = this.findById(id);
-        if(deliveryService.findActiveByAddressId(id)==null) {
+        if(deliveryService.findActiveByAddressId(id)!=null) {
             throw new DataAddressException("Endereço em uso para uma ou mais entregas");
         }
         address.setInactivatedDt(LocalDate.now());

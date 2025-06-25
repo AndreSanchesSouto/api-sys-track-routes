@@ -10,6 +10,7 @@ import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.infra.security.Encrypter;
 import br.com.api_str_innovation.repository.UserRepository;
@@ -17,6 +18,7 @@ import io.micrometer.common.lang.Nullable;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,10 @@ public class UserService {
 
     @Autowired
     private AuthorizationService authorizationService;
+
+    @Lazy
+    @Autowired
+    private DeliveryService deliveryService;
 
     public UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
@@ -279,7 +285,9 @@ public class UserService {
         if(user.getInactivatedDt() != null) {
             throw new UserException("Usuário já inativo");
         }
-
+        if(deliveryService.findActiveByUserId(id)!=null) {
+            throw new DataAddressException("Funcionário com entrega pendente");
+        }
         user.setInactivatedDt(LocalDate.now());
         repository.save(user);
     }
