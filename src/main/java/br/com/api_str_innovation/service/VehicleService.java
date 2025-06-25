@@ -7,11 +7,13 @@ import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.exceptions.ClientException;
+import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,10 @@ public class VehicleService {
 
     @Autowired
     private VehicleRepository repository;
+
+    @Lazy
+    @Autowired
+    private DeliveryService deliveryService;
 
     public VehicleResponseDTO getById(UUID id) {
         return repository
@@ -169,6 +175,10 @@ public class VehicleService {
 
         if(vehicle.getInactivatedDt() != null) {
             throw new VehicleException("Veículo já inativo");
+        }
+
+        if(deliveryService.findActiveByVehicleId(id)!=null) {
+            throw new DataAddressException("Veículo com entrega pendente");
         }
 
         vehicle.setInactivatedDt(LocalDateTime.now());

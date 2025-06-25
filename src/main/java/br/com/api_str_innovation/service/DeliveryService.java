@@ -158,6 +158,10 @@ public class DeliveryService {
         return this.repository.findActiveByUserId(userId);
     }
 
+    public DeliveryEntity findActiveByVehicleId(UUID vehicleId) {
+        return this.repository.findActiveByVehicleId(vehicleId);
+    }
+
     @Transactional
     public ResponseEntity<Void> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
         DeliveryEntity delivery = this.repository.getReferenceById(id);
