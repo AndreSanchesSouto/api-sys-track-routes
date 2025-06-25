@@ -30,30 +30,29 @@ public class AuthorizationService implements UserDetailsService {
         return findByLogin(username);
     }
 
-    public Optional<UserEntity> verifyUserAndPassword(String login, String password) {
+    public Optional<UserEntity> verifyLoginAndPassword(String login, String password) {
         String hashPassword = Encrypter.encrypt(password);
         return repository.authIdentity(login, hashPassword);
     }
 
     public ResponseEntity<AuthenticationResponseDTO> authEmployee(AuthenticationRequestDTO credentials) {
-        UserEntity employee = this
-                .verifyUserAndPassword(credentials.login(), credentials.password())
-                .orElseThrow( () -> new UserException("Usuário não encontrado"));
+        Optional<UserEntity> employee = this.verifyLoginAndPassword(credentials.login(), credentials.password());
 
-        if(employee == null) {
-            verifyUserRegistered(credentials.login());
+        if(employee.isEmpty()) {
+            throw verifyUserRegistered(credentials.login());
         }
 
-        String token = tokenService.generateToken(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthenticationResponseDTO(token, employee));
+        String token = tokenService.generateToken(employee.get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthenticationResponseDTO(token, employee.get()));
 
     }
 
-    private void verifyUserRegistered(String login) {
-        String error = repository.findByLogin(login).isPresent() ?
-                "Senha incorreta" :
-                "Usuário não cadastrado";
-        throw new UserException(error);
+    private UserException verifyUserRegistered(String login) {
+        return repository.findByLogin(login).map(
+                (user) -> user.getInactivatedDt() == null ?
+                        new UserException("Senha incorreta") :
+                        new UserException("Usuário teve seu acesso revogado")
+        ).orElse( new UserException("Usuário não cadastrado"));
     }
 
     private UserDetails findByLogin(String username) {

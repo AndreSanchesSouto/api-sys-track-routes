@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
@@ -8,6 +9,7 @@ import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
+import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.service.DeliveryService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -56,7 +58,7 @@ public class DeliveryController {
     }
 
     @GetMapping(value = "/status")
-    public ResponseEntity<Page<DeliveryResponseDTO>> getDriversByStatus(
+    public ResponseEntity<Page<DeliveryTableProjection>> getDriversByStatus(
             @RequestParam String status,
             Pageable pageable,
             @RequestHeader("general-manager-id") UUID generalManagerId
@@ -79,6 +81,11 @@ public class DeliveryController {
             Pageable pageable,
             @RequestHeader("general-manager-id") UUID generalManagerId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
+    }
+
+    @GetMapping("/delivery-status")
+    public ResponseEntity<DashboardDeliveryDTO> getDeliveryStatus(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return this.service.getDeliveryStatus(generalManagerId);
     }
 
     @GetMapping(value = "/search/{attribute}")

@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.infra.exception;
 
+import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.TokenException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.exceptions.VehicleException;
@@ -60,6 +61,16 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(response.getStatus())
                 .body(response);
+    }
+
+    @ExceptionHandler(DataAddressException.class)
+    private ResponseEntity<ExceptionMessage> addressException(DataAddressException exception) {
+        ExceptionMessage response = new ExceptionMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage()
+        );
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
 //    @ExceptionHandler(NullPointerException.class)

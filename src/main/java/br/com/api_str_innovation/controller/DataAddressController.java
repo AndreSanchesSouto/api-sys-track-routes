@@ -52,8 +52,8 @@ public class DataAddressController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.delete(id));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        return this.service.delete(id);
     }
 }

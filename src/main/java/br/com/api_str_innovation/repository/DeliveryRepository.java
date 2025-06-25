@@ -1,8 +1,11 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
+import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -13,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> {
@@ -47,6 +51,44 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             @Param("deliveryRequest") String deliveryRequest,
             @Param("generalManagerId") UUID generalManagerId
     );
+
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN address a
+                ON a.id = d.address_id
+            WHERE a.id = :addressId
+            AND d.status NOT IN ('canceled', 'confirmed')
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByAddressId(@Param("addressId") UUID addressId);
+
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN users u
+                ON u.id = d.driver_id
+            WHERE u.id = :userId
+            AND d.status NOT IN ('canceled', 'confirmed')
+            AND u.status = 'unavailable'
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByUserId(@Param("userId") UUID userId);
+
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN vehicle v
+                ON v.id = d.vehicle_id
+            WHERE v.id = :vehicleId
+            AND d.status NOT IN ('canceled', 'confirmed')
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByVehicleId(@Param("vehicleId") UUID vehicleId);
+
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN vehicle v
+                ON v.id = d.vehicle_id
+            JOIN checklist c ON c.vehicle_id = v.id
+            WHERE c.id = :checklistId
+            AND d.status = 'active'
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByChecklistId(@Param("checklistId") UUID checklistId);
 
     @Query("""
             SELECT d FROM DeliveryEntity d
@@ -163,9 +205,21 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
     );
 
     @Query(value = """
-            SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId AND status = :status
+            SELECT
+                d.id,
+                d.delivery_request as deliveryRequest,
+                v.license_plate_number as vehiclePlate,
+                u.login AS driverLogin,
+                d.items,
+                d.status,
+                d.created_dt AS date
+            FROM deliveries d
+            JOIN vehicle v ON v.id = d.vehicle_id
+            JOIN users u ON u.id = d.driver_id
+            WHERE d.general_manager_id = :generalManagerId
+            AND d.status = :status
             """, nativeQuery = true)
-    Page<DeliveryEntity> findByStatusAndGeneralManagerId(
+    Page<DeliveryTableProjection> findByStatusAndGeneralManagerId(
             @Param("status") String status,
             @Param("generalManagerId")UUID generalManagerId,
             Pageable pageable

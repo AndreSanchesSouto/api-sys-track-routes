@@ -23,13 +23,13 @@ public record DeliveryProductsResponseDTO(
          List<DeliveryProductResponseDTO> deliveryProducts,
          VehicleEntity vehicle,
          String checklistDate,
-         UUID employeeIdChecklistDoneBy,
+         Boolean deliveryIsReadyToGo,
          DataAddressEntity address,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
 
-    public DeliveryProductsResponseDTO(DeliveryEntity data, List<DeliveryProductResponseDTO> deliveryProducts, String checklistDate, UUID employeeId) {
+    public DeliveryProductsResponseDTO(DeliveryEntity data, List<DeliveryProductResponseDTO> deliveryProducts, String checklistDate, Boolean deliveryIsReadyToGo) {
         this(
                 data.getId(),
                 data.getStatus().toUpperCase(),
@@ -39,7 +39,7 @@ public record DeliveryProductsResponseDTO(
                 deliveryProducts,
                 data.getVehicle(),
                 checklistDate,
-                employeeId,
+                deliveryIsReadyToGo,
                 data.getAddress(),
                 data.getCreatedDt(),
                 data.getInactivatedDt()

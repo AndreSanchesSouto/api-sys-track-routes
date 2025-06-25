@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Table(name = "address")
@@ -73,6 +74,13 @@ public class DataAddressEntity {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
+
+    @Setter
+    @Column(nullable = true)
+    private LocalDate createdDt = LocalDate.now();
+
+    @Setter
+    private LocalDate inactivatedDt;
 
     public DataAddressEntity(DataAddressRequestDTO data, ClientEntity client) {
         this.zipCode = data.zipCode();

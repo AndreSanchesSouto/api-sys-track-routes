@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
@@ -20,6 +21,7 @@ import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.DeliveryException;
 import br.com.api_str_innovation.exceptions.UserException;
+import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import br.com.api_str_innovation.repository.DeliveryRepository;
 import jakarta.transaction.Transactional;
@@ -34,6 +36,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,6 +79,7 @@ public class DeliveryService {
         this.validateUserType(driver);
 
         VehicleEntity vehicle = this.vehicleService.findById(data.vehicleId());
+        vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
         DeliveryEntity delivery = new DeliveryEntity();
 
         delivery.setClient(client);
@@ -145,6 +150,22 @@ public class DeliveryService {
         return (R * c) < 1;
     }
 
+    public DeliveryEntity findActiveByAddressId(UUID addressId) {
+        return this.repository.findActiveByAddressId(addressId);
+    }
+
+    public DeliveryEntity findActiveByUserId(UUID userId) {
+        return this.repository.findActiveByUserId(userId);
+    }
+
+    public DeliveryEntity findActiveByVehicleId(UUID vehicleId) {
+        return this.repository.findActiveByVehicleId(vehicleId);
+    }
+
+    public DeliveryEntity findActiveByChecklistId(UUID vehicleId) {
+        return this.repository.findActiveByChecklistId(vehicleId);
+    }
+
     @Transactional
     public ResponseEntity<Void> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
         DeliveryEntity delivery = this.repository.getReferenceById(id);
@@ -158,6 +179,28 @@ public class DeliveryService {
         return repository
                 .findDeliveries(generalManagerId, pageable)
                 .map(DeliveryGenericResponseDTO::new);
+    }
+
+    public ResponseEntity<DashboardDeliveryDTO> getDeliveryStatus(UUID generalManagerId) {
+        List<DeliveryEntity> vehicleEntities = this.getAllByGeneralManagerId(generalManagerId);
+        int waiting = 0;
+        int active = 0;
+        int onRoad = 0;
+        int canceled = 0;
+        int confirmed = 0;
+        int comingBack = 0;
+
+        for(DeliveryEntity delivery : vehicleEntities) {
+            switch(DeliveryStatus.valueOf(delivery.getStatus().toUpperCase())) {
+                case WAITING -> waiting++;
+                case ACTIVE -> active++;
+                case ON_ROAD -> onRoad++;
+                case CANCELED -> canceled++;
+                case CONFIRMED -> confirmed++;
+                case COMING_BACK -> comingBack++;
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new DashboardDeliveryDTO(waiting, active, onRoad, canceled, confirmed, comingBack));
     }
 
 
@@ -191,10 +234,8 @@ public class DeliveryService {
                 .map(DeliveryGenericResponseDTO::new);
     }
 
-    public Page<DeliveryResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
-        return repository
-                .findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable)
-                .map(DeliveryResponseDTO::new);
+    public Page<DeliveryTableProjection> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
+        return repository.findByStatusAndGeneralManagerId(status.toLowerCase(), generalManagerId, pageable);
     }
 
     public Integer count(UUID generalManagerId) {
@@ -373,12 +414,20 @@ public class DeliveryService {
                         delivery,
                         deliveryProductsResponse,
                         checklistEntity.getCreationDt().toString(),
-                        checklistEntity.getEmployeeId()
+                        this.deliveryIsReadyToGo(
+                                checklistEntity.getEmployeeId(),
+                                delivery.getDriver().getId(),
+                                checklistEntity.getCreationDt().toLocalDate()
+                        )
                 )
         ).orElseGet(() ->
                 new DeliveryProductsResponseDTO(delivery, deliveryProductsResponse)
         );
 
+    }
+
+    private Boolean deliveryIsReadyToGo(UUID checklistAuthor, UUID driverId, LocalDate creationData) {
+        return checklistAuthor.equals(driverId) && creationData.equals(LocalDate.now());
     }
 
     private DeliveryEntity findById(UUID id) {

@@ -11,6 +11,8 @@ CREATE TABLE address (
     reference_point VARCHAR(100) NULL,
     latitude DECIMAL(8,6) NOT NULL,
     longitude DECIMAL(9,6) NOT NULL,
+    created_dt DATE NOT NULL,
+    inactivated_dt DATE NULL,
     client_id UUID,
     FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
 );

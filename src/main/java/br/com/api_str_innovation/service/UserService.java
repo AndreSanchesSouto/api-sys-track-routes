@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
@@ -9,6 +10,7 @@ import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.infra.security.Encrypter;
 import br.com.api_str_innovation.repository.UserRepository;
@@ -16,6 +18,7 @@ import io.micrometer.common.lang.Nullable;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,6 +46,10 @@ public class UserService {
 
     @Autowired
     private AuthorizationService authorizationService;
+
+    @Lazy
+    @Autowired
+    private DeliveryService deliveryService;
 
     public UserEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
@@ -114,6 +122,22 @@ public class UserService {
                 .findActiveUsers(pageable, generalManagerId)
                 .map(UserResponseDTO::new);
     }
+
+    public ResponseEntity<DashboardDriversDTO> getDriversStatus(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        List<UserEntity> driverEntities = this.getAllDriversByGeneralManagerId(generalManagerId);
+        int active = 0;
+        int unavailable = 0;
+        int inactive = 0;
+        for(UserEntity driver : driverEntities) {
+            switch(UserStatus.valueOf(driver.getStatus().toUpperCase())) {
+                case ACTIVE -> active++;
+                case UNAVAILABLE -> unavailable++;
+                case INACTIVE -> inactive++;
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new DashboardDriversDTO(active, unavailable, inactive));
+    }
+
 
     public Page<UserResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
         return repository
@@ -261,7 +285,9 @@ public class UserService {
         if(user.getInactivatedDt() != null) {
             throw new UserException("Usuário já inativo");
         }
-
+        if(deliveryService.findActiveByUserId(id)!=null) {
+            throw new UserException("Funcionário com entrega pendente");
+        }
         user.setInactivatedDt(LocalDate.now());
         repository.save(user);
     }
