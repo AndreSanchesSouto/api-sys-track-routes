@@ -286,7 +286,7 @@ public class UserService {
             throw new UserException("Usuário já inativo");
         }
         if(deliveryService.findActiveByUserId(id)!=null) {
-            throw new DataAddressException("Funcionário com entrega pendente");
+            throw new UserException("Funcionário com entrega pendente");
         }
         user.setInactivatedDt(LocalDate.now());
         repository.save(user);

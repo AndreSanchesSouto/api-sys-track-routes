@@ -80,6 +80,16 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             """, nativeQuery = true)
     DeliveryEntity findActiveByVehicleId(@Param("vehicleId") UUID vehicleId);
 
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN vehicle v
+                ON v.id = d.vehicle_id
+            JOIN checklist c ON c.vehicle_id = v.id
+            WHERE c.id = :checklistId
+            AND d.status = 'active'
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByChecklistId(@Param("checklistId") UUID checklistId);
+
     @Query("""
             SELECT d FROM DeliveryEntity d
             JOIN d.vehicle vehicle

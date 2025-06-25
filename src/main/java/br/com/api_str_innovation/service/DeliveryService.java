@@ -162,6 +162,10 @@ public class DeliveryService {
         return this.repository.findActiveByVehicleId(vehicleId);
     }
 
+    public DeliveryEntity findActiveByChecklistId(UUID vehicleId) {
+        return this.repository.findActiveByChecklistId(vehicleId);
+    }
+
     @Transactional
     public ResponseEntity<Void> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
         DeliveryEntity delivery = this.repository.getReferenceById(id);

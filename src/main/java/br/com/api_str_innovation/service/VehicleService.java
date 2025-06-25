@@ -178,7 +178,7 @@ public class VehicleService {
         }
 
         if(deliveryService.findActiveByVehicleId(id)!=null) {
-            throw new DataAddressException("Veículo com entrega pendente");
+            throw new VehicleException("Veículo com entrega pendente");
         }
 
         vehicle.setInactivatedDt(LocalDateTime.now());

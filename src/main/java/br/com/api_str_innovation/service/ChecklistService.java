@@ -8,12 +8,14 @@ import br.com.api_str_innovation.entities.checklist.ChecklistFieldOptions;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.repository.ChecklistLogRepository;
 import br.com.api_str_innovation.repository.ChecklistRepository;
 import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +35,12 @@ public class ChecklistService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    @Autowired ChecklistLogRepository checklistLogRepository;
+    @Autowired
+    private ChecklistLogRepository checklistLogRepository;
+
+    @Lazy
+    @Autowired
+    private DeliveryService deliveryService;
 
     public List<ChecklistResponseDTO> getAll() {
         return checklistRepository
@@ -254,7 +261,11 @@ public class ChecklistService {
         if (!vehicle.getStatus().equals(VehicleStatus.ON_USE.getStatus())) {
             vehicleRepository.updateStatusVehicle(VehicleStatus.WAITING.getStatus(), vehicle.getId());
         }
-        
+
+        if(deliveryService.findActiveByChecklistId(id)!=null) {
+            throw new DataAddressException("Veículo em uso");
+        }
+
         checklistRepository.deleteById(id);
     }
 
