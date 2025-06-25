@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,7 +22,7 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
             "        checklist_log c " +
             "    WHERE " +
             "        c.vehicle_id = :vehicleId " +
-            "        AND c.created_dt BETWEEN :from AND :to " +
+            "        AND DATE(c.created_dt) BETWEEN :from AND :to " +
             ") " +
             "SELECT " +
             "    year, " +
@@ -48,8 +49,8 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
             "    checklist_log c " +
             "WHERE " +
             "    c.vehicle_id = :vehicleId " +
-            "    AND c.created_dt BETWEEN :from AND :to " +
-            "ORDER BY " +
+            "    AND DATE(c.created_dt) BETWEEN :from AND :to " +
+            "ORDER BY " +       
             "    c.created_dt", nativeQuery = true)
     List<Object[]> getDetailedKmSegments(@Param("vehicleId") UUID vehicleId,
                                          @Param("from") LocalDate from,
@@ -109,5 +110,7 @@ public interface ChecklistLogRepository extends JpaRepository<ChecklistLogEntity
                                   @Param("generalManagerId") UUID generalManagerId,
                                   @Param("from") LocalDate from,
                                   @Param("to") LocalDate to);
+
+    Optional<ChecklistLogEntity> findFirstByVehicleIdOrderByCreatedDtDesc(UUID vehicleId);
 
 }

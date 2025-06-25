@@ -107,6 +107,22 @@ public class ChecklistService {
 
     @Transactional
     public void post(UUID vehicleId, @Valid ChecklistRequestDTO data) {
+        ChecklistLogEntity lastLog = checklistLogRepository
+            .findFirstByVehicleIdOrderByCreatedDtDesc(vehicleId)
+            .orElse(null);
+
+        if (lastLog != null) {
+            try {
+                double lastKm = Double.parseDouble(lastLog.getKilometersNumber());
+                double newKm = Double.parseDouble(data.kilometersNumber());
+                if (newKm < lastKm) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quilometragem do novo checklist não pode ser menor que a última registrada: " + lastKm + " km");
+                }
+            } catch (NumberFormatException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quilometragem inválida no checklist atual ou anterior.");
+            }
+        }
+
         VehicleEntity vehicle = vehicleRepository.getReferenceById(vehicleId);
 
         if (!containsCriticalStatus(data)) {
