@@ -8,6 +8,7 @@ import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.repository.DataAddressRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,10 @@ public class DataAddressService {
 
     @Autowired
     private ClientService clientService;
+
+    @Lazy
+    @Autowired
+    private DeliveryService deliveryService;
 
     public List<DataAddressResponseDTO> getAll() {
         List<DataAddressResponseDTO> address = repository
@@ -91,6 +96,9 @@ public class DataAddressService {
 
     public ResponseEntity<Void> delete(UUID id) {
         DataAddressEntity address = this.findById(id);
+        if(deliveryService.findActiveByAddressId(id)==null) {
+            throw new DataAddressException("Endereço em uso para uma ou mais entregas");
+        }
         address.setInactivatedDt(LocalDate.now());
         repository.save(address);
         return new ResponseEntity<>(HttpStatus.OK);

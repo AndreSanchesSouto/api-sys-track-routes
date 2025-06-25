@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.service;
 
+import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -114,6 +116,22 @@ public class UserService {
                 .findActiveUsers(pageable, generalManagerId)
                 .map(UserResponseDTO::new);
     }
+
+    public ResponseEntity<DashboardDriversDTO> getDriversStatus(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        List<UserEntity> driverEntities = this.getAllDriversByGeneralManagerId(generalManagerId);
+        int active = 0;
+        int unavailable = 0;
+        int inactive = 0;
+        for(UserEntity driver : driverEntities) {
+            switch(UserStatus.valueOf(driver.getStatus().toUpperCase())) {
+                case ACTIVE -> active++;
+                case UNAVAILABLE -> unavailable++;
+                case INACTIVE -> inactive++;
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new DashboardDriversDTO(active, unavailable, inactive));
+    }
+
 
     public Page<UserResponseDTO> getByStatus(String status, Pageable pageable, UUID generalManagerId) {
         return repository

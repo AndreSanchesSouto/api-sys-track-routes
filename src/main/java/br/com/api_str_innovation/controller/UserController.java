@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.controller;
 
+import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
@@ -41,6 +42,11 @@ public class UserController {
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
+    }
+
+    @GetMapping("/driver-status")
+    public ResponseEntity<DashboardDriversDTO> getDriverStatus(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return this.service.getDriversStatus(generalManagerId);
     }
 
     @GetMapping(value = "/status")

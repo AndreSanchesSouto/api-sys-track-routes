@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
@@ -149,6 +150,10 @@ public class DeliveryService {
         return (R * c) < 1;
     }
 
+    public DeliveryEntity findActiveByAddressId(UUID addressId) {
+        return this.repository.findActiveByAddressId(addressId);
+    }
+
     @Transactional
     public ResponseEntity<Void> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
         DeliveryEntity delivery = this.repository.getReferenceById(id);
@@ -162,6 +167,28 @@ public class DeliveryService {
         return repository
                 .findDeliveries(generalManagerId, pageable)
                 .map(DeliveryGenericResponseDTO::new);
+    }
+
+    public ResponseEntity<DashboardDeliveryDTO> getDeliveryStatus(UUID generalManagerId) {
+        List<DeliveryEntity> vehicleEntities = this.getAllByGeneralManagerId(generalManagerId);
+        int waiting = 0;
+        int active = 0;
+        int onRoad = 0;
+        int canceled = 0;
+        int confirmed = 0;
+        int comingBack = 0;
+
+        for(DeliveryEntity delivery : vehicleEntities) {
+            switch(DeliveryStatus.valueOf(delivery.getStatus().toUpperCase())) {
+                case WAITING -> waiting++;
+                case ACTIVE -> active++;
+                case ON_ROAD -> onRoad++;
+                case CANCELED -> canceled++;
+                case CONFIRMED -> confirmed++;
+                case COMING_BACK -> comingBack++;
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new DashboardDeliveryDTO(waiting, active, onRoad, canceled, confirmed, comingBack));
     }
 
 
@@ -378,7 +405,7 @@ public class DeliveryService {
                         this.deliveryIsReadyToGo(
                                 checklistEntity.getEmployeeId(),
                                 delivery.getDriver().getId(),
-                                LocalDate.parse(checklistEntity.getCreationDt().toString())
+                                checklistEntity.getCreationDt().toLocalDate()
                         )
                 )
         ).orElseGet(() ->

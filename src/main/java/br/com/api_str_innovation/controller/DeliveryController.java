@@ -1,6 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
+import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
 import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
@@ -80,6 +81,11 @@ public class DeliveryController {
             Pageable pageable,
             @RequestHeader("general-manager-id") UUID generalManagerId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getPaged(pageable, generalManagerId));
+    }
+
+    @GetMapping("/delivery-status")
+    public ResponseEntity<DashboardDeliveryDTO> getDeliveryStatus(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return this.service.getDeliveryStatus(generalManagerId);
     }
 
     @GetMapping(value = "/search/{attribute}")

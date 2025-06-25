@@ -16,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> {
@@ -50,6 +51,15 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             @Param("deliveryRequest") String deliveryRequest,
             @Param("generalManagerId") UUID generalManagerId
     );
+
+    @Query(value = """
+            SELECT d.* FROM deliveries d
+            JOIN address a
+                ON a.id = d.address_id
+            WHERE a.id = :addressId
+            AND d.status IN ('canceled', 'confirmed')
+            """, nativeQuery = true)
+    DeliveryEntity findActiveByAddressId(@Param("addressId") UUID addressId);
 
     @Query("""
             SELECT d FROM DeliveryEntity d
@@ -167,6 +177,7 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
 
     @Query(value = """
             SELECT
+                d.id,
                 d.delivery_request as deliveryRequest,
                 v.license_plate_number as vehiclePlate,
                 u.login AS driverLogin,
