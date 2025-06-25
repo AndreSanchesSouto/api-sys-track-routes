@@ -485,4 +485,18 @@ public class DeliveryService {
     public List<DeliveryEntity> getAllByGeneralManagerId(UUID generalManagerId) {
         return this.repository.getAllByGeneralManagerId(generalManagerId);
     }
+
+    public List<DeliveryResponseDTO> getDeliveriesByPeriod(LocalDate from, LocalDate to, UUID generalManagerId) {
+        return repository.findDeliveriesByPeriod(from, to, generalManagerId)
+            .stream()
+            .map(DeliveryResponseDTO::new)
+            .toList();
+    }
+
+    public List<DeliveryResponseDTO> getDeliveriesByPeriodAndOptionalClient(LocalDate from, LocalDate to, UUID generalManagerId, UUID clientId) {
+        return repository.findDeliveriesByPeriodAndOptionalClient(from, to, generalManagerId, clientId)
+            .stream()
+            .map(DeliveryResponseDTO::new)
+            .toList();
+    }
 }
