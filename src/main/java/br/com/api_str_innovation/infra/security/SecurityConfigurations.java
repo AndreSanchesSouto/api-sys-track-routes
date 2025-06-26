@@ -102,7 +102,7 @@ public class SecurityConfigurations {
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "http://http://vc00w04w8wggoccw840k8o00.178.156.184.107.sslip.io",
+                "http://vc00w04w8wggoccw840k8o00.178.156.184.107.sslip.io",
                 "http://localhost:5173")
         );
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
