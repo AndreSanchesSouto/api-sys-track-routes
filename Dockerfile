@@ -13,5 +13,5 @@ FROM amazoncorretto:21-alpine
 WORKDIR /app
 COPY --from=build /app/target/api-str-innovation-*.jar app.jar
 
-EXPOSE 8080
+EXPOSE 2023
 ENTRYPOINT ["java", "-jar", "app.jar"]
