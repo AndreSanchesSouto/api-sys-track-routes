@@ -98,6 +98,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
         SELECT p FROM ProductEntity p
             WHERE p.inactivatedDt IS NULL
             AND p. generalManagerId = :generalManagerId
+            AND p.quantity > 0
     """)
     List<ProductEntity> findActiveProducts(@Param("generalManagerId") UUID generalManagerId);
 
