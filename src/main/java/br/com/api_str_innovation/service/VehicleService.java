@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -51,10 +52,8 @@ public class VehicleService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Veículo não encontrado"));
     }
 
-    private void existsPlateNumber(String licensePlateNumber) {
-        if (repository.findByLicensePlateNumber(licensePlateNumber).isPresent() ) {
-            throw new VehicleException(String.format("A placa '%s' já está em uso.", licensePlateNumber));
-        }
+    private Optional<VehicleEntity> existsPlateNumber(String licensePlateNumber) {
+        return repository.findByLicensePlateNumber(licensePlateNumber);
     }
 
     public List<VehicleResponseDTO> getAll() {
@@ -136,13 +135,19 @@ public class VehicleService {
     }
 
     public void post(@Valid VehicleRequestDTO data, UUID generalManagerId) {
-        existsPlateNumber(data.licensePlateNumber());
+        if (existsPlateNumber(data.licensePlateNumber()).isPresent()) {
+            throw new VehicleException("A placa já está em uso.");
+        }
         repository.save(new VehicleEntity(data, generalManagerId));
     }
 
     @Transactional
     public VehicleResponseDTO put(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
-        existsPlateNumber(data.licensePlateNumber());
+        Optional<VehicleEntity> finder = existsPlateNumber(data.licensePlateNumber());
+        if(finder.isPresent() && !finder.get().getId().equals(id)) {
+            throw new VehicleException("A placa '%s' já está em uso.");
+        }
+
         VehicleEntity vehicle = findById(id);
 
         vehicle.setLicensePlateNumber(data.licensePlateNumber());
