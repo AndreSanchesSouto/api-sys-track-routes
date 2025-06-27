@@ -92,12 +92,11 @@ public class DeliveryService {
 
         List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
+            if(productDTO.quantity() == 0) continue;
+
             ProductEntity product = productService.findById(productDTO.productId());
-
             DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
-
             deliveryProduct.setDelivery(delivery);
-
             deliveryProducts.add(deliveryProduct);
 
             Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
@@ -268,26 +267,32 @@ public class DeliveryService {
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
-            Optional<DeliveryProductEntity> deliveryProductEntity = this.deliveryProductService.getByDeliveryIdAndProductId(
+            DeliveryProductEntity deliveryProductEntity = this.deliveryProductService.getByDeliveryIdAndProductId(
                     deliveryEntity.getId(),
                     product.getId()
             );
 
-            if(deliveryProductEntity.isPresent()) {
-                Integer actualQuantity = this.recalculateProductsQuantity(
-                        product.getQuantity(),
-                        productDTO.quantity(),
-                        deliveryProductEntity.get().getQuantity()
-                );
-                this.productService.updateProductQuantity(product.getId(), actualQuantity);
-                this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.get().getId(), productDTO.quantity());
-            } else {
-                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
-                deliveryProduct.setDelivery(deliveryEntity);
-                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
-                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
-                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+            Integer actualQuantity = this.recalculateProductsQuantity(
+                    product.getQuantity(),
+                    productDTO.quantity(),
+                    deliveryProductEntity.getQuantity()
+            );
+
+            if(productDTO.quantity() == 0) {
+                System.out.println("Valor 0");
+                this.removeProductFromDelivery(productDTO.productId(), id);
+                continue;
             }
+
+            this.productService.updateProductQuantity(product.getId(), actualQuantity);
+            this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.getId(), productDTO.quantity());
+//            else {
+//                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
+//                deliveryProduct.setDelivery(deliveryEntity);
+//                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
+//                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
+//                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+//            }
             deliveryEntity.setItems(deliveryEntity.getDeliveryProducts().size());
 
         }
@@ -305,6 +310,12 @@ public class DeliveryService {
                 .toList();
 
         return new DeliveryProductsResponseDTO(deliveryEntity, deliveryProductsResponse);
+    }
+
+    @Transactional
+    public void removeProductFromDelivery(UUID productId, UUID deliveryId) {
+        this.findById(deliveryId);
+        this.deliveryProductService.deleteByDeliveryIdAndProductId(deliveryId, productId);
     }
 
     @Transactional
