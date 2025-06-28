@@ -124,14 +124,4 @@ public class DeliveryController {
     public ResponseEntity<Void> inactiveDelivery(@PathVariable UUID id) {
         return this.service.inactiveDelivery(id);
     }
-
-    @PostMapping("/report/period")
-    public ResponseEntity<List<DeliveryResponseDTO>> getDeliveriesByPeriodAndOptionalClient(
-            @RequestBody br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO data,
-            @RequestParam(value = "clientId", required = false) java.util.UUID clientId,
-            @RequestHeader("general-manager-id") java.util.UUID generalManagerId
-    ) {
-        List<DeliveryResponseDTO> deliveries = service.getDeliveriesByPeriodAndOptionalClient(data.from(), data.to(), generalManagerId, clientId);
-        return ResponseEntity.ok(deliveries);
-    }
 }

@@ -19,12 +19,6 @@ public class ChecklistController {
     @Autowired
     private ChecklistService service;
 
-    @PostMapping("/{vehicleId}")
-    public ResponseEntity<Void> post(@PathVariable UUID vehicleId, @RequestBody ChecklistRequestDTO data) {
-        this.service.post(vehicleId, data);
-        return new ResponseEntity<Void>(HttpStatus.CREATED);
-    }
-
     @GetMapping("/get-by-vehicle-id/{vehicleId}")
     public ResponseEntity<ChecklistResponseDTO> getByVehicleId(@PathVariable UUID vehicleId) {
         ChecklistResponseDTO checklist = this.service.getByVehicleId(vehicleId);
