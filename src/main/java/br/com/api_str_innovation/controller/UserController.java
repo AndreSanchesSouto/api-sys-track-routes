@@ -7,6 +7,7 @@ import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -27,8 +28,8 @@ public class UserController {
     private UserService service;
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
+    public ResponseEntity<List<UserEntity>> getAll(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAllDriversByGeneralManagerId(generalManagerId));
     }
 
     @GetMapping("/drivers")
@@ -95,8 +96,10 @@ public class UserController {
     }
 
     @PostMapping("/period-of-creation")
-    public ResponseEntity<List<Object[]>> periodOfCreation(@Valid @RequestBody PeriodTimeRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data));
+    public ResponseEntity<List<Object[]>> periodOfCreation(
+            @Valid @RequestBody PeriodTimeRequestDTO data,
+            @RequestBody UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data, generalManagerId));
     }
 
     @PatchMapping("/{id}/change-password")

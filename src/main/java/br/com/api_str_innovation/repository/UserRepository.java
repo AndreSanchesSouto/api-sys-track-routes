@@ -89,10 +89,14 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
             FROM UserEntity d
             WHERE d.createdDt BETWEEN :from AND :to
+            AND d.generalManagerId = :generalManagerId
             GROUP BY EXTRACT(YEAR FROM d.createdDt), EXTRACT(MONTH FROM d.createdDt)
             ORDER BY year, month
             """)
-    List<Object[]> periodTime(@Param("from") LocalDate from, @Param("to") LocalDate to);
+    List<Object[]> periodTime(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId);
 
     Optional<UserEntity> findByEmail(String email);
 

@@ -93,13 +93,13 @@ public class UserService {
         }
     }
 
-    public List<UserResponseDTO> getAll() {
-        return repository
-                .findAll()
-                .stream()
-                .map(UserResponseDTO::new)
-                .toList();
-    }
+//    public List<UserResponseDTO> getAll() {
+//        return repository
+//                .findAll()
+//                .stream()
+//                .map(UserResponseDTO::new)
+//                .toList();
+//    }
 
     public List<UserResponseDTO> getDrivers(UUID generalManagerId) {
         return repository
@@ -182,8 +182,8 @@ public class UserService {
         repository.save(user);
     }
 
-    public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO) {
-        return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
+    public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
+        return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId);
     }
 
     public ResponseEntity<Void> changeUserPassword(UUID id, UserChangePasswordDTO data) {
