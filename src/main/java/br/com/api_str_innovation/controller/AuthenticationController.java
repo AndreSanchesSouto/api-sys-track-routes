@@ -28,8 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid UserRequestDTO data) {
-        this.service.postGeneralManager(data);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
+    public ResponseEntity<Void> register(@RequestBody @Valid UserRequestDTO data) {
+        return this.service.postGeneralManager(data);
     }
 }

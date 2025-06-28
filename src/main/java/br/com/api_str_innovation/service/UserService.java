@@ -164,15 +164,24 @@ public class UserService {
         return new UserResponseDTO(user);
     }
 
-    public void postGeneralManager(@Valid UserRequestDTO data) {
+    public ResponseEntity<Void> postGeneralManager(@Valid UserRequestDTO data) {
+        this.validatePasswordAndConfirmation(data.password(), data.confirmPassword());
+
         existsMailOrLoginOrDocument(data, null);
         validateDocumentByRole(data);
 
         UserEntity user = new UserEntity(data);
         repository.save(user);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    private void validatePasswordAndConfirmation(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) throw new UserException("As senhas não coincidem.");
     }
 
     public void post(@Valid UserRequestDTO data, UUID generalManagerId) {
+        this.validatePasswordAndConfirmation(data.password(), data.confirmPassword());
         existsMailOrLoginOrDocument(data, null);
         if (data.document() != null) validateDocumentByRole(data);
 
