@@ -1,12 +1,12 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
+import br.com.api_str_innovation.dto.user.PeriodCreationResponseDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
-import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
@@ -17,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -98,9 +96,9 @@ public class UserController {
     }
 
     @PostMapping("/period-of-creation")
-    public ResponseEntity<List<Object[]>> periodOfCreation(
+    public ResponseEntity<PeriodCreationResponseDTO> periodOfCreation(
             @Valid @RequestBody PeriodTimeRequestDTO data,
-            @RequestBody UUID generalManagerId) {
+            @RequestHeader("general-manager-id") UUID generalManagerId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.periodOfCreation(data, generalManagerId));
     }
 

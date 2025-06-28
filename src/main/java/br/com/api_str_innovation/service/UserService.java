@@ -1,16 +1,15 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
+import br.com.api_str_innovation.dto.user.PeriodCreationResponseDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
-import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
-import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.infra.security.Encrypter;
 import br.com.api_str_innovation.repository.UserRepository;
@@ -182,8 +181,38 @@ public class UserService {
         repository.save(user);
     }
 
-    public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
-        return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId);
+    public PeriodCreationResponseDTO periodOfCreation(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
+        List<Object[]> periodResults = repository.periodTime(
+                periodTimeDTO.from(),
+                periodTimeDTO.to(),
+                generalManagerId
+        );
+
+        List<UserEntity> users = repository.findUsersByPeriod(
+                periodTimeDTO.from(),
+                periodTimeDTO.to(),
+                generalManagerId
+        );
+
+        List<PeriodCreationResponseDTO.PeriodReportDTO> periodData = periodResults.stream()
+                .map(row -> new PeriodCreationResponseDTO.PeriodReportDTO(
+                        ((Number) row[0]).intValue(),
+                        ((Number) row[1]).intValue(),
+                        ((Number) row[2]).longValue()
+                ))
+                .toList();
+
+        List<PeriodCreationResponseDTO.UserDetailDTO> userDetails = users.stream()
+                .map(user -> new PeriodCreationResponseDTO.UserDetailDTO(
+                        user.getName(),
+                        user.getLogin(),
+                        user.getRole(),
+                        user.getCreatedDt().getYear(),
+                        user.getCreatedDt().getMonthValue()
+                ))
+                .toList();
+
+        return new PeriodCreationResponseDTO(periodData, userDetails);
     }
 
     public ResponseEntity<Void> changeUserPassword(UUID id, UserChangePasswordDTO data) {

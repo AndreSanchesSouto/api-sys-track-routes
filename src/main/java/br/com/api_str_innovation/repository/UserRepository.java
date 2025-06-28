@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
@@ -85,15 +86,29 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             """)
     List<UserEntity> findActiveUsers(@Param("generalManagerId") UUID generalManagerId);
 
-    @Query("""
-            SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
-            FROM UserEntity d
-            WHERE d.createdDt BETWEEN :from AND :to
-            AND d.generalManagerId = :generalManagerId
-            GROUP BY EXTRACT(YEAR FROM d.createdDt), EXTRACT(MONTH FROM d.createdDt)
-            ORDER BY year, month
-            """)
+    @Query(value = """
+    SELECT 
+        EXTRACT(YEAR FROM created_dt) as year,
+        EXTRACT(MONTH FROM created_dt) as month,
+        COUNT(*) as driver_count
+        FROM users 
+        WHERE created_dt BETWEEN :from AND :to
+        AND general_manager_id = :generalManagerId
+        GROUP BY EXTRACT(YEAR FROM created_dt), EXTRACT(MONTH FROM created_dt)
+        ORDER BY year, month
+        """, nativeQuery = true)
     List<Object[]> periodTime(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+    SELECT u FROM UserEntity u
+    WHERE u.createdDt BETWEEN :from AND :to
+    AND u.generalManagerId = :generalManagerId
+    ORDER BY u.createdDt
+    """)
+    List<UserEntity> findUsersByPeriod(
             @Param("from") LocalDate from,
             @Param("to") LocalDate to,
             @Param("generalManagerId") UUID generalManagerId);
