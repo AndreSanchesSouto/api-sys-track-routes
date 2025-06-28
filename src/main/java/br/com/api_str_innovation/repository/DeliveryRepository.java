@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -229,4 +230,18 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId
             """, nativeQuery = true)
     List<DeliveryEntity> getAllByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+        SELECT d FROM DeliveryEntity d
+        LEFT JOIN FETCH d.client c
+        LEFT JOIN FETCH d.deliveryProducts dp
+        WHERE d.createdDt BETWEEN :from AND :to
+        AND d.generalManagerId = :generalManagerId
+        AND d.inactivatedDt IS NULL
+        ORDER BY d.createdDt ASC
+        """)
+    List<DeliveryEntity> getAllDeliveriesByPeriod(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId);
 }

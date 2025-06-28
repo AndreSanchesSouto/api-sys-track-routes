@@ -48,6 +48,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/user").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/user").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.POST, "/delivery/report/period").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PUT, "/delivery").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PATCH, "/delivery", "/delivery/inactive/*").hasAnyRole("ADMIN", "SHIPPING")

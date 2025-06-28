@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
@@ -202,6 +203,38 @@ public class DeliveryService {
         return ResponseEntity.status(HttpStatus.OK).body(new DashboardDeliveryDTO(waiting, active, onRoad, canceled, confirmed, comingBack));
     }
 
+    public List<DeliveryReportDTO> getAllDeliveriesByPeriod(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
+        List<DeliveryEntity> deliveries = this.repository.getAllDeliveriesByPeriod(
+                periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId
+        );
+
+        List<DeliveryReportDTO> report = new ArrayList<>();
+        for (DeliveryEntity delivery : deliveries) {
+            double totalWeight = 0.0;
+            double totalPaid = 0.0;
+            List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
+            for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
+                double weight = dp.getMeasure() * dp.getQuantity();
+                double price = dp.getPrice() * dp.getQuantity();
+                products.add(new DeliveryReportDTO.ProductInfo(
+                        dp.getName(),
+                        dp.getQuantity(),
+                        weight,
+                        price
+                ));
+                totalWeight += weight;
+                totalPaid += price;
+            }
+            report.add(new DeliveryReportDTO(
+                    delivery.getDeliveryRequest(),
+                    delivery.getClient().getName(),
+                    products,
+                    totalWeight,
+                    totalPaid
+            ));
+        }
+        return report;
+    }
 
     public Page<DeliveryGenericResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
         return switch (attribute) {

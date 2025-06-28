@@ -2,11 +2,9 @@ package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.projections.DeliveryTableProjection;
@@ -20,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +63,14 @@ public class DeliveryController {
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getByStatus(status, pageable, generalManagerId));
+    }
+
+    @PostMapping(value = "/report/period")
+    public ResponseEntity<List<DeliveryReportDTO>> getAllDeliveriesByPeriod(
+            @Valid @RequestBody PeriodTimeRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAllDeliveriesByPeriod(data, generalManagerId));
     }
 
     @GetMapping("/count")
