@@ -237,6 +237,40 @@ public class DeliveryService {
         return report;
     }
 
+    public List<DeliveryReportDTO> getDeliveriesPeriodById(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId, UUID clientId) {
+        List<DeliveryEntity> deliveries = this.repository.getDeliveriesPeriodById(
+                periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId, clientId
+        );
+
+        List<DeliveryReportDTO> report = new ArrayList<>();
+        for (DeliveryEntity delivery : deliveries) {
+            double totalWeight = 0.0;
+            double totalPaid = 0.0;
+            List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
+            for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
+                double weight = dp.getMeasure() * dp.getQuantity();
+                double price = dp.getPrice() * dp.getQuantity();
+                products.add(new DeliveryReportDTO.ProductInfo(
+                        dp.getName(),
+                        dp.getQuantity(),
+                        weight,
+                        price
+                ));
+                totalWeight += weight;
+                totalPaid += price;
+            }
+            report.add(new DeliveryReportDTO(
+                    delivery.getDeliveryRequest(),
+                    delivery.getClient().getName(),
+                    products,
+                    totalWeight,
+                    totalPaid,
+                    delivery.getCreatedDt()
+            ));
+        }
+        return report;
+    }
+
     public Page<DeliveryGenericResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
         return switch (attribute) {
             case "deliveryRequest" -> repository
@@ -413,6 +447,7 @@ public class DeliveryService {
         );
 
         delivery.setStatus(DeliveryStatus.CANCELED.getStatus());
+        delivery.setInactivatedDt(LocalDate.now());
 
         this.repository.save(delivery);
 

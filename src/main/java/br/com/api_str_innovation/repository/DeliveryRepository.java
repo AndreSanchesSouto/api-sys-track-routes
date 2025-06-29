@@ -244,6 +244,23 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             @Param("from") LocalDate from,
             @Param("to") LocalDate to,
             @Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+        SELECT d FROM DeliveryEntity d
+        LEFT JOIN FETCH d.client c
+        LEFT JOIN FETCH d.deliveryProducts dp
+        WHERE d.createdDt BETWEEN :from AND :to
+        AND d.client.id = :clientId
+        AND d.generalManagerId = :generalManagerId
+        AND d.inactivatedDt IS NULL
+        ORDER BY d.createdDt ASC
+        """)
+    List<DeliveryEntity> getDeliveriesPeriodById(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId,
+            @Param("clientId") UUID clientId);
+
     @Query("""
     SELECT d FROM DeliveryEntity d
     WHERE Date(d.createdDt) BETWEEN :from AND :to

@@ -94,6 +94,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
         FROM users 
         WHERE created_dt BETWEEN :from AND :to
         AND general_manager_id = :generalManagerId
+        AND inactivated_dt IS NULL
         GROUP BY EXTRACT(YEAR FROM created_dt), EXTRACT(MONTH FROM created_dt)
         ORDER BY year, month
         """, nativeQuery = true)
@@ -106,6 +107,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     SELECT u FROM UserEntity u
     WHERE u.createdDt BETWEEN :from AND :to
     AND u.generalManagerId = :generalManagerId
+    AND inactivatedDt IS NULL
     ORDER BY u.createdDt
     """)
     List<UserEntity> findUsersByPeriod(
@@ -118,6 +120,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             FROM UserEntity d
             WHERE d.createdDt BETWEEN :from AND :to
             AND d.generalManagerId = :generalManagerId
+            AND inactivatedDt IS NULL
             ORDER BY d.createdDt
             """)
     List<Object[]> periodTimeUsers(@Param("from") LocalDate from, @Param("to") LocalDate to, @Param("generalManagerId") UUID generalManagerId);
