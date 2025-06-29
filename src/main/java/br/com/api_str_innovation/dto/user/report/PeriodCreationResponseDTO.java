@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.dto.user;
+package br.com.api_str_innovation.dto.user.report;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.controller;
 
 import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
-import br.com.api_str_innovation.dto.user.PeriodCreationResponseDTO;
+import br.com.api_str_innovation.dto.user.report.PeriodCreationResponseDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
