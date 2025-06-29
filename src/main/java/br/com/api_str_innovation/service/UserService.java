@@ -323,4 +323,8 @@ public class UserService {
     public List<UserEntity> getAllDriversByGeneralManagerId(UUID generalManagerId) {
         return this.repository.getAllDriversByGeneralManagerId(generalManagerId);
     }
+
+    public List<UserEntity> getAllEmployeesByGeneralManagerId(UUID generalManagerId) {
+        return this.repository.getAllEmployeesByGeneralManagerId(generalManagerId);
+    }
 }

@@ -147,4 +147,11 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             role = 'driver'
             """, nativeQuery = true)
     List<UserEntity> getAllDriversByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
+
+    @Query(value = """
+            SELECT * FROM users
+            WHERE general_manager_id = :generalManagerId
+            AND inactivated_dt IS NULL
+            """, nativeQuery = true)
+    List<UserEntity> getAllEmployeesByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
 }

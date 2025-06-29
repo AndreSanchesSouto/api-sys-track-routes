@@ -32,6 +32,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getAllDriversByGeneralManagerId(generalManagerId));
     }
 
+    @GetMapping("employees")
+    public ResponseEntity<List<UserEntity>> getAllEmployeesByGeneralManagerId(@RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAllEmployeesByGeneralManagerId(generalManagerId));
+    }
+
     @GetMapping("/drivers")
     public ResponseEntity<List<UserResponseDTO>> getDrivers(@RequestHeader("general-manager-id") UUID generalManagerId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getDrivers(generalManagerId));
