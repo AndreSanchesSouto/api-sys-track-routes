@@ -230,7 +230,8 @@ public class DeliveryService {
                     delivery.getClient().getName(),
                     products,
                     totalWeight,
-                    totalPaid
+                    totalPaid,
+                    delivery.getCreatedDt()
             ));
         }
         return report;

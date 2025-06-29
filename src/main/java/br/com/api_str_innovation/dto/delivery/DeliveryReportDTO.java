@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.dto.delivery;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public record DeliveryReportDTO(
@@ -7,7 +8,8 @@ public record DeliveryReportDTO(
         String clientName,
         List<ProductInfo> products,
         Double totalWeight,
-        Double totalPaid
+        Double totalPaid,
+        LocalDate createdDt
 ) {
     public record ProductInfo(
             String name,
