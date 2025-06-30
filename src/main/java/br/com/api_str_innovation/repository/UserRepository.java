@@ -1,5 +1,6 @@
 package br.com.api_str_innovation.repository;
 
+import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import org.springframework.data.domain.Page;
@@ -85,14 +86,44 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             """)
     List<UserEntity> findActiveUsers(@Param("generalManagerId") UUID generalManagerId);
 
-    @Query(""" 
-            SELECT EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month, COUNT(d) AS driverCount
+    @Query(value = """
+    SELECT 
+        EXTRACT(YEAR FROM created_dt) as year,
+        EXTRACT(MONTH FROM created_dt) as month,
+        COUNT(*) as driver_count
+        FROM users 
+        WHERE created_dt BETWEEN :from AND :to
+        AND general_manager_id = :generalManagerId
+        AND inactivated_dt IS NULL
+        GROUP BY EXTRACT(YEAR FROM created_dt), EXTRACT(MONTH FROM created_dt)
+        ORDER BY year, month
+        """, nativeQuery = true)
+    List<Object[]> periodTime(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+    SELECT u FROM UserEntity u
+    WHERE u.createdDt BETWEEN :from AND :to
+    AND u.generalManagerId = :generalManagerId
+    AND inactivatedDt IS NULL
+    ORDER BY u.createdDt
+    """)
+    List<UserEntity> findUsersByPeriod(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+            SELECT d.name, d.login, d.role, EXTRACT(YEAR FROM d.createdDt) AS year, EXTRACT(MONTH FROM d.createdDt) AS month
             FROM UserEntity d
             WHERE d.createdDt BETWEEN :from AND :to
-            GROUP BY EXTRACT(YEAR FROM d.createdDt), EXTRACT(MONTH FROM d.createdDt)
-            ORDER BY year, month
+            AND d.generalManagerId = :generalManagerId
+            AND inactivatedDt IS NULL
+            ORDER BY d.createdDt
             """)
-    List<Object[]> periodTime(@Param("from") LocalDate from, @Param("to") LocalDate to);
+    List<Object[]> periodTimeUsers(@Param("from") LocalDate from, @Param("to") LocalDate to, @Param("generalManagerId") UUID generalManagerId);
 
     Optional<UserEntity> findByEmail(String email);
 
@@ -119,4 +150,11 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
             role = 'driver'
             """, nativeQuery = true)
     List<UserEntity> getAllDriversByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
+
+    @Query(value = """
+            SELECT * FROM users
+            WHERE general_manager_id = :generalManagerId
+            AND inactivated_dt IS NULL
+            """, nativeQuery = true)
+    List<UserEntity> getAllEmployeesByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
 }

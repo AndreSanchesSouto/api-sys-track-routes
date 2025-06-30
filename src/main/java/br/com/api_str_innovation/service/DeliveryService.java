@@ -1,16 +1,17 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
-import br.com.api_str_innovation.dto.user.UserResponseDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryStatus;
+import br.com.api_str_innovation.entities.delivery.delivery_user_log.LogsUserDeliveryEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.delivery_product.delivery_user_log.LogsUserDeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
@@ -24,6 +25,8 @@ import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import br.com.api_str_innovation.repository.DeliveryRepository;
+import br.com.api_str_innovation.repository.LogsUserDeliveryProductRepository;
+import br.com.api_str_innovation.repository.LogsUserDeliveryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +72,13 @@ public class DeliveryService {
     @Autowired
     private DeliveryProductService deliveryProductService;
 
-    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId) {
+    @Autowired
+    private LogsUserDeliveryRepository logsUserDeliveryRepository;
+
+    @Autowired
+    private LogsUserDeliveryProductRepository logsUserDeliveryProductRepository;
+
+    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId, UUID userId) {
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
         this.validateAddressToClient(client, address);
@@ -92,12 +100,11 @@ public class DeliveryService {
 
         List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
+            if(productDTO.quantity() == 0) continue;
+
             ProductEntity product = productService.findById(productDTO.productId());
-
             DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
-
             deliveryProduct.setDelivery(delivery);
-
             deliveryProducts.add(deliveryProduct);
 
             Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
@@ -108,6 +115,23 @@ public class DeliveryService {
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "criado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
+        for (DeliveryProductEntity product : delivery.getDeliveryProducts()) {
+            LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
+            logProduct.setProductId(product.getProductId());
+            logProduct.setName(product.getName());
+            logProduct.setQuantity(product.getQuantity());
+            logProduct.setMeasure(product.getMeasure());
+            logProduct.setUnit(product.getUnitValue());
+            logProduct.setLog(userLog);
+
+            logsUserDeliveryProductRepository.save(logProduct);
+        }
+
         return new DeliveryResponseDTO(delivery);
     }
 
@@ -203,6 +227,73 @@ public class DeliveryService {
         return ResponseEntity.status(HttpStatus.OK).body(new DashboardDeliveryDTO(waiting, active, onRoad, canceled, confirmed, comingBack));
     }
 
+    public List<DeliveryReportDTO> getAllDeliveriesByPeriod(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
+        List<DeliveryEntity> deliveries = this.repository.getAllDeliveriesByPeriod(
+                periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId
+        );
+
+        List<DeliveryReportDTO> report = new ArrayList<>();
+        for (DeliveryEntity delivery : deliveries) {
+            double totalWeight = 0.0;
+            double totalPaid = 0.0;
+            List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
+            for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
+                double weight = dp.getMeasure() * dp.getQuantity();
+                double price = dp.getPrice() * dp.getQuantity();
+                products.add(new DeliveryReportDTO.ProductInfo(
+                        dp.getName(),
+                        dp.getQuantity(),
+                        weight,
+                        price
+                ));
+                totalWeight += weight;
+                totalPaid += price;
+            }
+            report.add(new DeliveryReportDTO(
+                    delivery.getDeliveryRequest(),
+                    delivery.getClient().getName(),
+                    products,
+                    totalWeight,
+                    totalPaid,
+                    delivery.getCreatedDt()
+            ));
+        }
+        return report;
+    }
+
+    public List<DeliveryReportDTO> getDeliveriesPeriodById(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId, UUID clientId) {
+        List<DeliveryEntity> deliveries = this.repository.getDeliveriesPeriodById(
+                periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId, clientId
+        );
+
+        List<DeliveryReportDTO> report = new ArrayList<>();
+        for (DeliveryEntity delivery : deliveries) {
+            double totalWeight = 0.0;
+            double totalPaid = 0.0;
+            List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
+            for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
+                double weight = dp.getMeasure() * dp.getQuantity();
+                double price = dp.getPrice() * dp.getQuantity();
+                products.add(new DeliveryReportDTO.ProductInfo(
+                        dp.getName(),
+                        dp.getQuantity(),
+                        weight,
+                        price
+                ));
+                totalWeight += weight;
+                totalPaid += price;
+            }
+            report.add(new DeliveryReportDTO(
+                    delivery.getDeliveryRequest(),
+                    delivery.getClient().getName(),
+                    products,
+                    totalWeight,
+                    totalPaid,
+                    delivery.getCreatedDt()
+            ));
+        }
+        return report;
+    }
 
     public Page<DeliveryGenericResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
         return switch (attribute) {
@@ -246,7 +337,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
+    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data, UUID userId) {
         DeliveryEntity deliveryEntity = findById(id);
         if(deliveryEntity.getStatus().equals(DeliveryStatus.CANCELED.getStatus())) {
             throw new DeliveryException("Entrega inativa");
@@ -268,26 +359,32 @@ public class DeliveryService {
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
-            Optional<DeliveryProductEntity> deliveryProductEntity = this.deliveryProductService.getByDeliveryIdAndProductId(
+            DeliveryProductEntity deliveryProductEntity = this.deliveryProductService.getByDeliveryIdAndProductId(
                     deliveryEntity.getId(),
                     product.getId()
             );
 
-            if(deliveryProductEntity.isPresent()) {
-                Integer actualQuantity = this.recalculateProductsQuantity(
-                        product.getQuantity(),
-                        productDTO.quantity(),
-                        deliveryProductEntity.get().getQuantity()
-                );
-                this.productService.updateProductQuantity(product.getId(), actualQuantity);
-                this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.get().getId(), productDTO.quantity());
-            } else {
-                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
-                deliveryProduct.setDelivery(deliveryEntity);
-                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
-                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
-                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+            Integer actualQuantity = this.recalculateProductsQuantity(
+                    product.getQuantity(),
+                    productDTO.quantity(),
+                    deliveryProductEntity.getQuantity()
+            );
+
+            if(productDTO.quantity() == 0) {
+                System.out.println("Valor 0");
+                this.removeProductFromDelivery(productDTO.productId(), id);
+                continue;
             }
+
+            this.productService.updateProductQuantity(product.getId(), actualQuantity);
+            this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.getId(), productDTO.quantity());
+//            else {
+//                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
+//                deliveryProduct.setDelivery(deliveryEntity);
+//                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
+//                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
+//                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+//            }
             deliveryEntity.setItems(deliveryEntity.getDeliveryProducts().size());
 
         }
@@ -295,6 +392,23 @@ public class DeliveryService {
         vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 
         this.repository.save(deliveryEntity);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "editado", deliveryEntity.getId());
+
+        for (DeliveryProductEntity product : deliveryEntity.getDeliveryProducts()) {
+            LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
+            logProduct.setProductId(product.getProductId());
+            logProduct.setName(product.getName());
+            logProduct.setQuantity(product.getQuantity());
+            logProduct.setMeasure(product.getMeasure());
+            logProduct.setUnit(product.getUnitValue());
+            logProduct.setLog(userLog);
+
+            logsUserDeliveryProductRepository.save(logProduct);
+        }
+
+        logsUserDeliveryRepository.save(userLog);
 
         List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
                 .getDeliveryProducts()
@@ -308,7 +422,13 @@ public class DeliveryService {
     }
 
     @Transactional
-    public ResponseEntity<Void> registerConfirm(UUID id) {
+    public void removeProductFromDelivery(UUID productId, UUID deliveryId) {
+        this.findById(deliveryId);
+        this.deliveryProductService.deleteByDeliveryIdAndProductId(deliveryId, productId);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> registerConfirm(UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
@@ -320,6 +440,10 @@ public class DeliveryService {
         delivery.setStatus(DeliveryStatus.CONFIRMED.getStatus());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "finalizado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -339,17 +463,22 @@ public class DeliveryService {
 
 
     @Transactional
-    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
+    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         delivery.setStatus(DeliveryStatus.ACTIVE.getStatus());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "iniciado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<Void> inactiveDelivery(UUID id) {
+    public ResponseEntity<Void> inactiveDelivery(UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
@@ -368,8 +497,25 @@ public class DeliveryService {
         );
 
         delivery.setStatus(DeliveryStatus.CANCELED.getStatus());
+        delivery.setInactivatedDt(LocalDate.now());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "cancelado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
+        for (DeliveryProductEntity product : delivery.getDeliveryProducts()) {
+            LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
+            logProduct.setProductId(product.getProductId());
+            logProduct.setName(product.getName());
+            logProduct.setQuantity(product.getQuantity());
+            logProduct.setMeasure(product.getMeasure());
+            logProduct.setUnit(product.getUnitValue());
+            logProduct.setLog(userLog);
+
+            logsUserDeliveryProductRepository.save(logProduct);
+        }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -440,5 +586,19 @@ public class DeliveryService {
 
     public List<DeliveryEntity> getAllByGeneralManagerId(UUID generalManagerId) {
         return this.repository.getAllByGeneralManagerId(generalManagerId);
+    }
+
+    public List<DeliveryResponseDTO> getDeliveriesByPeriod(LocalDate from, LocalDate to, UUID generalManagerId) {
+        return repository.findDeliveriesByPeriod(from, to, generalManagerId)
+            .stream()
+            .map(DeliveryResponseDTO::new)
+            .toList();
+    }
+
+    public List<DeliveryResponseDTO> getDeliveriesByPeriodAndOptionalClient(LocalDate from, LocalDate to, UUID generalManagerId, UUID clientId) {
+        return repository.findDeliveriesByPeriodAndOptionalClient(from, to, generalManagerId, clientId)
+            .stream()
+            .map(DeliveryResponseDTO::new)
+            .toList();
     }
 }

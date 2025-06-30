@@ -1,0 +1,28 @@
+package br.com.api_str_innovation.dto.delivery.delivery_user_log;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record LogsUserDeliveryDTO(
+    UUID id,
+    UUID userId,
+    String userName,
+    String action,
+    UUID deliveryId,
+    LocalDateTime actionDateTime,
+    String description,
+    String orderNumberDelivery
+) {
+    
+    public LogsUserDeliveryDTO(UUID id, UUID userId, String userName, String action, 
+                              UUID deliveryId, LocalDateTime actionDateTime, String description, String orderNumberDelivery) {
+        this.id = id;
+        this.userId = userId;
+        this.userName = userName;
+        this.action = action;
+        this.deliveryId = deliveryId;
+        this.actionDateTime = actionDateTime;
+        this.description = description;
+        this.orderNumberDelivery = orderNumberDelivery;
+    }
+} 

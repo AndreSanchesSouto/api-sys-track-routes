@@ -1,7 +1,9 @@
 package br.com.api_str_innovation.repository;
 
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +23,13 @@ public interface DeliveryProductRepository extends JpaRepository <DeliveryProduc
             @Param("deliveryId") UUID deliveryId,
             @Param("productId") UUID productId
     );
+
+    @Modifying
+    @Query(value = """
+            DELETE FROM deliveries_products
+            WHERE product_id = :productId
+            AND delivery_id = :deliveryId
+        """, nativeQuery = true
+    )
+    void deleteByDeliveryIdAndProductId(@Param("deliveryId") UUID deliveryId, @Param("productId") UUID productId);
 }
