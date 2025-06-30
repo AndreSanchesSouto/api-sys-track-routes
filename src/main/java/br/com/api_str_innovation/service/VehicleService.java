@@ -1,13 +1,10 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardVehiclesDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleRequestDTO;
 import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
-import br.com.api_str_innovation.exceptions.ClientException;
-import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.VehicleException;
 import br.com.api_str_innovation.repository.*;
 import jakarta.transaction.Transactional;
@@ -56,9 +53,9 @@ public class VehicleService {
         return repository.findByLicensePlateNumber(licensePlateNumber);
     }
 
-    public List<VehicleResponseDTO> getAll() {
+    public List<VehicleResponseDTO> getAll(UUID generalManagerId) {
         return repository
-                .findAll()
+                .findActiveVehicles(generalManagerId)
                 .stream()
                 .map(VehicleResponseDTO::new)
                 .toList();

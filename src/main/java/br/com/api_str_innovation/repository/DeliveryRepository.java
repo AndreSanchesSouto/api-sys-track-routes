@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -229,4 +230,63 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             SELECT * FROM deliveries WHERE general_manager_id = :generalManagerId
             """, nativeQuery = true)
     List<DeliveryEntity> getAllByGeneralManagerId(@Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+        SELECT d FROM DeliveryEntity d
+        LEFT JOIN FETCH d.client c
+        LEFT JOIN FETCH d.deliveryProducts dp
+        WHERE d.createdDt BETWEEN :from AND :to
+        AND d.generalManagerId = :generalManagerId
+        AND d.inactivatedDt IS NULL
+        ORDER BY d.createdDt ASC
+        """)
+    List<DeliveryEntity> getAllDeliveriesByPeriod(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId);
+
+    @Query("""
+        SELECT d FROM DeliveryEntity d
+        LEFT JOIN FETCH d.client c
+        LEFT JOIN FETCH d.deliveryProducts dp
+        WHERE d.createdDt BETWEEN :from AND :to
+        AND d.client.id = :clientId
+        AND d.generalManagerId = :generalManagerId
+        AND d.inactivatedDt IS NULL
+        ORDER BY d.createdDt ASC
+        """)
+    List<DeliveryEntity> getDeliveriesPeriodById(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("generalManagerId") UUID generalManagerId,
+            @Param("clientId") UUID clientId);
+
+    @Query("""
+    SELECT d FROM DeliveryEntity d
+    WHERE Date(d.createdDt) BETWEEN :from AND :to
+    AND d.generalManagerId = :generalManagerId
+    AND d.inactivatedDt IS NULL
+    ORDER BY d.createdDt
+""")
+    List<DeliveryEntity> findDeliveriesByPeriod(
+            @Param("from") java.time.LocalDate from,
+            @Param("to") java.time.LocalDate to,
+            @Param("generalManagerId") java.util.UUID generalManagerId
+    );
+
+    @Query("""
+    SELECT d FROM DeliveryEntity d
+    WHERE Date(d.createdDt) BETWEEN :from AND :to
+    AND d.generalManagerId = :generalManagerId
+    AND (:clientId IS NULL OR d.client.id = :clientId)
+    AND d.inactivatedDt IS NULL
+    ORDER BY d.createdDt
+""")
+    List<DeliveryEntity> findDeliveriesByPeriodAndOptionalClient(
+            @Param("from") java.time.LocalDate from,
+            @Param("to") java.time.LocalDate to,
+            @Param("generalManagerId") java.util.UUID generalManagerId,
+            @Param("clientId") java.util.UUID clientId
+    );
+
 }

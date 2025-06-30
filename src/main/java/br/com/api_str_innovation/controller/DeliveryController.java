@@ -1,17 +1,11 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryGenericResponseDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryProductsResponseDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryRequestDTO;
-import br.com.api_str_innovation.dto.delivery.DeliveryResponseDTO;
+import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
-import br.com.api_str_innovation.dto.user.UserResponseDTO;
-import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.service.DeliveryService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -64,6 +58,26 @@ public class DeliveryController {
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getByStatus(status, pageable, generalManagerId));
+    }
+
+    @PostMapping(value = "/report/period")
+    public ResponseEntity<List<DeliveryReportDTO>> getAllDeliveriesByPeriod(
+            @Valid @RequestBody PeriodTimeRequestDTO data,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAllDeliveriesByPeriod(data, generalManagerId));
+    }
+
+    @PostMapping(value = "/report/period/{clientId}")
+    public ResponseEntity<List<DeliveryReportDTO>> getDeliveriesPeriodById(
+            @Valid @RequestBody PeriodTimeRequestDTO data,
+            @PathVariable UUID clientId,
+            @RequestHeader("general-manager-id") UUID generalManagerId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getDeliveriesPeriodById(
+                data,
+                generalManagerId,
+                clientId));
     }
 
     @GetMapping("/count")

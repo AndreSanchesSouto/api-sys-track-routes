@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
+import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
@@ -202,6 +203,73 @@ public class DeliveryService {
         return ResponseEntity.status(HttpStatus.OK).body(new DashboardDeliveryDTO(waiting, active, onRoad, canceled, confirmed, comingBack));
     }
 
+    public List<DeliveryReportDTO> getAllDeliveriesByPeriod(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
+        List<DeliveryEntity> deliveries = this.repository.getAllDeliveriesByPeriod(
+                periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId
+        );
+
+        List<DeliveryReportDTO> report = new ArrayList<>();
+        for (DeliveryEntity delivery : deliveries) {
+            double totalWeight = 0.0;
+            double totalPaid = 0.0;
+            List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
+            for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
+                double weight = dp.getMeasure() * dp.getQuantity();
+                double price = dp.getPrice() * dp.getQuantity();
+                products.add(new DeliveryReportDTO.ProductInfo(
+                        dp.getName(),
+                        dp.getQuantity(),
+                        weight,
+                        price
+                ));
+                totalWeight += weight;
+                totalPaid += price;
+            }
+            report.add(new DeliveryReportDTO(
+                    delivery.getDeliveryRequest(),
+                    delivery.getClient().getName(),
+                    products,
+                    totalWeight,
+                    totalPaid,
+                    delivery.getCreatedDt()
+            ));
+        }
+        return report;
+    }
+
+    public List<DeliveryReportDTO> getDeliveriesPeriodById(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId, UUID clientId) {
+        List<DeliveryEntity> deliveries = this.repository.getDeliveriesPeriodById(
+                periodTimeDTO.from(), periodTimeDTO.to(), generalManagerId, clientId
+        );
+
+        List<DeliveryReportDTO> report = new ArrayList<>();
+        for (DeliveryEntity delivery : deliveries) {
+            double totalWeight = 0.0;
+            double totalPaid = 0.0;
+            List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
+            for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
+                double weight = dp.getMeasure() * dp.getQuantity();
+                double price = dp.getPrice() * dp.getQuantity();
+                products.add(new DeliveryReportDTO.ProductInfo(
+                        dp.getName(),
+                        dp.getQuantity(),
+                        weight,
+                        price
+                ));
+                totalWeight += weight;
+                totalPaid += price;
+            }
+            report.add(new DeliveryReportDTO(
+                    delivery.getDeliveryRequest(),
+                    delivery.getClient().getName(),
+                    products,
+                    totalWeight,
+                    totalPaid,
+                    delivery.getCreatedDt()
+            ));
+        }
+        return report;
+    }
 
     public Page<DeliveryGenericResponseDTO> getSearched(Pageable pageable, String attribute, String search, UUID generalManagerId) {
         return switch (attribute) {
@@ -379,6 +447,7 @@ public class DeliveryService {
         );
 
         delivery.setStatus(DeliveryStatus.CANCELED.getStatus());
+        delivery.setInactivatedDt(LocalDate.now());
 
         this.repository.save(delivery);
 
@@ -451,5 +520,19 @@ public class DeliveryService {
 
     public List<DeliveryEntity> getAllByGeneralManagerId(UUID generalManagerId) {
         return this.repository.getAllByGeneralManagerId(generalManagerId);
+    }
+
+    public List<DeliveryResponseDTO> getDeliveriesByPeriod(LocalDate from, LocalDate to, UUID generalManagerId) {
+        return repository.findDeliveriesByPeriod(from, to, generalManagerId)
+            .stream()
+            .map(DeliveryResponseDTO::new)
+            .toList();
+    }
+
+    public List<DeliveryResponseDTO> getDeliveriesByPeriodAndOptionalClient(LocalDate from, LocalDate to, UUID generalManagerId, UUID clientId) {
+        return repository.findDeliveriesByPeriodAndOptionalClient(from, to, generalManagerId, clientId)
+            .stream()
+            .map(DeliveryResponseDTO::new)
+            .toList();
     }
 }

@@ -1,16 +1,15 @@
 package br.com.api_str_innovation.service;
 
 import br.com.api_str_innovation.dto.dashboard.DashboardDriversDTO;
+import br.com.api_str_innovation.dto.user.report.PeriodCreationResponseDTO;
 import br.com.api_str_innovation.dto.user.UserChangePasswordDTO;
 import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
-import br.com.api_str_innovation.dto.vehicle.VehicleResponseDTO;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
-import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.infra.security.Encrypter;
 import br.com.api_str_innovation.repository.UserRepository;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -93,13 +91,13 @@ public class UserService {
         }
     }
 
-    public List<UserResponseDTO> getAll() {
-        return repository
-                .findAll()
-                .stream()
-                .map(UserResponseDTO::new)
-                .toList();
-    }
+//    public List<UserResponseDTO> getAll() {
+//        return repository
+//                .findAll()
+//                .stream()
+//                .map(UserResponseDTO::new)
+//                .toList();
+//    }
 
     public List<UserResponseDTO> getDrivers(UUID generalManagerId) {
         return repository
@@ -191,8 +189,38 @@ public class UserService {
         repository.save(user);
     }
 
-    public List<Object[]> periodOfCreation(PeriodTimeRequestDTO periodTimeDTO) {
-        return repository.periodTime(periodTimeDTO.from(), periodTimeDTO.to());
+    public PeriodCreationResponseDTO periodOfCreation(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {
+        List<Object[]> periodResults = repository.periodTime(
+                periodTimeDTO.from(),
+                periodTimeDTO.to(),
+                generalManagerId
+        );
+
+        List<UserEntity> users = repository.findUsersByPeriod(
+                periodTimeDTO.from(),
+                periodTimeDTO.to(),
+                generalManagerId
+        );
+
+        List<PeriodCreationResponseDTO.PeriodReportDTO> periodData = periodResults.stream()
+                .map(row -> new PeriodCreationResponseDTO.PeriodReportDTO(
+                        ((Number) row[0]).intValue(),
+                        ((Number) row[1]).intValue(),
+                        ((Number) row[2]).longValue()
+                ))
+                .toList();
+
+        List<PeriodCreationResponseDTO.UserDetailDTO> userDetails = users.stream()
+                .map(user -> new PeriodCreationResponseDTO.UserDetailDTO(
+                        user.getName(),
+                        user.getLogin(),
+                        user.getRole(),
+                        user.getCreatedDt().getYear(),
+                        user.getCreatedDt().getMonthValue()
+                ))
+                .toList();
+
+        return new PeriodCreationResponseDTO(periodData, userDetails);
     }
 
     public ResponseEntity<Void> changeUserPassword(UUID id, UserChangePasswordDTO data) {
@@ -303,5 +331,9 @@ public class UserService {
 
     public List<UserEntity> getAllDriversByGeneralManagerId(UUID generalManagerId) {
         return this.repository.getAllDriversByGeneralManagerId(generalManagerId);
+    }
+
+    public List<UserEntity> getAllEmployeesByGeneralManagerId(UUID generalManagerId) {
+        return this.repository.getAllEmployeesByGeneralManagerId(generalManagerId);
     }
 }

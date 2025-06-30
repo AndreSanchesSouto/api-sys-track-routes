@@ -23,8 +23,9 @@ public class VehicleController {
     private VehicleService service;
 
     @GetMapping
-    public ResponseEntity<List<VehicleResponseDTO>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAll());
+    public ResponseEntity<List<VehicleEntity>> getAllByGeneralManagerId(
+            @RequestHeader("general-manager-id") UUID generalManagerId) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getAllByGeneralManagerId(generalManagerId));
     }
 
     @GetMapping("/available")
