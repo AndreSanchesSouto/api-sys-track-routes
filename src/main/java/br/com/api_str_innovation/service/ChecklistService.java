@@ -8,11 +8,14 @@ import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistFieldOptions;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
+import br.com.api_str_innovation.entities.checklist.checklist_user_log.LogsUserChecklistEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.repository.ChecklistLogRepository;
 import br.com.api_str_innovation.repository.ChecklistRepository;
+import br.com.api_str_innovation.repository.LogsUserChecklistRepository;
 import br.com.api_str_innovation.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -66,6 +69,12 @@ public class ChecklistService {
     @Autowired
     private ChecklistLogRepository checklistLogRepository;
 
+    @Autowired
+    private LogsUserChecklistRepository logsUserChecklistRepository;
+
+    @Autowired
+    private UserService userService;
+
     @Lazy
     @Autowired
     private DeliveryService deliveryService;
@@ -74,7 +83,8 @@ public class ChecklistService {
         return checklistRepository
             .findAll()
             .stream()
-            .filter(checklist -> checklist.getVehicle() != null && checklist.getVehicle().getGeneralManagerId() != null && checklist.getVehicle().getGeneralManagerId().equals(generalManagerId))
+            .filter(checklist -> checklist.getVehicle() != null && checklist.getVehicle().getGeneralManagerId() != null &&
+                    checklist.getVehicle().getGeneralManagerId().equals(generalManagerId))
             .map(ChecklistResponseDTO::new)
             .toList();
     }
@@ -106,7 +116,7 @@ public class ChecklistService {
     }
 
     @Transactional
-    public void post(UUID vehicleId, @Valid ChecklistRequestDTO data) {
+    public void post(UUID vehicleId, @Valid ChecklistRequestDTO data, UUID userId) {
         ChecklistLogEntity lastLog = checklistLogRepository
             .findFirstByVehicleIdOrderByCreatedDtDesc(vehicleId)
             .orElse(null);
@@ -145,6 +155,11 @@ public class ChecklistService {
         checklistLog.setVehicleId(vehicleId);
         checklistLog.setVehicleStatus(vehicle.getStatus());
         checklistLogRepository.save(checklistLog);
+
+        // Buscar informações do usuário e criar log
+        UserEntity user = userService.findById(userId);
+        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "criado", checklist.getId(), vehicleId);
+        logsUserChecklistRepository.save(userLog);
     }
 
     private boolean containsCriticalStatus(ChecklistRequestDTO data) {
@@ -298,7 +313,7 @@ public class ChecklistService {
 //    }
 
     @Transactional
-    public void deleteById(UUID id) {
+    public void deleteById(UUID id, UUID userId) {
         VehicleEntity vehicle = vehicleRepository.findVehicleFromChecklistId(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível deletar o checklist")
         );
@@ -310,6 +325,11 @@ public class ChecklistService {
         if(deliveryService.findActiveByChecklistId(id)!=null) {
             throw new DataAddressException("Veículo em uso");
         }
+
+        // Buscar informações do usuário e criar log antes de deletar
+        UserEntity user = userService.findById(userId);
+        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "deletado", id, vehicle.getId());
+        logsUserChecklistRepository.save(userLog);
 
         checklistRepository.deleteById(id);
     }

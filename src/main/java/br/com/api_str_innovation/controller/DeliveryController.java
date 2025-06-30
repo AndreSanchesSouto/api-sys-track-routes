@@ -27,9 +27,10 @@ public class DeliveryController {
     @PostMapping
     public ResponseEntity<DeliveryResponseDTO> post(
             @Valid @RequestBody DeliveryRequestDTO data,
-            @RequestHeader("general-manager-id") UUID generalManagerId
+            @RequestHeader("general-manager-id") UUID generalManagerId,
+            @RequestHeader("user-id") UUID userId
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data, generalManagerId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.post(data, generalManagerId, userId));
     }
 
     @GetMapping("/{id}/current-driver-location")
@@ -113,22 +114,35 @@ public class DeliveryController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<DeliveryProductsResponseDTO> patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
+    public ResponseEntity<DeliveryProductsResponseDTO> patch(
+            @PathVariable UUID id, 
+            @Valid @RequestBody DeliveryRequestDTO data,
+            @RequestHeader("user-id") UUID userId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data, userId));
     }
 
     @PatchMapping("/{id}/register-confirm")
-    public ResponseEntity<Void> registerConfirm(@PathVariable UUID id) {
-        return this.service.registerConfirm(id);
+    public ResponseEntity<Void> registerConfirm(
+            @PathVariable UUID id,
+            @RequestHeader("user-id") UUID userId
+    ) {
+        return this.service.registerConfirm(id, userId);
     }
 
     @PatchMapping("/start-delivery/{id}")
-    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
-        return this.service.patchStartDelivery(id);
+    public ResponseEntity<Void> patchStartDelivery(
+            @PathVariable UUID id,
+            @RequestHeader("user-id") UUID userId
+    ) {
+        return this.service.patchStartDelivery(id, userId);
     }
 
     @PatchMapping("{id}/inactive")
-    public ResponseEntity<Void> inactiveDelivery(@PathVariable UUID id) {
-        return this.service.inactiveDelivery(id);
+    public ResponseEntity<Void> inactiveDelivery(
+            @PathVariable UUID id,
+            @RequestHeader("user-id") UUID userId
+    ) {
+        return this.service.inactiveDelivery(id, userId);
     }
 }

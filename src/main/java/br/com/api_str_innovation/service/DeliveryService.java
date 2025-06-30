@@ -1,17 +1,17 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.dashboard.DashboardDeliveryDTO;
 import br.com.api_str_innovation.dto.delivery.*;
 import br.com.api_str_innovation.dto.delivery.location.DeliveryLocationDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
-import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.address.DataAddressEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryStatus;
+import br.com.api_str_innovation.entities.delivery.delivery_user_log.LogsUserDeliveryEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
+import br.com.api_str_innovation.entities.delivery_product.delivery_user_log.LogsUserDeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
@@ -25,6 +25,8 @@ import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import br.com.api_str_innovation.repository.DeliveryRepository;
+import br.com.api_str_innovation.repository.LogsUserDeliveryProductRepository;
+import br.com.api_str_innovation.repository.LogsUserDeliveryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +72,13 @@ public class DeliveryService {
     @Autowired
     private DeliveryProductService deliveryProductService;
 
-    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId) {
+    @Autowired
+    private LogsUserDeliveryRepository logsUserDeliveryRepository;
+
+    @Autowired
+    private LogsUserDeliveryProductRepository logsUserDeliveryProductRepository;
+
+    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId, UUID userId) {
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
         this.validateAddressToClient(client, address);
@@ -108,6 +115,23 @@ public class DeliveryService {
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "criado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
+        for (DeliveryProductEntity product : delivery.getDeliveryProducts()) {
+            LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
+            logProduct.setProductId(product.getProductId());
+            logProduct.setName(product.getName());
+            logProduct.setQuantity(product.getQuantity());
+            logProduct.setMeasure(product.getMeasure());
+            logProduct.setUnit(product.getUnitValue());
+            logProduct.setLog(userLog);
+
+            logsUserDeliveryProductRepository.save(logProduct);
+        }
+
         return new DeliveryResponseDTO(delivery);
     }
 
@@ -313,7 +337,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
+    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data, UUID userId) {
         DeliveryEntity deliveryEntity = findById(id);
         if(deliveryEntity.getStatus().equals(DeliveryStatus.CANCELED.getStatus())) {
             throw new DeliveryException("Entrega inativa");
@@ -369,6 +393,23 @@ public class DeliveryService {
 
         this.repository.save(deliveryEntity);
 
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "editado", deliveryEntity.getId());
+
+        for (DeliveryProductEntity product : deliveryEntity.getDeliveryProducts()) {
+            LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
+            logProduct.setProductId(product.getProductId());
+            logProduct.setName(product.getName());
+            logProduct.setQuantity(product.getQuantity());
+            logProduct.setMeasure(product.getMeasure());
+            logProduct.setUnit(product.getUnitValue());
+            logProduct.setLog(userLog);
+
+            logsUserDeliveryProductRepository.save(logProduct);
+        }
+
+        logsUserDeliveryRepository.save(userLog);
+
         List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
                 .getDeliveryProducts()
                 .stream()
@@ -387,7 +428,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public ResponseEntity<Void> registerConfirm(UUID id) {
+    public ResponseEntity<Void> registerConfirm(UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
@@ -399,6 +440,10 @@ public class DeliveryService {
         delivery.setStatus(DeliveryStatus.CONFIRMED.getStatus());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "finalizado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -418,17 +463,22 @@ public class DeliveryService {
 
 
     @Transactional
-    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
+    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         delivery.setStatus(DeliveryStatus.ACTIVE.getStatus());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "iniciado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<Void> inactiveDelivery(UUID id) {
+    public ResponseEntity<Void> inactiveDelivery(UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
@@ -450,6 +500,22 @@ public class DeliveryService {
         delivery.setInactivatedDt(LocalDate.now());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "cancelado", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
+        for (DeliveryProductEntity product : delivery.getDeliveryProducts()) {
+            LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
+            logProduct.setProductId(product.getProductId());
+            logProduct.setName(product.getName());
+            logProduct.setQuantity(product.getQuantity());
+            logProduct.setMeasure(product.getMeasure());
+            logProduct.setUnit(product.getUnitValue());
+            logProduct.setLog(userLog);
+
+            logsUserDeliveryProductRepository.save(logProduct);
+        }
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
