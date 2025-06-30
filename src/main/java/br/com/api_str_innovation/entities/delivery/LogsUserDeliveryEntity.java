@@ -43,9 +43,9 @@ public class LogsUserDeliveryEntity {
         this.action = action;
         this.deliveryId = deliveryId;
         this.actionDateTime = LocalDateTime.now();
-        this.description = String.format("usuário %s %s entrega às %s do dia %s", 
+        this.description = String.format("%s %s entrega às %s do dia %s",
             userName, action.toLowerCase(), 
-            this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")),
+            this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")),
             this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy")));
     }
 } 

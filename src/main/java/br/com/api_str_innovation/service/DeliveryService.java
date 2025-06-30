@@ -116,7 +116,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "CRIADO", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "criou", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new DeliveryResponseDTO(delivery);
@@ -382,7 +382,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "EDITADO", deliveryEntity.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "editou", deliveryEntity.getId());
         logsUserDeliveryRepository.save(userLog);
 
         List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
@@ -418,7 +418,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "FINALIZADO", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "finalizou", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
@@ -448,7 +448,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "INICIADO", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "iniciou", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<>(HttpStatus.OK);

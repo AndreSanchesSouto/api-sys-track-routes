@@ -157,7 +157,7 @@ public class ChecklistService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "CRIADO", checklist.getId(), vehicleId);
+        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "criou", checklist.getId(), vehicleId);
         logsUserChecklistRepository.save(userLog);
     }
 
@@ -327,7 +327,7 @@ public class ChecklistService {
 
         // Buscar informações do usuário e criar log antes de deletar
         UserEntity user = userService.findById(userId);
-        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "APAGADO", id, vehicle.getId());
+        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "deletou", id, vehicle.getId());
         logsUserChecklistRepository.save(userLog);
 
         checklistRepository.deleteById(id);

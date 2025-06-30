@@ -47,9 +47,9 @@ public class LogsUserChecklistEntity {
         this.checklistId = checklistId;
         this.vehicleId = vehicleId;
         this.actionDateTime = LocalDateTime.now();
-        this.description = String.format("usuário %s %s checklist às %s do dia %s", 
+        this.description = String.format("%s %s checklist às %s do dia %s",
             userName, action.toLowerCase(), 
-            this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")),
+            this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")),
             this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy")));
     }
 } 
