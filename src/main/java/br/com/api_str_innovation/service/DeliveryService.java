@@ -11,6 +11,7 @@ import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.client.ClientEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryEntity;
 import br.com.api_str_innovation.entities.delivery.DeliveryStatus;
+import br.com.api_str_innovation.entities.delivery.LogsUserDeliveryEntity;
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 import br.com.api_str_innovation.entities.product.ProductEntity;
 import br.com.api_str_innovation.entities.user.Role;
@@ -25,6 +26,7 @@ import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.projections.DeliveryTableProjection;
 import br.com.api_str_innovation.projections.LocationProjection;
 import br.com.api_str_innovation.repository.DeliveryRepository;
+import br.com.api_str_innovation.repository.LogsUserDeliveryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +73,10 @@ public class DeliveryService {
     @Autowired
     private DeliveryProductService deliveryProductService;
 
-    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId) {
+    @Autowired
+    private LogsUserDeliveryRepository logsUserDeliveryRepository;
+
+    public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId, UUID userId) {
         ClientEntity client = this.clientService.getById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
         this.validateAddressToClient(client, address);
@@ -108,6 +113,12 @@ public class DeliveryService {
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
 
         this.repository.save(delivery);
+
+        // Buscar informações do usuário e criar log
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "CRIADO", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
         return new DeliveryResponseDTO(delivery);
     }
 
@@ -313,7 +324,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
+    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data, UUID userId) {
         DeliveryEntity deliveryEntity = findById(id);
         if(deliveryEntity.getStatus().equals(DeliveryStatus.CANCELED.getStatus())) {
             throw new DeliveryException("Entrega inativa");
@@ -369,6 +380,11 @@ public class DeliveryService {
 
         this.repository.save(deliveryEntity);
 
+        // Buscar informações do usuário e criar log
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "EDITADO", deliveryEntity.getId());
+        logsUserDeliveryRepository.save(userLog);
+
         List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
                 .getDeliveryProducts()
                 .stream()
@@ -387,7 +403,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public ResponseEntity<Void> registerConfirm(UUID id) {
+    public ResponseEntity<Void> registerConfirm(UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
@@ -399,6 +415,11 @@ public class DeliveryService {
         delivery.setStatus(DeliveryStatus.CONFIRMED.getStatus());
 
         this.repository.save(delivery);
+
+        // Buscar informações do usuário e criar log
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "FINALIZADO", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -418,12 +439,18 @@ public class DeliveryService {
 
 
     @Transactional
-    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id) {
+    public ResponseEntity<Void> patchStartDelivery(@PathVariable UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         delivery.setStatus(DeliveryStatus.ACTIVE.getStatus());
 
         this.repository.save(delivery);
+
+        // Buscar informações do usuário e criar log
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "INICIADO", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

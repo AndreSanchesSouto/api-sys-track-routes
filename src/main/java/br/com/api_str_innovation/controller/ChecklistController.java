@@ -44,14 +44,16 @@ public class ChecklistController {
     }
 
     @PostMapping("/{vehicleId}")
-    public ResponseEntity<String> post(@PathVariable UUID vehicleId, @RequestBody ChecklistRequestDTO data) {
-        this.service.post(vehicleId, data);
+    public ResponseEntity<String> post(@PathVariable UUID vehicleId, @RequestBody ChecklistRequestDTO data, 
+                                      @RequestHeader("user-id") UUID userId) {
+        this.service.post(vehicleId, data, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id) {
-        this.service.deleteById(id);
+    public ResponseEntity<String> delete(@PathVariable UUID id, 
+                                        @RequestHeader("user-id") UUID userId) {
+        this.service.deleteById(id, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Deletado");
     }
 
