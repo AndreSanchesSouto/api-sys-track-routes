@@ -83,7 +83,8 @@ public class ChecklistService {
         return checklistRepository
             .findAll()
             .stream()
-            .filter(checklist -> checklist.getVehicle() != null && checklist.getVehicle().getGeneralManagerId() != null && checklist.getVehicle().getGeneralManagerId().equals(generalManagerId))
+            .filter(checklist -> checklist.getVehicle() != null && checklist.getVehicle().getGeneralManagerId() != null &&
+                    checklist.getVehicle().getGeneralManagerId().equals(generalManagerId))
             .map(ChecklistResponseDTO::new)
             .toList();
     }
@@ -157,7 +158,7 @@ public class ChecklistService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "criou", checklist.getId(), vehicleId);
+        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "criado", checklist.getId(), vehicleId);
         logsUserChecklistRepository.save(userLog);
     }
 
@@ -327,7 +328,7 @@ public class ChecklistService {
 
         // Buscar informações do usuário e criar log antes de deletar
         UserEntity user = userService.findById(userId);
-        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "deletou", id, vehicle.getId());
+        LogsUserChecklistEntity userLog = new LogsUserChecklistEntity(userId, user.getName(), "deletado", id, vehicle.getId());
         logsUserChecklistRepository.save(userLog);
 
         checklistRepository.deleteById(id);

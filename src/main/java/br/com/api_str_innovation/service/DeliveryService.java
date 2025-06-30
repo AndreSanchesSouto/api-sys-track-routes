@@ -114,9 +114,8 @@ public class DeliveryService {
 
         this.repository.save(delivery);
 
-        // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "criou", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "criado", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new DeliveryResponseDTO(delivery);
@@ -382,7 +381,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "editou", deliveryEntity.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "editado", deliveryEntity.getId());
         logsUserDeliveryRepository.save(userLog);
 
         List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
@@ -418,7 +417,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "finalizou", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "finalizado", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
@@ -448,7 +447,7 @@ public class DeliveryService {
 
         // Buscar informações do usuário e criar log
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "iniciou", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "iniciado", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -479,7 +478,7 @@ public class DeliveryService {
         this.repository.save(delivery);
 
         UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "cancelou", delivery.getId());
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "cancelado", delivery.getId());
         logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
