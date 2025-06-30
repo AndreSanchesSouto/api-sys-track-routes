@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/logs/delivery")
+@RequestMapping("/logs/delivery")
 @CrossOrigin(origins = "*")
 public class LogsUserDeliveryController {
     

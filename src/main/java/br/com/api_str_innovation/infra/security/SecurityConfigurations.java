@@ -98,6 +98,10 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.DELETE, "/checklist/*").hasAnyRole("ADMIN", "DRIVER")
 
+                        .requestMatchers(HttpMethod.GET, "/logs/delivery/*").hasAnyRole("ADMIN", "SHIPPING")
+
+                        .requestMatchers(HttpMethod.GET, "/logs/checklist/vehicle/*").hasAnyRole("ADMIN", "SHIPPING")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
