@@ -115,7 +115,8 @@ public class SecurityConfigurations {
         configuration.setAllowedOrigins(List.of(
                 "http://vc00w04w8wggoccw840k8o00.178.156.184.107.sslip.io",
                 "http://localhost:5173",
-                "http://localhost:5174"
+                "http://localhost:5174",
+                "https://str-innovation.vercel.app"
             )
         );
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
