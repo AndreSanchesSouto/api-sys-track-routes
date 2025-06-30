@@ -139,14 +139,8 @@ public class DeliveryService {
         LocationProjection location = this.repository.findLocationFromDriver(id);
         return ResponseEntity.status(HttpStatus.OK).body(new DeliveryLocationDTO(
                 location.getLatitude(),
-                location.getLongitude(),
-                this.haversineDistance(
-                            location.getLatitude().doubleValue(),
-                            location.getLongitude().doubleValue(),
-                            this.getLatitudeDeliveryDestination(id).doubleValue(),
-                            this.getLongitudeDeliveryDestination(id).doubleValue()
-                        )
-                ));
+                location.getLongitude()
+            ));
     }
 
     public BigDecimal getLatitudeDeliveryDestination(UUID id) {
@@ -191,12 +185,17 @@ public class DeliveryService {
     }
 
     @Transactional
-    public ResponseEntity<Void> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
+    public ResponseEntity<Boolean> sendCurrentLocation(UUID id, @Valid DeliveryLocationDTO data) {
         DeliveryEntity delivery = this.repository.getReferenceById(id);
         delivery.setLatitude(data.latitude());
         delivery.setLongitude(data.longitude());
         this.repository.save(delivery);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(haversineDistance(
+                delivery.getLatitude().doubleValue(),
+                delivery.getLongitude().doubleValue(),
+                this.getLatitudeDeliveryDestination(id).doubleValue(),
+                this.getLongitudeDeliveryDestination(id).doubleValue()
+        ));
     }
 
     public Page<DeliveryGenericResponseDTO> getPaged(Pageable pageable, UUID generalManagerId) {

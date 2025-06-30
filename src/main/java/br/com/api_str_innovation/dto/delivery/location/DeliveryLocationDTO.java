@@ -9,7 +9,6 @@ public record   DeliveryLocationDTO(
         @NotNull
         BigDecimal latitude,
         @NotNull
-        BigDecimal longitude,
-        boolean isInDeliveryRange
+        BigDecimal longitude
 ) {
 }

@@ -39,7 +39,7 @@ public class DeliveryController {
     }
 
     @PatchMapping("/{id}/send-current-location")
-    public ResponseEntity<Void> sendCurrentLocation(@PathVariable UUID id, @Valid @RequestBody DeliveryLocationDTO location) {
+    public ResponseEntity<Boolean> sendCurrentLocation(@PathVariable UUID id, @Valid @RequestBody DeliveryLocationDTO location) {
         return this.service.sendCurrentLocation(id, location);
     }
 
