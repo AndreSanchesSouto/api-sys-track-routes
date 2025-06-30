@@ -10,11 +10,12 @@ public record LogsUserDeliveryDTO(
     String action,
     UUID deliveryId,
     LocalDateTime actionDateTime,
-    String description
+    String description,
+    String orderNumberDelivery
 ) {
     
     public LogsUserDeliveryDTO(UUID id, UUID userId, String userName, String action, 
-                              UUID deliveryId, LocalDateTime actionDateTime, String description) {
+                              UUID deliveryId, LocalDateTime actionDateTime, String description, String orderNumberDelivery) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
@@ -22,5 +23,6 @@ public record LogsUserDeliveryDTO(
         this.deliveryId = deliveryId;
         this.actionDateTime = actionDateTime;
         this.description = description;
+        this.orderNumberDelivery = orderNumberDelivery;
     }
 } 

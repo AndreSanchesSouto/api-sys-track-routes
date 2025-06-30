@@ -8,5 +8,6 @@ public record LogsUserDeliveryProductDTO(
         String name,
         Integer quantity,
         Double measure,
-        String unit
+        String unit,
+        String actionLog
 ) {}
