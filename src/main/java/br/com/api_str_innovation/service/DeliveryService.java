@@ -455,7 +455,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public ResponseEntity<Void> inactiveDelivery(UUID id) {
+    public ResponseEntity<Void> inactiveDelivery(UUID id, UUID userId) {
         DeliveryEntity delivery = this.findById(id);
 
         VehicleEntity vehicle = this.vehicleService.findById(delivery.getVehicle().getId());
@@ -477,6 +477,10 @@ public class DeliveryService {
         delivery.setInactivatedDt(LocalDate.now());
 
         this.repository.save(delivery);
+
+        UserEntity user = userService.findById(userId);
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "cancelou", delivery.getId());
+        logsUserDeliveryRepository.save(userLog);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

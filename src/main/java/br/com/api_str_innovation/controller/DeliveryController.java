@@ -139,7 +139,10 @@ public class DeliveryController {
     }
 
     @PatchMapping("{id}/inactive")
-    public ResponseEntity<Void> inactiveDelivery(@PathVariable UUID id) {
-        return this.service.inactiveDelivery(id);
+    public ResponseEntity<Void> inactiveDelivery(
+            @PathVariable UUID id,
+            @RequestHeader("user-id") UUID userId
+    ) {
+        return this.service.inactiveDelivery(id, userId);
     }
 }
