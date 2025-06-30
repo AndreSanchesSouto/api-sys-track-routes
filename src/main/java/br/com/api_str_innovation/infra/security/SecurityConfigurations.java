@@ -36,13 +36,11 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/user").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/user/drivers").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/drivers").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/user/page").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/user/search/name").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/user/count").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/user/*").hasAnyRole("ADMIN", "SHIPPING")
+                        .requestMatchers(HttpMethod.GET,    "/user/count").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/user/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/period-of-creation").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/user/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/user/*").hasRole("ADMIN")
@@ -55,7 +53,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PATCH, "/delivery", "/delivery/inactive/*").hasAnyRole("ADMIN", "SHIPPING")
 
                         .requestMatchers(HttpMethod.GET, "/clients").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/clients/available").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/clients/available").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/clients/count").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/clients/page").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/clients/search").hasAnyRole("ADMIN", "SHIPPING")
@@ -74,7 +72,7 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.GET, "/products").hasAnyRole("ADMIN","SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/products/search/name").hasAnyRole("ADMIN","SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/products/available").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/products/available").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/products/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/products/*").hasRole("ADMIN")
@@ -84,7 +82,7 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.GET, "/vehicle").hasAnyRole("ADMIN","SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/vehicle/page").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/vehicle/available").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/vehicle/available").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/vehicle").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/vehicle/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/vehicle/*").hasRole("ADMIN")
@@ -112,7 +110,12 @@ public class SecurityConfigurations {
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(
+                "http://vc00w04w8wggoccw840k8o00.178.156.184.107.sslip.io",
+                "http://localhost:5173",
+                "http://localhost:5174"
+            )
+        );
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "general-manager-id", "user-id"));
         configuration.setAllowCredentials(true);
