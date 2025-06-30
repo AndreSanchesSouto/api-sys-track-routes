@@ -4,15 +4,19 @@ import br.com.api_str_innovation.exceptions.DataAddressException;
 import br.com.api_str_innovation.exceptions.TokenException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.exceptions.VehicleException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandle {
 
     @ExceptionHandler(UserException.class)
     private ResponseEntity<ExceptionMessage> userRegisteredHandle(UserException exception) {
@@ -72,6 +76,21 @@ public class GlobalExceptionHandle extends ResponseEntityExceptionHandler {
         );
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<ExceptionMessage> handleValidationException(MethodArgumentNotValidException ex) {
+        FieldError fieldError = ex.getBindingResult().getFieldError();
+        String errorMessage = fieldError != null ? fieldError.getDefaultMessage() : "Erro de validação";
+
+        ExceptionMessage response = new ExceptionMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST,
+                errorMessage
+        );
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
 
 //    @ExceptionHandler(NullPointerException.class)
 //    private ResponseEntity<ExceptionMessage> exceptionNullPointerHandle(NullPointerException exception) {
