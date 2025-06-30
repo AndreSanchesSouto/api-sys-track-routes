@@ -93,7 +93,6 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/logs/checklist/vehicle/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/checklist").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
-                        .requestMatchers(HttpMethod.POST, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/checklist/count-km/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/checklist/km-segments/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.PUT, "/checklist/*").hasAnyRole("ADMIN", "SHIPPING")
