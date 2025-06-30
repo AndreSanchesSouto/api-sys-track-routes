@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.entities.delivery.LogsUserDeliveryEntity;
+import br.com.api_str_innovation.entities.delivery.delivery_user_log.LogsUserDeliveryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

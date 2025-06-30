@@ -1,7 +1,7 @@
 package br.com.api_str_innovation.service;
 
-import br.com.api_str_innovation.dto.checklist.LogsUserChecklistDTO;
-import br.com.api_str_innovation.entities.checklist.LogsUserChecklistEntity;
+import br.com.api_str_innovation.dto.checklist.checklist_user_log.LogsUserChecklistDTO;
+import br.com.api_str_innovation.entities.checklist.checklist_user_log.LogsUserChecklistEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.repository.LogsUserChecklistRepository;
 import br.com.api_str_innovation.repository.VehicleRepository;

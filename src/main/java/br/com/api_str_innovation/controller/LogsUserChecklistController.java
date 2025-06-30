@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.controller;
 
-import br.com.api_str_innovation.dto.checklist.LogsUserChecklistDTO;
+import br.com.api_str_innovation.dto.checklist.checklist_user_log.LogsUserChecklistDTO;
 import br.com.api_str_innovation.service.LogsUserChecklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

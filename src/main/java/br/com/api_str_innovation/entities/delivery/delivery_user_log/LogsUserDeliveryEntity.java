@@ -1,11 +1,14 @@
-package br.com.api_str_innovation.entities.delivery;
+package br.com.api_str_innovation.entities.delivery.delivery_user_log;
 
+import br.com.api_str_innovation.entities.delivery_product.delivery_user_log.LogsUserDeliveryProductEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -48,4 +51,7 @@ public class LogsUserDeliveryEntity {
             this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")),
             this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy")));
     }
+
+    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LogsUserDeliveryProductEntity> products = new ArrayList<>();
 } 

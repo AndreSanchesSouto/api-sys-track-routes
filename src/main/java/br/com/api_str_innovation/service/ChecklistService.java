@@ -8,7 +8,7 @@ import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.entities.checklist.ChecklistEntity;
 import br.com.api_str_innovation.entities.checklist.ChecklistFieldOptions;
 import br.com.api_str_innovation.entities.checklist.ChecklistLogEntity;
-import br.com.api_str_innovation.entities.checklist.LogsUserChecklistEntity;
+import br.com.api_str_innovation.entities.checklist.checklist_user_log.LogsUserChecklistEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.entities.user.UserEntity;

@@ -1,6 +1,6 @@
 package br.com.api_str_innovation.repository;
 
-import br.com.api_str_innovation.entities.checklist.LogsUserChecklistEntity;
+import br.com.api_str_innovation.entities.checklist.checklist_user_log.LogsUserChecklistEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.dto.delivery;
+package br.com.api_str_innovation.dto.delivery.delivery_user_log;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
