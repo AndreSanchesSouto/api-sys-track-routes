@@ -40,6 +40,9 @@ public class LogsUserDeliveryEntity {
     @Column(nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LogsUserDeliveryProductEntity> products = new ArrayList<>();
+
     public LogsUserDeliveryEntity(UUID userId, String userName, String action, UUID deliveryId) {
         this.userId = userId;
         this.userName = userName;
@@ -51,7 +54,4 @@ public class LogsUserDeliveryEntity {
             this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")),
             this.actionDateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yy")));
     }
-
-    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LogsUserDeliveryProductEntity> products = new ArrayList<>();
-} 
+}

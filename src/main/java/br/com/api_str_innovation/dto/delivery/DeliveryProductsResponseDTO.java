@@ -48,7 +48,7 @@ public record DeliveryProductsResponseDTO(
     public DeliveryProductsResponseDTO(DeliveryEntity data, List<DeliveryProductResponseDTO> deliveryProducts) {
         this(
                 data.getId(),
-                data.getStatus(),
+                data.getStatus().toUpperCase(),
                 data.getClient(),
                 data.getDeliveryRequest(),
                 data.getDriver(),

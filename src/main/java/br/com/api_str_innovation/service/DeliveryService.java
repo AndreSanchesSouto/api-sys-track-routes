@@ -336,7 +336,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data, UUID userId) {
+    public DeliveryProductsResponseDTO patch(@PathVariable UUID id, @Valid @RequestBody DeliveryRequestDTO data) {
         DeliveryEntity deliveryEntity = findById(id);
         if(deliveryEntity.getStatus().equals(DeliveryStatus.CANCELED.getStatus())) {
             throw new DeliveryException("Entrega inativa");
@@ -358,43 +358,44 @@ public class DeliveryService {
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
-            DeliveryProductEntity deliveryProductEntity = this.deliveryProductService.getByDeliveryIdAndProductId(
+            Optional<DeliveryProductEntity> deliveryProductEntity = this.deliveryProductService.tryFindDeliveryIdAndProductId(
                     deliveryEntity.getId(),
                     product.getId()
             );
+            if(deliveryProductEntity.isPresent()) {
+                Integer actualQuantity = this.recalculateProductsQuantity(
+                        product.getQuantity(),
+                        productDTO.quantity(),
+                        deliveryProductEntity.get().getQuantity()
+                );
 
-            Integer actualQuantity = this.recalculateProductsQuantity(
-                    product.getQuantity(),
-                    productDTO.quantity(),
-                    deliveryProductEntity.getQuantity()
-            );
+                if (productDTO.quantity() == 0) {
+                    System.out.println("Valor 0");
+                    this.removeProductFromDelivery(productDTO.productId(), id);
+                    continue;
+                }
 
-            if(productDTO.quantity() == 0) {
-                System.out.println("Valor 0");
-                this.removeProductFromDelivery(productDTO.productId(), id);
-                continue;
+                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+                this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.get().getId(), productDTO.quantity());
             }
-
-            this.productService.updateProductQuantity(product.getId(), actualQuantity);
-            this.deliveryProductService.updateDeliveryProductQuantity(deliveryProductEntity.getId(), productDTO.quantity());
-//            else {
-//                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
-//                deliveryProduct.setDelivery(deliveryEntity);
-//                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
-//                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
-//                this.productService.updateProductQuantity(product.getId(), actualQuantity);
-//            }
+            else {
+                DeliveryProductEntity deliveryProduct = new DeliveryProductEntity(product, productDTO.quantity());
+                deliveryProduct.setDelivery(deliveryEntity);
+                deliveryEntity.getDeliveryProducts().add(deliveryProduct);
+                Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
+                this.productService.updateProductQuantity(product.getId(), actualQuantity);
+            }
             deliveryEntity.setItems(deliveryEntity.getDeliveryProducts().size());
-
         }
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
         vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 
         this.repository.save(deliveryEntity);
 
-        UserEntity user = userService.findById(userId);
-        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(userId, user.getName(), "editado", deliveryEntity.getId());
+        UserEntity actualUser = userService.getUserAtMoment();
+        LogsUserDeliveryEntity userLog = new LogsUserDeliveryEntity(actualUser.getId(), actualUser.getName(), "editado", deliveryEntity.getId());
 
+        List<LogsUserDeliveryProductEntity> productsLog = new ArrayList<>();
         for (DeliveryProductEntity product : deliveryEntity.getDeliveryProducts()) {
             LogsUserDeliveryProductEntity logProduct = new LogsUserDeliveryProductEntity();
             logProduct.setProductId(product.getProductId());
@@ -403,11 +404,11 @@ public class DeliveryService {
             logProduct.setMeasure(product.getMeasure());
             logProduct.setUnit(product.getUnitValue());
             logProduct.setLog(userLog);
-
-            logsUserDeliveryProductRepository.save(logProduct);
+            productsLog.add(logProduct);
         }
 
         logsUserDeliveryRepository.save(userLog);
+        productsLog.forEach((logProduct) -> logsUserDeliveryProductRepository.save(logProduct));
 
         List<DeliveryProductResponseDTO> deliveryProductsResponse = deliveryEntity
                 .getDeliveryProducts()
@@ -419,6 +420,8 @@ public class DeliveryService {
 
         return new DeliveryProductsResponseDTO(deliveryEntity, deliveryProductsResponse);
     }
+
+
 
     @Transactional
     public void removeProductFromDelivery(UUID productId, UUID deliveryId) {

@@ -116,10 +116,9 @@ public class DeliveryController {
     @PatchMapping("/{id}")
     public ResponseEntity<DeliveryProductsResponseDTO> patch(
             @PathVariable UUID id, 
-            @Valid @RequestBody DeliveryRequestDTO data,
-            @RequestHeader("user-id") UUID userId
+            @Valid @RequestBody DeliveryRequestDTO data
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data, userId));
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
     }
 
     @PatchMapping("/{id}/register-confirm")

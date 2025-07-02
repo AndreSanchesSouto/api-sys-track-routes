@@ -223,13 +223,18 @@ public class UserService {
         return new PeriodCreationResponseDTO(periodData, userDetails);
     }
 
+    public UserEntity getUserAtMoment() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedUsername = authentication.getName();
+        return this.getByLogin(authenticatedUsername);
+    }
+
     public ResponseEntity<Void> changeUserPassword(UUID id, UserChangePasswordDTO data) {
         if(!data.newEmployeePassword().equals(data.newEmployeePasswordConfirmation())) throw new UserException("As senhas não são correspondentes");
 
+
         UserEntity targetUser = this.findById(id);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String authenticatedUsername = authentication.getName();
-        UserEntity actualUser = this.getByLogin(authenticatedUsername);
+        UserEntity actualUser = this.getUserAtMoment();
 
         return actualUser.getRole().equals(Role.GENERAL_MANAGER.getRole()) ?
                 generalManagerChangePassword(data, targetUser, actualUser) :

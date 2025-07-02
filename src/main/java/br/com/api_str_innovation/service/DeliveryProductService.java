@@ -23,6 +23,10 @@ public class DeliveryProductService {
         );
     }
 
+    public Optional<DeliveryProductEntity> tryFindDeliveryIdAndProductId(UUID deliveryId, UUID productId) {
+        return this.repository.findByDeliveryIdAndProductId(deliveryId, productId);
+    }
+
     public DeliveryProductEntity getById(UUID id) {
         return this.repository.findById(id).orElseThrow(() ->
             new DeliveryException("Produto não encontrado em entregas")

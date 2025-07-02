@@ -30,14 +30,12 @@ public interface DeliveryRepository extends JpaRepository<DeliveryEntity, UUID> 
             LEFT JOIN FETCH d.driver driver
             LEFT JOIN FETCH d.vehicle vehicle
             LEFT JOIN FETCH d.deliveryProducts deliveryProducts
-            WHERE d.inactivatedDt IS NULL
-            AND d.generalManagerId = :generalManagerId
+            WHERE d.generalManagerId = :generalManagerId
         """,
         countQuery = """
             SELECT COUNT(d)
             FROM DeliveryEntity d
-            WHERE d.inactivatedDt IS NULL
-            AND d.generalManagerId = :generalManagerId
+            WHERE d.generalManagerId = :generalManagerId
         """)
     Page<DeliveryEntity> findDeliveries(@Param("generalManagerId") UUID generalManagerId, Pageable pageable);
 
