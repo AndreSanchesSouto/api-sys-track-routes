@@ -119,7 +119,7 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
     @Query(value = """
             SELECT * FROM vehicle v
-                WHERE v.status = 'waiting'
+                WHERE v.status IN ( 'waiting', 'active')
                 AND v.inactivated_dt IS NULL
                 AND v.general_manager_id = :generalManagerId
             """, nativeQuery = true)

@@ -5,6 +5,7 @@ public enum VehicleStatus {
         ACTIVE("active"),
         UNAVAILABLE("unavailable"),
         ON_USE("on_use"),
+        ON_ROAD("on_road"),
         INACTIVE("inactive");
 
         private String status;

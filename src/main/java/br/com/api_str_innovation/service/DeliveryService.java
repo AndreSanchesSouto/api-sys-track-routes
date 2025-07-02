@@ -469,7 +469,7 @@ public class DeliveryService {
         DeliveryEntity delivery = this.findById(id);
 
         delivery.setStatus(DeliveryStatus.ACTIVE.getStatus());
-
+        this.vehicleService.patchStatus(delivery.getVehicle().getId(), VehicleStatus.ON_ROAD);
         this.repository.save(delivery);
 
         UserEntity user = userService.findById(userId);
