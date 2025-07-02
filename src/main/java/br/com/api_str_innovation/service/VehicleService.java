@@ -90,6 +90,7 @@ public class VehicleService {
         int unavailable = 0;
         int on_use = 0;
         int inactive = 0;
+        int on_road = 0;
         for(VehicleEntity vehicle : vehicleEntities) {
             switch(VehicleStatus.valueOf(vehicle.getStatus().toUpperCase())) {
                 case WAITING -> waiting++;
@@ -97,9 +98,10 @@ public class VehicleService {
                 case UNAVAILABLE -> unavailable++;
                 case ON_USE -> on_use++;
                 case INACTIVE -> inactive++;
+                case ON_ROAD -> on_road++;
             }
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new DashboardVehiclesDTO(waiting, active, unavailable, on_use, inactive));
+        return ResponseEntity.status(HttpStatus.OK).body(new DashboardVehiclesDTO(waiting, active, unavailable, on_use, inactive, on_road));
     }
 
 

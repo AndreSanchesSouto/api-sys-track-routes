@@ -5,5 +5,6 @@ public record DashboardVehiclesDTO(
         int active,
         int unavailable,
         int on_use,
-        int inactive
+        int inactive,
+        int on_road
 ) {}
