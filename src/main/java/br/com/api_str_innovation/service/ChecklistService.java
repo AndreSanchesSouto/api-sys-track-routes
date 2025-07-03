@@ -271,36 +271,6 @@ public class ChecklistService {
         return Double.parseDouble(data.waterLevel()) <= Double.parseDouble(ChecklistFieldOptions.MINIMUM_WATER_LEVEL.getField());
     }
 
-    public ChecklistResponseDTO put(@PathVariable UUID id, ChecklistRequestDTO data) {
-        ChecklistEntity checklist = this.getById(id);
-
-        checklist.setTire(data.tire());
-        checklist.setSpareTire(data.spareTire());
-        checklist.setKilometersNumber(data.kilometersNumber());
-        checklist.setFuelLevel(data.fuelLevel());
-        checklist.setOilLevel(data.oilLevel());
-        checklist.setWaterLevel(data.waterLevel());
-        checklist.setSuspension(data.suspension());
-        checklist.setBrakes(data.brakes());
-        checklist.setGlasses(data.glasses());
-        checklist.setWindshieldWipers(data.windshieldWipers());
-        checklist.setRearview(data.rearview());
-        checklist.setHeadlight(data.headlight());
-        checklist.setTaillight(data.taillight());
-        checklist.setFrontIndicator(data.frontIndicator());
-        checklist.setIndicator(data.indicator());
-        checklist.setDomeLight(data.domeLight());
-        checklist.setLicensePlateLight(data.licensePlateLight());
-        checklist.setTirePressure(data.tirePressure());
-        checklist.setToolbox(data.toolbox());
-        checklist.setDocumentation(data.documentation());
-        checklist.setDocumentation(data.documentation());
-        checklist.setEditedDt(LocalDateTime.now());
-        checklistRepository.save(checklist);
-
-        return new ChecklistResponseDTO(checklist);
-    }
-
 //    private void validateChecklistData(ChecklistRequestDTO data) {
 //        try {
 //            long kilometers = Long.parseLong(data.getKilometersNumber());

@@ -141,26 +141,12 @@ public class VehicleService {
     }
 
     @Transactional
-    public VehicleResponseDTO put(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
+    public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
         Optional<VehicleEntity> finder = existsPlateNumber(data.licensePlateNumber());
         if(finder.isPresent() && !finder.get().getId().equals(id)) {
             throw new VehicleException("A placa '%s' já está em uso.");
         }
 
-        VehicleEntity vehicle = findById(id);
-
-        vehicle.setLicensePlateNumber(data.licensePlateNumber());
-        vehicle.setSideNumber(data.sideNumber());
-        vehicle.setModel(data.model());
-        vehicle.setBrand(data.brand());
-        vehicle.setYearDt(data.yearDt());
-        repository.save(vehicle);
-
-        return new VehicleResponseDTO(vehicle);
-    }
-
-    @Transactional
-    public VehicleResponseDTO patch(@PathVariable UUID id, @Valid VehicleRequestDTO data) {
         VehicleEntity vehicle = findById(id);
 
         vehicle.setLicensePlateNumber(data.licensePlateNumber());

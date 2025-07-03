@@ -94,12 +94,6 @@ public class UserController {
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> put(@PathVariable UUID id, @Valid @RequestBody UserRequestDTO data) {
-        this.service.put(id, data);
-        return ResponseEntity.status(HttpStatus.OK).body("Updated");
-    }
-
     @PostMapping("/period-of-creation")
     public ResponseEntity<PeriodCreationResponseDTO> periodOfCreation(
             @Valid @RequestBody PeriodTimeRequestDTO data,

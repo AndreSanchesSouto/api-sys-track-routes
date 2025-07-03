@@ -307,20 +307,6 @@ public class UserService {
     }
 
     @Transactional
-    public void put(@PathVariable UUID id, @RequestBody UserRequestDTO data) {
-        UserEntity user = findById(id);
-        existsMailOrLoginOrDocument(data, user);
-        validateDocumentByRole(data);
-
-        user.setName(data.name());
-        user.setEmail(data.email());
-        user.setLogin(data.login());
-        user.setDocument(data.document());
-        user.setStatus(data.status().getStatus());
-        repository.save(user);
-    }
-
-    @Transactional
     public void inactivate(UUID id) {
         UserEntity user = findById(id);
 

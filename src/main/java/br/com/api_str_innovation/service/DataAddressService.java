@@ -71,7 +71,7 @@ public class DataAddressService {
         return new DataAddressResponseDTO(address);
     }
 
-    public DataAddressResponseDTO put(UUID id, @RequestBody DataAddressRequestDTO data) {
+    public DataAddressResponseDTO patch(UUID id, @RequestBody DataAddressRequestDTO data) {
         DataAddressEntity dataAddress = this.repository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );

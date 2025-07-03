@@ -112,17 +112,6 @@ public class ClientService {
         repository.save(clientData);
     }
 
-    public ClientResponseDTO put(UUID id, @Valid ClientRequestDTO data) {
-        ClientEntity client = this.getById(id);
-        validAndExistsMailOrCnpj(data, client);
-
-        client.setName(data.name());
-        client.setEmail(data.email());
-        client.setDocument(data.document());
-        repository.save(client);
-        return new ClientResponseDTO(client);
-    }
-
     @Transactional
     public ClientResponseDTO patch(UUID id, @Valid ClientRequestDTO data) {
         ClientEntity client = this.getById(id);

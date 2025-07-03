@@ -73,7 +73,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/address/*").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/products").hasAnyRole("ADMIN","SHIPPING")
-                        .requestMatchers(HttpMethod.GET, "/products/search/name").hasAnyRole("ADMIN","SHIPPING")
+                        .requestMatchers(HttpMethod.GET, "/products/search").hasAnyRole("ADMIN","SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/products/available").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.GET, "/products/*").hasAnyRole("ADMIN", "SHIPPING")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")

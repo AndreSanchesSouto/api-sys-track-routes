@@ -67,11 +67,6 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ClientResponseDTO> put(@PathVariable UUID id, @Valid @RequestBody ClientRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
-    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> patch(@PathVariable UUID id, @Valid @RequestBody ClientRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));

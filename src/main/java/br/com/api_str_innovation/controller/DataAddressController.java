@@ -45,11 +45,11 @@ public class DataAddressController {
                 .body(this.service.post(clientId, data));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DataAddressResponseDTO> put(
+    @PatchMapping("/{id}")
+    public ResponseEntity<DataAddressResponseDTO> patch(
             @PathVariable UUID id,
             @RequestBody @Valid DataAddressRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
     }
 
     @DeleteMapping("/{id}")

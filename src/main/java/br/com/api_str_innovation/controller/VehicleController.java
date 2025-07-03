@@ -84,11 +84,6 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Criado com sucesso");
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<VehicleResponseDTO> put(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.service.put(id, data));
-    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> patch(@PathVariable UUID id, @RequestBody VehicleRequestDTO data) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.patch(id, data));
