@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -38,8 +40,7 @@ public class ProductEntity {
     private String unitValue;
 
     @Column(nullable = false)
-    @Setter
-    private Double price;
+    private BigDecimal price;
 
     @Setter
     @Column
@@ -61,7 +62,12 @@ public class ProductEntity {
         this.unitValue = data.unitValue();
         this.quantity = Integer.parseInt(data.quantity());
         this.measure = Double.parseDouble(data.measure());
-        this.price = Double.parseDouble(data.price());
+        this.setPrice(data.price().toString());
         this.generalManagerId = generalManagerId;
+    }
+
+    public void setPrice(String price) {
+        BigDecimal actualValue = new BigDecimal(price);
+        this.price = actualValue.setScale(2, RoundingMode.HALF_UP);
     }
 }

@@ -8,6 +8,7 @@ import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleEntity;
 import br.com.api_str_innovation.entities.vehicle.VehicleStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,7 @@ public record DeliveryGenericResponseDTO(
          VehicleEntity vehicle,
          UserEntity driver,
          Integer items,
+         BigDecimal total,
          LocalDate createdDt,
          LocalDate inactivatedDt
 ) {
@@ -33,6 +35,7 @@ public record DeliveryGenericResponseDTO(
                 data.getVehicle(),
                 data.getDriver(),
                 data.getItems(),
+                data.getTotal(),
                 data.getCreatedDt(),
                 data.getInactivatedDt()
         );

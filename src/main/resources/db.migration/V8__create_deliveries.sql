@@ -4,6 +4,7 @@ CREATE TABLE deliveries (
     status VARCHAR(50),
     created_dt DATE NOT NULL,
     items INT,
+    total NUMERIC(10,2),
     inactivated_dt DATE NULL,
     general_manager_id VARCHAR(50) NULL,
     latitude DECIMAL(8,6) NULL,

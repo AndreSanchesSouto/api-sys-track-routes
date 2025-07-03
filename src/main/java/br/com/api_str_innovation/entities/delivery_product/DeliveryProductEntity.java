@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -41,7 +43,7 @@ public class DeliveryProductEntity {
 
     @Column(nullable = false)
     @Setter
-    private Double price;
+    private BigDecimal price;
 
     @Column(nullable = false)
     @Setter
@@ -63,5 +65,9 @@ public class DeliveryProductEntity {
         this.productId = product.getId();
     }
 
+    public BigDecimal setPrice(String price) {
+        BigDecimal actualValue = new BigDecimal(price);
+        return actualValue.setScale(2, RoundingMode.HALF_UP);
+    }
 }
 

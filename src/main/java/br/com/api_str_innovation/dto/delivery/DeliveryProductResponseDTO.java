@@ -3,6 +3,7 @@ package br.com.api_str_innovation.dto.delivery;
 
 import br.com.api_str_innovation.entities.delivery_product.DeliveryProductEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ public record DeliveryProductResponseDTO(
          Integer totalQuantity,
          String name,
          String unitValue,
-         Double price,
+         BigDecimal price,
          UUID productId,
          Double measure,
          LocalDate createdDt

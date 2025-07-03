@@ -45,6 +45,10 @@ public class DeliveryEntity {
     private BigDecimal longitude;
 
     @Setter
+    @Column(nullable = true)
+    private BigDecimal total;
+
+    @Setter
     @Column(nullable = false, updatable = false)
     private LocalDate createdDt = LocalDate.now();
 

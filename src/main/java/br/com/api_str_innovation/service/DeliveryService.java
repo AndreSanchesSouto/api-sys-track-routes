@@ -98,6 +98,7 @@ public class DeliveryService {
         delivery.setDeliveryRequest(this.repository.getDeliveryQuantity() + 1);
         delivery.setGeneralManagerId(generalManagerId);
 
+        BigDecimal total = new BigDecimal("0");
         List<DeliveryProductEntity> deliveryProducts = new ArrayList<DeliveryProductEntity>();
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             if(productDTO.quantity() == 0) continue;
@@ -109,9 +110,13 @@ public class DeliveryService {
 
             Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
             this.productService.updateProductQuantity(product.getId(), actualQuantity);
+
+            total = total.add(product.getPrice().multiply(new BigDecimal(productDTO.quantity().toString())));
+
         }
         delivery.setDeliveryProducts(deliveryProducts);
         delivery.setItems(deliveryProducts.size());
+        delivery.setTotal(total);
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
 
         this.repository.save(delivery);
@@ -234,19 +239,20 @@ public class DeliveryService {
         List<DeliveryReportDTO> report = new ArrayList<>();
         for (DeliveryEntity delivery : deliveries) {
             double totalWeight = 0.0;
-            double totalPaid = 0.0;
+            BigDecimal totalPaid = new BigDecimal("0");
             List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
             for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
                 double weight = dp.getMeasure() * dp.getQuantity();
-                double price = dp.getPrice() * dp.getQuantity();
+                BigDecimal quantity = new BigDecimal(dp.getQuantity().toString());
+                BigDecimal finalPrice = dp.getPrice().multiply(quantity);
                 products.add(new DeliveryReportDTO.ProductInfo(
                         dp.getName(),
                         dp.getQuantity(),
                         weight,
-                        price
+                        finalPrice
                 ));
                 totalWeight += weight;
-                totalPaid += price;
+                totalPaid = totalPaid.add(finalPrice);
             }
             report.add(new DeliveryReportDTO(
                     delivery.getDeliveryRequest(),
@@ -268,11 +274,12 @@ public class DeliveryService {
         List<DeliveryReportDTO> report = new ArrayList<>();
         for (DeliveryEntity delivery : deliveries) {
             double totalWeight = 0.0;
-            double totalPaid = 0.0;
+            BigDecimal totalPaid = new BigDecimal("0");
             List<DeliveryReportDTO.ProductInfo> products = new ArrayList<>();
             for (DeliveryProductEntity dp : delivery.getDeliveryProducts()) {
                 double weight = dp.getMeasure() * dp.getQuantity();
-                double price = dp.getPrice() * dp.getQuantity();
+                BigDecimal quantity = new BigDecimal(dp.getQuantity().toString());
+                BigDecimal price = dp.getPrice().multiply(quantity);
                 products.add(new DeliveryReportDTO.ProductInfo(
                         dp.getName(),
                         dp.getQuantity(),
@@ -280,7 +287,7 @@ public class DeliveryService {
                         price
                 ));
                 totalWeight += weight;
-                totalPaid += price;
+                totalPaid = totalPaid.add(price);
             }
             report.add(new DeliveryReportDTO(
                     delivery.getDeliveryRequest(),
@@ -355,6 +362,7 @@ public class DeliveryService {
         deliveryEntity.setVehicle(vehicle);
         deliveryEntity.setDriver(driver);
 
+        BigDecimal newTotal = new BigDecimal("0");
         for (DeliveryProductRequestDTO productDTO : data.products()) {
             ProductEntity product = productService.findById(productDTO.productId());
 
@@ -385,8 +393,12 @@ public class DeliveryService {
                 Integer actualQuantity = this.recalculateProductsQuantity(product.getQuantity(), productDTO.quantity(),0);
                 this.productService.updateProductQuantity(product.getId(), actualQuantity);
             }
+            newTotal = newTotal.add(product.getPrice().multiply(new BigDecimal(productDTO.quantity().toString())));
+            System.out.println(newTotal);
+            System.out.println("newTotal here");
             deliveryEntity.setItems(deliveryEntity.getDeliveryProducts().size());
         }
+        deliveryEntity.setTotal(newTotal);
         userService.patchStatus(driver.getId(), UserStatus.UNAVAILABLE);
         vehicleService.patchStatus(vehicle.getId(), VehicleStatus.ON_USE);
 

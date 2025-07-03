@@ -153,7 +153,7 @@ public class ProductService {
         ProductEntity product = findById(id);
 
         product.setName(data.name());
-        product.setPrice(Double.parseDouble(data.price()));
+        product.setPrice(data.price().toString());
         product.setQuantity(Integer.parseInt(data.quantity()));
         product.setMeasure(Double.parseDouble(data.measure()));
         product.setUnitValue(data.unitValue());
@@ -162,19 +162,6 @@ public class ProductService {
 
         return new ProductResponseDTO(product);
     }
-//
-//    @Transactional
-//    public void put(@PathVariable UUID id, @RequestBody ProductRequestDTO data) {
-//        existsMailOrLogin(data);
-//        ProductEntity user = findById(id);
-//
-//        user.setName(data.name());
-//        user.setEmail(data.email());
-//        user.setLogin(data.login());
-//        user.setStatus(data.status().getStatus());
-//        repository.save(user);
-//
-//    }
 
     @Transactional
     public void receiveReturnedProducts(UUID id, Integer quantity) {
