@@ -27,6 +27,10 @@ public class ProductEntity {
     @Setter
     private String name;
 
+    @Setter
+    @Column(nullable = true)
+    private String imageUrl;
+
     @Column
     @Setter
     private String description;

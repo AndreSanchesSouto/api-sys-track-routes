@@ -1,6 +1,7 @@
 CREATE TABLE product(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    image_url VARCHAR(500) NULL,
     description VARCHAR(1000),
     quantity INTEGER NOT NULL,
     unitValue NUMERIC(10, 2) NOT NULL,

@@ -11,12 +11,14 @@ import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
-import br.com.api_str_innovation.infra.security.Encrypter;
+import br.com.api_str_innovation.infrastructure.security.Encrypter;
 import br.com.api_str_innovation.repository.UserRepository;
+import com.amazonaws.services.s3.AmazonS3;
 import io.micrometer.common.lang.Nullable;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,9 +31,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,6 +52,12 @@ public class UserService {
 
     @Autowired
     private AuthorizationService authorizationService;
+
+    @Autowired
+    private AmazonS3 amazonS3;
+
+    @Value("${aws.bucket.name}")
+    private String bucketName;
 
     @Lazy
     @Autowired
@@ -91,13 +105,13 @@ public class UserService {
         }
     }
 
-//    public List<UserResponseDTO> getAll() {
-//        return repository
-//                .findAll()
-//                .stream()
-//                .map(UserResponseDTO::new)
-//                .toList();
-//    }
+    public List<UserResponseDTO> getAll() {
+        return repository
+                .findAll()
+                .stream()
+                .map(UserResponseDTO::new)
+                .toList();
+    }
 
     public List<UserResponseDTO> getDrivers(UUID generalManagerId) {
         return repository
@@ -186,7 +200,29 @@ public class UserService {
         if (data.document() != null) validateDocumentByRole(data);
 
         UserEntity user = new UserEntity(data, generalManagerId);
+        user.setImageUrl(uploadImage(data.image()));
         repository.save(user);
+    }
+
+    private String uploadImage(MultipartFile multipartFile) {
+        String fileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+        try {
+            File file = this.convertMultipartToFile(multipartFile);
+            amazonS3.putObject(bucketName, fileName, file);
+            file.delete();
+            return amazonS3.getUrl(bucketName, fileName).toString();
+        } catch (Exception e) {
+            System.out.println("ERROOOOOOOOOOOO " + e);
+        }
+        return null;
+    }
+
+    private File convertMultipartToFile(MultipartFile multipartFile) throws IOException {
+        File convertFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        FileOutputStream fos = new FileOutputStream(convertFile);
+        fos.write(multipartFile.getBytes());
+        fos.close();
+        return convertFile;
     }
 
     public PeriodCreationResponseDTO periodOfCreation(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {

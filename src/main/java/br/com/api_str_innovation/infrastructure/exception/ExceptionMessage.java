@@ -1,4 +1,4 @@
-package br.com.api_str_innovation.infra.exception;
+package br.com.api_str_innovation.infrastructure.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package br.com.api_str_innovation.infra.validation;
+package br.com.api_str_innovation.infrastructure.validation;
 
-import br.com.api_str_innovation.infra.anotation.CnpjCpfAnotation;
+import br.com.api_str_innovation.infrastructure.anotation.CnpjCpfAnotation;
 import br.com.caelum.stella.validation.InvalidStateException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

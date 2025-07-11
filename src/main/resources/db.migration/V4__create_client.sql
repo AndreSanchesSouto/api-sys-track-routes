@@ -1,6 +1,7 @@
 CREATE TABLE client (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    image_url VARCHAR(500) NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     document VARCHAR(100) NOT NULL UNIQUE,
     cellphone VARCHAR(100) NOT NULL,

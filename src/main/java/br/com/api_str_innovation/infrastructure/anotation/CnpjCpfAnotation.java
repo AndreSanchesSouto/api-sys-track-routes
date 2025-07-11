@@ -1,6 +1,6 @@
-package br.com.api_str_innovation.infra.anotation;
+package br.com.api_str_innovation.infrastructure.anotation;
 
-import br.com.api_str_innovation.infra.validation.CnpjCpfValidator;
+import br.com.api_str_innovation.infrastructure.validation.CnpjCpfValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

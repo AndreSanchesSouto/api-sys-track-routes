@@ -6,6 +6,7 @@ ON deliveries (TO_CHAR(created_dt, 'YYYY-MM-DD'));
 CREATE TABLE users (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    image_url VARCHAR(500) NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     login VARCHAR(100) NOT NULL UNIQUE,
     document VARCHAR(100) NULL UNIQUE,

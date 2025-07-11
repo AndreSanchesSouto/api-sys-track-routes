@@ -7,15 +7,19 @@ import br.com.api_str_innovation.dto.user.UserRequestDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.dto.period_time.PeriodTimeRequestDTO;
 import br.com.api_str_innovation.dto.user.update.UserUpdateRequestDTO;
+import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
+import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -85,12 +89,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> post(
-            @Valid @RequestBody UserRequestDTO data,
+            @RequestParam("name")String name,
+            @RequestParam("image")MultipartFile image,
+            @RequestParam("email")String email,
+            @RequestParam("document")String document,
+            @RequestParam("login")String login,
+            @RequestParam("password")String password,
+            @RequestParam("confirmPassword")String confirmPassword,
+            @RequestParam("role") Role role,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
-        this.service.post(data, generalManagerId);
+        UserRequestDTO dto = new UserRequestDTO(name, image, email, document, login, password, confirmPassword, UserStatus.ACTIVE, role);
+        this.service.post(dto, generalManagerId);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 

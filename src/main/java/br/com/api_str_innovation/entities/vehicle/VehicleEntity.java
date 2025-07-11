@@ -27,6 +27,10 @@ public class VehicleEntity {
     private String licensePlateNumber;
 
     @Setter
+    @Column(nullable = true)
+    private String imageUrl;
+
+    @Setter
     @Column(nullable = false)
     private String sideNumber;
 

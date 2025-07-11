@@ -5,7 +5,7 @@ import br.com.api_str_innovation.dto.authentication.AuthenticationResponseDTO;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.UserRepository;
-import br.com.api_str_innovation.infra.security.Encrypter;
+import br.com.api_str_innovation.infrastructure.security.Encrypter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
