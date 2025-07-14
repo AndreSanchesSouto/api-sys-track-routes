@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public record UserResponseDTO (
         UUID id,
+        String image,
         String name,
         String email,
         String document,
@@ -19,6 +20,7 @@ public record UserResponseDTO (
     public UserResponseDTO (UserEntity user) {
         this(
             user.getId(),
+            user.getImageUrl(),
             user.getName(),
             user.getEmail(),
             user.getDocument(),

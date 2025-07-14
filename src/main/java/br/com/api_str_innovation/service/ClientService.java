@@ -4,6 +4,7 @@ import br.com.api_str_innovation.dto.client.ClientRequestDTO;
 import br.com.api_str_innovation.dto.client.ClientResponseDTO;
 import br.com.api_str_innovation.dto.user.UserResponseDTO;
 import br.com.api_str_innovation.entities.client.ClientEntity;
+import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.exceptions.ClientException;
 import br.com.api_str_innovation.exceptions.UserException;
 import br.com.api_str_innovation.repository.ClientRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -28,6 +30,9 @@ public class ClientService {
 
     @Autowired
     private ClientRepository repository;
+
+    @Autowired
+    private ImageService imageService;
 
     private void validAndExistsMailOrCnpj(ClientRequestDTO data, @Nullable ClientEntity existClient) {
         String cnpj = data.document().replaceAll("\\D", "");
@@ -98,13 +103,6 @@ public class ClientService {
         };
     }
 
-    public ClientEntity getById(UUID id) {
-        ClientEntity client = repository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
-        return client;
-    }
-
     public void post(@Valid ClientRequestDTO data, UUID generalManager) {
         validAndExistsMailOrCnpj(data, null);
 
@@ -114,7 +112,7 @@ public class ClientService {
 
     @Transactional
     public ClientResponseDTO patch(UUID id, @Valid ClientRequestDTO data) {
-        ClientEntity client = this.getById(id);
+        ClientEntity client = this.findById(id);
         validAndExistsMailOrCnpj(data, client);
 
         client.setName(data.name());
@@ -127,9 +125,24 @@ public class ClientService {
 
     @Transactional
     public void inactivate(UUID id) {
-        ClientEntity client = getById(id);
+        ClientEntity client = findById(id);
         client.setInactivatedDt(LocalDateTime.now());
         repository.save(client);
     }
 
+    public ClientResponseDTO getById(UUID id) {
+        return new ClientResponseDTO(this.findById(id));
+    }
+
+    public ClientEntity findById(UUID id) {
+        return this.repository.findById(id).orElseThrow(
+                () -> new ClientException("Cliente não encontrado")
+        );
+    }
+
+    public void postImage(UUID id, MultipartFile image) {
+        ClientEntity client = this.findById(id);
+        client.setImageUrl(this.imageService.uploadImage(image));
+        this.repository.save(client);
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,15 @@ public class ClientController {
     @GetMapping("/available")
     public ResponseEntity<List<ClientResponseDTO>> getAvailable(@RequestHeader("general-manager-id") UUID generalManagerId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.findAvailable(generalManagerId));
+    }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<Void> postImage(
+            @PathVariable UUID id,
+            @RequestParam MultipartFile image
+    ) {
+        this.service.postImage(id, image);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/count")
@@ -54,7 +64,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientEntity> getById(@PathVariable UUID id) {
+    public ResponseEntity<ClientResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.getById(id));
     }
 

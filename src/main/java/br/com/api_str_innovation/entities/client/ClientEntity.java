@@ -24,7 +24,6 @@ public class ClientEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-
     @Setter
     @Column(nullable = true)
     private String imageUrl;

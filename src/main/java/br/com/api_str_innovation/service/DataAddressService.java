@@ -64,7 +64,7 @@ public class DataAddressService {
     }
 
     public DataAddressResponseDTO post(UUID idClient, @RequestBody DataAddressRequestDTO data) {
-        ClientEntity client = clientService.getById(idClient);
+        ClientEntity client = this.clientService.findById(idClient);
         DataAddressEntity address = new DataAddressEntity(data, client);
         repository.save(address);
 

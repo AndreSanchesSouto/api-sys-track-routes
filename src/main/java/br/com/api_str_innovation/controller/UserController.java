@@ -100,12 +100,12 @@ public class UserController {
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/{userId}/image")
+    @PostMapping("/{id}/image")
     public ResponseEntity<Void> uploadProfileImage(
-            @PathVariable UUID userId,
+            @PathVariable UUID id,
             @RequestParam MultipartFile image
     ) {
-        this.service.postImage(userId, image);
+        this.service.postImage(id, image);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 

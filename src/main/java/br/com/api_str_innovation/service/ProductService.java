@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
@@ -33,6 +34,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private ImageService imageService;
 
     public ProductEntity findById(UUID id) {
         return repository.findById(id).orElseThrow(
@@ -186,4 +190,9 @@ public class ProductService {
         return this.repository.findAllById(productIds);
     }
 
+    public void postImage(UUID id, MultipartFile image) {
+        ProductEntity product = this.findById(id);
+        product.setImageUrl(this.imageService.uploadImage(image));
+        this.repository.save(product);
+    }
 }

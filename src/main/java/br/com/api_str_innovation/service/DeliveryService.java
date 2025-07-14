@@ -79,7 +79,7 @@ public class DeliveryService {
     private LogsUserDeliveryProductRepository logsUserDeliveryProductRepository;
 
     public DeliveryResponseDTO post(@RequestBody DeliveryRequestDTO data, UUID generalManagerId, UUID userId) {
-        ClientEntity client = this.clientService.getById(data.clientId());
+        ClientEntity client = this.clientService.findById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
         this.validateAddressToClient(client, address);
 
@@ -348,7 +348,7 @@ public class DeliveryService {
         if(deliveryEntity.getStatus().equals(DeliveryStatus.CANCELED.getStatus())) {
             throw new DeliveryException("Entrega inativa");
         }
-        ClientEntity client = this.clientService.getById(data.clientId());
+        ClientEntity client = this.clientService.findById(data.clientId());
         DataAddressEntity address = this.addressService.findById(data.addressId());
         this.validateAddressToClient(client, address);
 

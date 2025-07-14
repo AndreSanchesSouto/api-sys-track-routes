@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record ClientResponseDTO(UUID id,
+                                String image,
                                 String name,
                                 String document,
                                 String email,
@@ -21,6 +22,7 @@ public record ClientResponseDTO(UUID id,
     public ClientResponseDTO(ClientEntity data) {
         this(
                 data.getId(),
+                data.getImageUrl(),
                 data.getName(),
                 data.getDocument(),
                 data.getEmail(),

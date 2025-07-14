@@ -85,6 +85,7 @@ public interface ClientRepository extends JpaRepository<ClientEntity, UUID> {
             SELECT DISTINCT
                 c.id,
                 c.name,
+                c.image_url,
                 c.email,
                 c.cellphone,
                 c.document,

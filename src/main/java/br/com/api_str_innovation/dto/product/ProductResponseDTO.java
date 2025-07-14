@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public record ProductResponseDTO(
         UUID id,
+        String image,
         String name,
         String description,
         String quantity,
@@ -18,6 +19,7 @@ public record ProductResponseDTO(
     public ProductResponseDTO(ProductEntity data) {
         this(
             data.getId(),
+            data.getImageUrl(),
             data.getName(),
             data.getDescription(),
             data.getQuantity().toString(),

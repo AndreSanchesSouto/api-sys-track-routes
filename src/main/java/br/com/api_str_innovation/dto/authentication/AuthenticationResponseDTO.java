@@ -19,6 +19,7 @@ public class AuthenticationResponseDTO {
         this.token = token;
         this.user = new UserResponseDTO(
                 employee.getId(),
+                employee.getImageUrl(),
                 employee.getName(),
                 employee.getEmail(),
                 employee.getDocument(),
