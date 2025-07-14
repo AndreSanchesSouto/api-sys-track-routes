@@ -2,6 +2,8 @@ package br.com.api_str_innovation.dto.user;
 
 import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.infrastructure.anotation.CnpjCpfAnotation;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import jakarta.validation.constraints.Email;
@@ -13,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 public record UserRequestDTO(
             @NotBlank(message = "Informe um nome")
             String              name,
-            MultipartFile       image,
             @NotBlank
             @Email
             String              email,

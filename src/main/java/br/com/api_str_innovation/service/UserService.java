@@ -54,10 +54,7 @@ public class UserService {
     private AuthorizationService authorizationService;
 
     @Autowired
-    private AmazonS3 amazonS3;
-
-    @Value("${aws.bucket.name}")
-    private String bucketName;
+    private ImageService imageService;
 
     @Lazy
     @Autowired
@@ -170,7 +167,6 @@ public class UserService {
                     .map(UserResponseDTO::new);
             default -> throw new UserException("Parâmetro não aceito para a pesquisa");
         };
-
     }
 
     public UserResponseDTO getById(UUID id) {
@@ -200,29 +196,13 @@ public class UserService {
         if (data.document() != null) validateDocumentByRole(data);
 
         UserEntity user = new UserEntity(data, generalManagerId);
-        user.setImageUrl(uploadImage(data.image()));
         repository.save(user);
     }
 
-    private String uploadImage(MultipartFile multipartFile) {
-        String fileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-        try {
-            File file = this.convertMultipartToFile(multipartFile);
-            amazonS3.putObject(bucketName, fileName, file);
-            file.delete();
-            return amazonS3.getUrl(bucketName, fileName).toString();
-        } catch (Exception e) {
-            System.out.println("ERROOOOOOOOOOOO " + e);
-        }
-        return null;
-    }
-
-    private File convertMultipartToFile(MultipartFile multipartFile) throws IOException {
-        File convertFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        FileOutputStream fos = new FileOutputStream(convertFile);
-        fos.write(multipartFile.getBytes());
-        fos.close();
-        return convertFile;
+    public void postImage(UUID id, MultipartFile image) {
+        UserEntity user = this.findById(id);
+        user.setImageUrl(this.imageService.uploadImage(image));
+        this.repository.save(user);
     }
 
     public PeriodCreationResponseDTO periodOfCreation(PeriodTimeRequestDTO periodTimeDTO, UUID generalManagerId) {

@@ -11,6 +11,8 @@ import br.com.api_str_innovation.entities.user.Role;
 import br.com.api_str_innovation.entities.user.UserEntity;
 import br.com.api_str_innovation.entities.user.UserStatus;
 import br.com.api_str_innovation.service.UserService;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -91,18 +93,19 @@ public class UserController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> post(
-            @RequestParam("name")String name,
-            @RequestParam("image")MultipartFile image,
-            @RequestParam("email")String email,
-            @RequestParam("document")String document,
-            @RequestParam("login")String login,
-            @RequestParam("password")String password,
-            @RequestParam("confirmPassword")String confirmPassword,
-            @RequestParam("role") Role role,
+            @RequestBody UserRequestDTO data,
             @RequestHeader("general-manager-id") UUID generalManagerId
     ) {
-        UserRequestDTO dto = new UserRequestDTO(name, image, email, document, login, password, confirmPassword, UserStatus.ACTIVE, role);
-        this.service.post(dto, generalManagerId);
+        this.service.post(data, generalManagerId);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{userId}/image")
+    public ResponseEntity<Void> uploadProfileImage(
+            @PathVariable UUID userId,
+            @RequestParam MultipartFile image
+    ) {
+        this.service.postImage(userId, image);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
